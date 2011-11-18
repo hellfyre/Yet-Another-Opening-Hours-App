@@ -37,7 +37,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.osm_account:
+            case R.id.settings:
                 Intent i = new Intent(this, SettingsActivity.class);
                 startActivity(i);
                 return true;

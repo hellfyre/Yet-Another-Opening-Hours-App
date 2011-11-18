@@ -14,24 +14,16 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int button_osm_login=0x7f060008;
-        public static final int button_osm_signup=0x7f060009;
-        public static final int button_start=0x7f060001;
-        public static final int buy_pro=0x7f06000c;
-        public static final int checkBox_save_osm_password=0x7f060007;
-        public static final int editText1=0x7f060004;
-        public static final int editText2=0x7f060006;
-        public static final int fooButton=0x7f060000;
-        public static final int mapview=0x7f060002;
-        public static final int osm_account=0x7f06000a;
-        public static final int quit_app=0x7f06000b;
-        public static final int textView_osm_password=0x7f060005;
-        public static final int textView_osm_username=0x7f060003;
+        public static final int button_start=0x7f070001;
+        public static final int buy_pro=0x7f070005;
+        public static final int fooButton=0x7f070000;
+        public static final int mapview=0x7f070002;
+        public static final int quit_app=0x7f070004;
+        public static final int settings=0x7f070003;
     }
     public static final class layout {
         public static final int main=0x7f030000;
         public static final int mapview=0x7f030001;
-        public static final int osm_account_screen=0x7f030002;
     }
     public static final class menu {
         public static final int menu=0x7f060000;
