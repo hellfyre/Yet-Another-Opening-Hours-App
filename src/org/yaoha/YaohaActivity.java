@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 public class YaohaActivity extends Activity implements OnClickListener {
 	Button mapButton;
+	Button startButton;
 	
     /** Called when the activity is first created. */
     @Override
@@ -22,6 +23,8 @@ public class YaohaActivity extends Activity implements OnClickListener {
         setContentView(R.layout.main);
         mapButton = (Button) findViewById(R.id.fooButton);
         mapButton.setOnClickListener(this);
+        startButton = (Button) findViewById(R.id.button_start);
+        startButton.setOnClickListener(this);
     }
     
     @Override
@@ -51,6 +54,8 @@ public class YaohaActivity extends Activity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        startActivity(new Intent(this, YaohaMapActivity.class));
+        if(v.getId() == R.id.fooButton) {
+            startActivity(new Intent(this, YaohaMapActivity.class));
+        }
     }
 }
