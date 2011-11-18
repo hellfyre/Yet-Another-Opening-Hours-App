@@ -45,7 +45,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
                 this.finish();
                 return true;
             case R.id.buy_pro:
-                Toast.makeText(this, "You just payed 49,99â‚¬. Enjoy this Pro-Version!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "You just payed 49,99€. Enjoy this Pro-Version!", Toast.LENGTH_LONG).show();
                 return true;
             default:
                 return false;

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="Settings" android:summary="General Settings" android:key="settings">
+        <PreferenceScreen android:title="OSM Settings" android:summary="Set your OSM Account" android:key="osm_settings">
+            <PreferenceCategory android:title="OpenStreetMap-Account" android:key="osm_category"></PreferenceCategory><EditTextPreference android:summary="The OSM Username" android:title="Username" android:key="username"/>
+            <EditTextPreference android:summary="The OSM password" android:title="Password" android:key="password"/>
+            
+            <PreferenceCategory android:title="TestCategory"></PreferenceCategory>
+        </PreferenceScreen>
+        <CheckBoxPreference android:title="Start with Map" android:key="start_with_map" android:summary="If checked, skip sarting screen and shows Map"/>
+    </PreferenceScreen>
