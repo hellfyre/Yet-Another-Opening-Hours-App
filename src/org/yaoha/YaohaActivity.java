@@ -20,7 +20,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        mapButton = (Button) findViewById(R.id.mapButton);
+        mapButton = (Button) findViewById(R.id.fooButton);
         mapButton.setOnClickListener(this);
     }
     
@@ -49,8 +49,8 @@ public class YaohaActivity extends Activity implements OnClickListener {
         }
     }
 
-	@Override
-	public void onClick(View v) {
-		  startActivity(new Intent(this, YaohaMapActivity.class));
-	}
+    @Override
+    public void onClick(View v) {
+        startActivity(new Intent(this, YaohaMapActivity.class));
+    }
 }
