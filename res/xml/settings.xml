@@ -4,7 +4,7 @@
             <PreferenceCategory android:title="OpenStreetMap-Account" android:key="osm_category"></PreferenceCategory><EditTextPreference android:summary="The OSM Username" android:title="Username" android:key="username"/>
             <EditTextPreference android:summary="The OSM password" android:title="Password" android:key="password"/>
             
-            <PreferenceCategory android:title="TestCategory"></PreferenceCategory>
+            <PreferenceCategory android:title="General" android:key="general_settings"></PreferenceCategory>
         </PreferenceScreen>
         <CheckBoxPreference android:title="Start with Map" android:key="start_with_map" android:summary="If checked, skip sarting screen and shows Map"/>
     </PreferenceScreen>

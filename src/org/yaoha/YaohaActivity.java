@@ -2,7 +2,9 @@ package org.yaoha;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,11 +23,19 @@ public class YaohaActivity extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getBaseContext()); 
+        if (prefs.getBoolean("start_with_map",true) == true) {
+        	startActivity(new Intent(this, YaohaMapActivity.class));
+		}
         mapButton = (Button) findViewById(R.id.fooButton);
         mapButton.setOnClickListener(this);
         startButton = (Button) findViewById(R.id.button_start);
         startButton.setOnClickListener(this);
     }
+    
+
+
+
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
