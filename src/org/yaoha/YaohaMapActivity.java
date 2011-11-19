@@ -23,6 +23,7 @@ public class YaohaMapActivity extends Activity {
 	    mapController = this.mapview.getController();
         mapController.setZoom(15);
         GeoPoint myPosition = new GeoPoint(53554070, -2959520);  // versteh mal jemand diese Angaben >.> (http://code.google.com/p/osmdroid/source/browse/trunk/osmdroid-android/src/org/osmdroid/util/GeoPoint.java?r=955)
+        //GeoPoint myPosition = new GeoPoint(522667, 105333); // BS?
         mapController.setCenter(myPosition);
 	}
 
