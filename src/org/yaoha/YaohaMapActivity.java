@@ -15,6 +15,8 @@ public class YaohaMapActivity extends Activity {
 	    setContentView(R.layout.mapview);
 	    mapview = (MapView) findViewById(R.id.mapview);
 	    mapview.setBuiltInZoomControls(true);
+	    mapview.setMultiTouchControls(true);
+	    mapview.getController().setZoom(50);	    
 	}
 
 }
