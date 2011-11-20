@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="zoom_labels">
+        <item >15m</item>
+        <item >50m</item>
+        <item >100m</item>
+        <item >150m</item>
+        <item >200m</item>
+    </string-array>
+
+    
+</resources>

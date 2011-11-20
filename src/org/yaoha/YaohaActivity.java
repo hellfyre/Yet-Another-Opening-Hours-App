@@ -24,7 +24,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getBaseContext()); 
-        if (prefs.getBoolean("start_with_map",true) == true) {
+        if (prefs.getBoolean("start_with_map",false) == true) {
         	startActivity(new Intent(this, YaohaMapActivity.class));
 		}
         mapButton = (Button) findViewById(R.id.fooButton);
