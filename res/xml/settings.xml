@@ -7,5 +7,5 @@
             <PreferenceCategory android:title="General" android:key="general_settings"></PreferenceCategory>
         </PreferenceScreen>
         <CheckBoxPreference android:title="Start with Map" android:key="start_with_map" android:summary="If checked, skip sarting screen and shows Map" android:defaultValue="false"/>
-        <ListPreference android:title="Zoomlevel" android:key="zoomlevel" android:summary="The zoomlevel the map starts with" android:entries="@array/zoom_labels" android:entryValues="@array/zoom_values" android:defaultValue="50" android:enabled="true"/>
+        <ListPreference android:title="Zoomlevel" android:key="zoomlevel" android:summary="The zoomlevel the map starts with" android:entries="@array/zoom_labels" android:entryValues="@array/zoom_values" android:defaultValue="17" android:enabled="true"/>
     </PreferenceScreen>
