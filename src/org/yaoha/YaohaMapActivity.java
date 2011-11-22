@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.MyLocationOverlay;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import android.app.Activity;
@@ -27,6 +29,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
 	MapView mapview;
 	MapController mapController;
 	LocationManager locationManager;
+	MyLocationOverlay mOverlay;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -63,10 +66,13 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300, 200, this);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300, 200, this);
         
-        Resources res = getResources();
+/*        Resources res = getResources();
         Drawable marker = res.getDrawable(R.drawable.marker_red);
         OverlayItem myItem = new OverlayItem("Marker","Description of my Marker",myPosition);
-        myItem.setMarker(marker);
+        myItem.setMarker(marker); */
+        mOverlay = new MyLocationOverlay(this, mapview);
+        mapview.getOverlays().add(mOverlay);
+        mapview.postInvalidate();
 
 	}
 
@@ -124,5 +130,16 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         default:
             return false;
         }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mOverlay.enableMyLocation();
+    }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mOverlay.disableMyLocation();
     }
 }
