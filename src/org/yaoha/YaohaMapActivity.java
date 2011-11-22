@@ -110,7 +110,15 @@ public class YaohaMapActivity extends Activity implements LocationListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.track_me:
-            Toast.makeText(this, "Tracking me (Placeholder, implement pl0x)!", Toast.LENGTH_LONG).show();
+            Location loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (loc == null) {
+                Toast.makeText(this, "No location known *crash*", Toast.LENGTH_LONG).show();
+            } else {
+                GeoPoint myPosition = new GeoPoint(loc);
+                //GeoPoint myPosition = new GeoPoint(52265000, 10525000);
+                mapController.setCenter(myPosition);
+                Toast.makeText(this, "Tracking me!", Toast.LENGTH_LONG).show();
+            }
             return true;
 
         default:
