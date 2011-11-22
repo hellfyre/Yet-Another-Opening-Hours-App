@@ -5,16 +5,22 @@ import java.util.logging.Logger;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.OverlayItem;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 public class YaohaMapActivity extends Activity implements LocationListener {
@@ -53,9 +59,15 @@ public class YaohaMapActivity extends Activity implements LocationListener {
 	    }
         mapController.setCenter(myPosition);
 	 // Register the listener with the Location Manager to receive location updates
-        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 300, 200, this);
-//        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300, 200, this);
-//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300, 200, this);
+//        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 300, 200, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300, 200, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300, 200, this);
+        
+        Resources res = getResources();
+        Drawable marker = res.getDrawable(R.drawable.marker_red);
+        OverlayItem myItem = new OverlayItem("Marker","Description of my Marker",myPosition);
+        myItem.setMarker(marker);
+
 	}
 
     @Override
@@ -67,6 +79,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         locationManager.removeUpdates(this);
         Log.i(YaohaMapActivity.class.getSimpleName(), "got position update by " + location.getProvider());
     }
+    
 
     @Override
     public void onProviderDisabled(String provider) {
@@ -85,5 +98,23 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         // TODO Auto-generated method stub
         
     }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_map, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.track_me:
+            Toast.makeText(this, "Tracking me (Placeholder, implement pl0x)!", Toast.LENGTH_LONG).show();
+            return true;
 
+        default:
+            return false;
+        }
+    }
 }
