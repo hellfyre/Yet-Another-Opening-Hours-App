@@ -6,14 +6,11 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MyLocationOverlay;
-import org.osmdroid.views.overlay.Overlay;
-import org.osmdroid.views.overlay.OverlayItem;
+
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -66,10 +63,6 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300, 200, this);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300, 200, this);
         
-/*        Resources res = getResources();
-        Drawable marker = res.getDrawable(R.drawable.marker_red);
-        OverlayItem myItem = new OverlayItem("Marker","Description of my Marker",myPosition);
-        myItem.setMarker(marker); */
         mOverlay = new MyLocationOverlay(this, mapview);
         mapview.getOverlays().add(mOverlay);
         mapview.postInvalidate();
@@ -121,7 +114,6 @@ public class YaohaMapActivity extends Activity implements LocationListener {
                 Toast.makeText(this, "No location known *crash*", Toast.LENGTH_LONG).show();
             } else {
                 GeoPoint myPosition = new GeoPoint(loc);
-                //GeoPoint myPosition = new GeoPoint(52265000, 10525000);
                 mapController.setCenter(myPosition);
                 Toast.makeText(this, "Tracking me!", Toast.LENGTH_LONG).show();
             }
