@@ -45,7 +45,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
 	    mapController.setZoom(zoom);
 	    
 	 // Acquire a reference to the system Location Manager
-	    LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+	    locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 	    Location loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 	    // hardcoded default is braunschweig
 	    GeoPoint myPosition = braunschweig;
