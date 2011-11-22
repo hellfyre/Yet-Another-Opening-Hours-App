@@ -1,6 +1,5 @@
 package org.yaoha;
 
-import java.util.logging.Logger;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -27,6 +26,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
 	MapController mapController;
 	LocationManager locationManager;
 	MyLocationOverlay mOverlay;
+	static final GeoPoint braunschweig = new GeoPoint(52265000, 10525000);
 
 	/** Called when the activity is first created. */
 	@Override
@@ -44,12 +44,11 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         //mapController.setZoom(prefs.getInt("zoomlevel", 15));
 	    mapController.setZoom(zoom);
 	    
-	    
 	 // Acquire a reference to the system Location Manager
-	    locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+	    LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 	    Location loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 	    // hardcoded default is braunschweig
-	    GeoPoint myPosition = new GeoPoint(52265000, 10525000);
+	    GeoPoint myPosition = braunschweig;
 	    if (loc != null) {
             myPosition = new GeoPoint(loc);
             Log.i(YaohaMapActivity.class.getSimpleName(), "last known location is " + myPosition);
@@ -58,15 +57,15 @@ public class YaohaMapActivity extends Activity implements LocationListener {
 	        Log.i(YaohaMapActivity.class.getSimpleName(), "no last known location " + myPosition);
 	    }
         mapController.setCenter(myPosition);
+
 	 // Register the listener with the Location Manager to receive location updates
 //        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 300, 200, this);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300, 200, this);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300, 200, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300000, 200, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300000, 200, this);
         
         mOverlay = new MyLocationOverlay(this, mapview);
         mapview.getOverlays().add(mOverlay);
         mapview.postInvalidate();
-
 	}
 
     @Override
@@ -74,9 +73,10 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         // TODO Auto-generated method stub
         GeoPoint myPosition = new GeoPoint(location);
         mapController.setCenter(myPosition);
-     // Remove the listener you previously added
-        locationManager.removeUpdates(this);
-        Log.i(YaohaMapActivity.class.getSimpleName(), "got position update by " + location.getProvider());
+        // Remove the listener you previously added
+//        locationManager.removeUpdates(this);
+        Log.i(this.getClass().getSimpleName(), "got location update from " + location.getProvider());
+        Log.i(this.getClass().getSimpleName(), "new location is " + location.getLatitude() + "," + location.getLongitude());
     }
     
 
@@ -97,6 +97,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         // TODO Auto-generated method stub
         
     }
+
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
