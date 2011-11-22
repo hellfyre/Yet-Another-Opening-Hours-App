@@ -4,6 +4,15 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <MultiAutoCompleteTextView
+        android:id="@+id/searchTextfield"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/gasStation" >
+
+        <requestFocus />
+    </MultiAutoCompleteTextView>
+
     <Button
         android:id="@+id/fooButton"
         android:layout_width="wrap_content"

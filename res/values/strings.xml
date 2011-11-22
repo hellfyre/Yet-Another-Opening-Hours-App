@@ -10,5 +10,6 @@
     <string name="button_osm_signup">Sign up</string>
     <string name="checkbox_save_password">Save Password</string>
     <string name="osm_settings">OSM Settings</string>
+    <string name="gasStation">gas</string>
 
 </resources>

@@ -11,12 +11,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
 
 public class YaohaActivity extends Activity implements OnClickListener {
 	Button mapButton;
 	Button startButton;
+	private static final String[] SHOP_TYPES = new String[] {
+        "groceries", "computer", "sport", "clothes", "gas station"
+    };
+	
 	
     /** Called when the activity is first created. */
     @Override
@@ -31,6 +37,11 @@ public class YaohaActivity extends Activity implements OnClickListener {
         mapButton.setOnClickListener(this);
         startButton = (Button) findViewById(R.id.button_start);
         startButton.setOnClickListener(this);
+        
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, SHOP_TYPES);
+        MultiAutoCompleteTextView textView = (MultiAutoCompleteTextView) findViewById(R.id.searchTextfield);
+        textView.setAdapter(adapter);
+        textView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
     }
     
 
@@ -55,7 +66,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
                 this.finish();
                 return true;
             case R.id.buy_pro:
-                Toast.makeText(this, "You just payed 49,99€. Enjoy this Pro-Version!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "You just payed 49,99â‚¬. Enjoy this Pro-Version!", Toast.LENGTH_LONG).show();
                 return true;
             default:
                 return false;
