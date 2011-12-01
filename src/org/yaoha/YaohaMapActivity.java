@@ -36,6 +36,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
 	    mapview = (MapView) findViewById(R.id.mapview);
 	    mapview.setBuiltInZoomControls(true);
 	    mapview.setMultiTouchControls(true);
+	    mapview.setMapListener(new YaohaMapListener(this));
 	    
 	    mapController = this.mapview.getController();
 	    SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getBaseContext());
