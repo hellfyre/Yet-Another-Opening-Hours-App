@@ -2,6 +2,7 @@ package org.yaoha;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -39,7 +40,7 @@ public class OverpassConnector {
         try {
             uri = new URI("http", "www.overpass-api.de", "/api/xapi", requestString, null);
         } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
+            // This shouldn't happen, since the uri is created by program code rather than by the user
             e.printStackTrace();
         }
         return getRequest(uri);
@@ -64,6 +65,11 @@ public class OverpassConnector {
         }
         
         return responseString;
+    }
+    
+    public InputStream getResponseInputStream(String requestString) throws IllegalStateException, IOException {
+        HttpResponse response = getRequestResponse(requestString);
+        return response.getEntity().getContent();
     }
 
 }
