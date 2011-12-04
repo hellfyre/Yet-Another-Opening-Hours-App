@@ -1,6 +1,7 @@
 package org.yaoha;
 
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
@@ -9,7 +10,9 @@ import org.osmdroid.views.overlay.MyLocationOverlay;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -27,28 +30,46 @@ public class YaohaMapActivity extends Activity implements LocationListener {
 	LocationManager locationManager;
 	MyLocationOverlay mOverlay;
 	static final GeoPoint braunschweig = new GeoPoint(52265000, 10525000);
+	
+	String search_term = "";
+	
+	SharedPreferences mprefs = null;
+	SharedPreferences default_shared_prefs = null;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	    setContentView(R.layout.mapview);
-	    mapview = (MapView) findViewById(R.id.mapview);
-	    mapview.setBuiltInZoomControls(true);
-	    mapview.setMultiTouchControls(true);
-	    
-	    mapController = this.mapview.getController();
-	    SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-	    int zoom = Integer.parseInt(prefs.getString("zoomlevel", "-1"));
-	    //Toast.makeText(this, "Set zoom to " + zoom +"m!", Toast.LENGTH_LONG).show();
+        setContentView(R.layout.mapview);
+        mapview = (MapView) findViewById(R.id.mapview);
+        mapview.setBuiltInZoomControls(true);
+        mapview.setMultiTouchControls(true);
+        mapController = this.mapview.getController();
+
+        mprefs = getPreferences(MODE_PRIVATE);
+        default_shared_prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        assert(mprefs != default_shared_prefs);
+        int zoom = Integer.parseInt(default_shared_prefs.getString("zoomlevel", "-1"));
+        zoom = mprefs.getInt("zoomlevel", zoom);
+        //Toast.makeText(this, "Set zoom to " + zoom +"m!", Toast.LENGTH_LONG).show();
         //mapController.setZoom(prefs.getInt("zoomlevel", 15));
-	    mapController.setZoom(zoom);
+
+        // hardcoded default is braunschweig
+        int longitude = mprefs.getInt("longitude", braunschweig.getLongitudeE6());
+        int latitude = mprefs.getInt("latitude", braunschweig.getLatitudeE6());
+        GeoPoint myPosition = new GeoPoint(latitude, longitude);
+        
+        // get saved values
+	    if (savedInstanceState != null) {
+	        savedInstanceState.getInt("zoomlevel", zoom);
+            myPosition.setLatitudeE6(savedInstanceState.getInt("latitude", myPosition.getLatitudeE6()));
+            myPosition.setLongitudeE6(savedInstanceState.getInt("longitude", myPosition.getLongitudeE6()));
+	    }
 	    
 	 // Acquire a reference to the system Location Manager
 	    locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 	    Location loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-	    // hardcoded default is braunschweig
-	    GeoPoint myPosition = braunschweig;
+	    
 	    if (loc != null) {
             myPosition = new GeoPoint(loc);
             Log.i(YaohaMapActivity.class.getSimpleName(), "last known location is " + myPosition);
@@ -56,6 +77,8 @@ public class YaohaMapActivity extends Activity implements LocationListener {
 	    else {
 	        Log.i(YaohaMapActivity.class.getSimpleName(), "no last known location " + myPosition);
 	    }
+
+        mapController.setZoom(zoom);
         mapController.setCenter(myPosition);
 
 	 // Register the listener with the Location Manager to receive location updates
@@ -66,6 +89,13 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         mOverlay = new MyLocationOverlay(this, mapview);
         mapview.getOverlays().add(mOverlay);
         mapview.postInvalidate();
+        
+        // just save the search term
+        // we may later add a method to actually look in maps after it
+        Intent intent = getIntent();
+        CharSequence text = intent.getCharSequenceExtra("org.yaoha.YaohaMapActivity.SearchText");
+        search_term = text.toString();
+        Log.i(YaohaMapActivity.class.getSimpleName(), "Search field input was: " + text);
 	}
 
     @Override
@@ -134,5 +164,32 @@ public class YaohaMapActivity extends Activity implements LocationListener {
     protected void onPause() {
         super.onPause();
         mOverlay.disableMyLocation();
+
+        IGeoPoint center = mapview.getMapCenter();
+        Editor editor = mprefs.edit();
+        editor.putInt("zoomlevel", mapview.getZoomLevel());
+        editor.putInt("longitude", center.getLongitudeE6());
+        editor.putInt("latitude", center.getLatitudeE6());
+        editor.commit();
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        IGeoPoint center = mapview.getMapCenter();
+        outState.putInt("zoomlevel", mapview.getZoomLevel());
+        outState.putInt("longitude", center.getLongitudeE6());
+        outState.putInt("latitude", center.getLatitudeE6());
+    }
+    
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int zoom_level = savedInstanceState.getInt("zoomleve");
+        int longitude = savedInstanceState.getInt("longitude");
+        int latitude = savedInstanceState.getInt("latitude");
+        
+        mapController.setZoom(zoom_level);
+        mapController.setCenter(new GeoPoint(latitude, longitude));
     }
 }
