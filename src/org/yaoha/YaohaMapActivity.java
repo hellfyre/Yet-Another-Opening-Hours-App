@@ -46,6 +46,8 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         mapview.setMultiTouchControls(true);
         mapController = this.mapview.getController();
 
+        mapview.setMapListener(new YaohaMapListener(this));
+
         mprefs = getPreferences(MODE_PRIVATE);
         default_shared_prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         assert(mprefs != default_shared_prefs);
