@@ -44,10 +44,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
         textView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
     }
     
-
-
-
-    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -72,11 +68,15 @@ public class YaohaActivity extends Activity implements OnClickListener {
                 return false;
         }
     }
-
+    
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.fooButton) {
-            startActivity(new Intent(this, YaohaMapActivity.class));
+            MultiAutoCompleteTextView textView = (MultiAutoCompleteTextView) findViewById(R.id.searchTextfield);
+            
+            Intent intent = new Intent(this, YaohaMapActivity.class);
+            intent.putExtra("org.yaoha.YaohaMapActivity.SearchText", textView.getText());
+            startActivity(intent);
         }
     }
 }
