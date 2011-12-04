@@ -187,7 +187,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        int zoom_level = savedInstanceState.getInt("zoomleve");
+        int zoom_level = savedInstanceState.getInt("zoomlevel");
         int longitude = savedInstanceState.getInt("longitude");
         int latitude = savedInstanceState.getInt("latitude");
         
