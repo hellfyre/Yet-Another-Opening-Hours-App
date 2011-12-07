@@ -10,12 +10,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class OsmXmlHandler extends DefaultHandler {
-    ArrayList<OSMNode> nodeList;
-    OSMNode currentNode;
+    ArrayList<OsmNode> nodeList;
+    OsmNode currentNode;
     String timestamp;
     String parentElement;
     
-    public OsmXmlHandler(ArrayList<OSMNode> nodeList) {
+    public OsmXmlHandler(ArrayList<OsmNode> nodeList) {
         this.nodeList = nodeList;
         currentNode = null;
         timestamp = null;
@@ -41,7 +41,7 @@ public class OsmXmlHandler extends DefaultHandler {
                     else if (attributes.getQName(i).equals("lat")) latitude = attributes.getValue(i);
                     else if (attributes.getQName(i).equals("lon")) longitude = attributes.getValue(i);
                 }
-                currentNode = new OSMNode(id, latitude, longitude);
+                currentNode = new OsmNode(id, latitude, longitude);
                 if (timestamp != null) {
                     while (timestamp.contains("\\")) {
                         timestamp = timestamp.replace("\\", "");

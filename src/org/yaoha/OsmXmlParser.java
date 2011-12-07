@@ -11,11 +11,11 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 public class OsmXmlParser {
-    ArrayList<OSMNode> nodeList;
+    ArrayList<OsmNode> nodeList;
     SAXParser parser;
 
     public OsmXmlParser() {
-        nodeList = new ArrayList<OSMNode>();
+        nodeList = new ArrayList<OsmNode>();
         SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
             parser = factory.newSAXParser();
@@ -28,7 +28,7 @@ public class OsmXmlParser {
         }
     }
     
-    public ArrayList<OSMNode> getNodeList() {
+    public ArrayList<OsmNode> getNodeList() {
         return nodeList;
     }
     
@@ -42,6 +42,7 @@ public class OsmXmlParser {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        // TODO: write in ContentProvider
     }
 
 }
