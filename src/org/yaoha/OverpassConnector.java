@@ -19,7 +19,7 @@ public class OverpassConnector {
     public OverpassConnector() {
         client = new DefaultHttpClient();
     }
-    
+
     private HttpResponse getRequest(URI uri) {
         HttpGet request = new HttpGet(uri);
         HttpResponse response = null;
@@ -34,26 +34,29 @@ public class OverpassConnector {
         }
         return response;
     }
-    
+
     public HttpResponse getRequestResponse(String requestString) {
         URI uri = null;
         try {
-            uri = new URI("http", "www.overpass-api.de", "/api/xapi", requestString, null);
+            uri = new URI("http", "www.overpass-api.de", "/api/xapi",
+                    requestString, null);
         } catch (URISyntaxException e) {
-            // This shouldn't happen, since the uri is created by program code rather than by the user
+            // This shouldn't happen, since the uri is created by program code
+            // rather than by the user
             e.printStackTrace();
         }
         return getRequest(uri);
     }
-    
+
     public String getRequestString(String requestString) {
         HttpResponse response = getRequestResponse(requestString);
         BufferedReader in = null;
         String responseString = "";
         try {
-            in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+            in = new BufferedReader(new InputStreamReader(response.getEntity()
+                    .getContent()));
             String line;
-            while((line = in.readLine()) != null) {
+            while ((line = in.readLine()) != null) {
                 responseString += line + "\n";
             }
         } catch (IllegalStateException e) {
@@ -63,13 +66,24 @@ public class OverpassConnector {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         return responseString;
     }
-    
-    public InputStream getResponseInputStream(String requestString) throws IllegalStateException, IOException {
+
+    public InputStream getResponseInputStream(String requestString) {
         HttpResponse response = getRequestResponse(requestString);
-        return response.getEntity().getContent();
+        InputStream in = null;
+        try {
+            in = response.getEntity().getContent();
+        } catch (IllegalStateException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return in;
     }
 
 }
