@@ -3,7 +3,7 @@ package org.yaoha;
 import java.util.Date;
 import java.util.HashMap;
 
-public class OSMNode {
+public class OsmNode {
     private int ID;
     private int latitudeE6;
     private int longitudeE6;
@@ -13,13 +13,13 @@ public class OSMNode {
     private Date lastUpdated;
     private HashMap<String, String> attributes;
     
-    public OSMNode(String ID, String latitude, String longitude) {
+    public OsmNode(String ID, String latitude, String longitude) {
         this.ID = Integer.parseInt(ID);
         this.latitudeE6 = new Double(Double.parseDouble(latitude)).intValue()*1000000;
         this.longitudeE6 = new Double(Double.parseDouble(longitude)).intValue()*1000000;
     }
     
-    public OSMNode(int ID, int latitudeE6, int longitudeE6) {
+    public OsmNode(int ID, int latitudeE6, int longitudeE6) {
         this.ID = ID;
         this.latitudeE6 = latitudeE6;
         this.longitudeE6 = longitudeE6;
