@@ -9,7 +9,7 @@ import org.osmdroid.util.GeoPoint;
 import android.content.Context;
 import android.widget.Toast;
 
-public class YaohaMapListener implements MapListener {
+public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     Context mapContext;
     GeoPoint mapCenter;
     int zoomLevel;
@@ -64,6 +64,12 @@ public class YaohaMapListener implements MapListener {
                 "Bb lat N S " + boundingBox.getLatNorthE6()/1000000.0 + ", " + boundingBox.getLatSouthE6()/1000000.0 + "\n" +
                 "Bb lon E W " + boundingBox.getLonEastE6()/1000000.0 + ", " + boundingBox.getLonWestE6()/1000000.0;
         Toast.makeText(mapContext, toastTxt, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void updateCompleteCallback() {
+        // TODO Auto-generated method stub
+        // Draw nodes in map
     }
 
 }
