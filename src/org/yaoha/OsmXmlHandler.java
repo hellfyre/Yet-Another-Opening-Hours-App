@@ -4,19 +4,20 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class OsmXmlHandler extends DefaultHandler {
-    ArrayList<OsmNode> nodeList;
+    HashMap<Integer, OsmNode> nodeMap;
     OsmNode currentNode;
     String timestamp;
     String parentElement;
     
-    public OsmXmlHandler(ArrayList<OsmNode> nodeList) {
-        this.nodeList = nodeList;
+    public OsmXmlHandler(HashMap<Integer, OsmNode> nodeList) {
+        this.nodeMap = nodeList;
         currentNode = null;
         timestamp = null;
         parentElement = null;
@@ -78,7 +79,7 @@ public class OsmXmlHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
         if (qName.equals("node") && (currentNode != null) && parentElement.equals("node")) {
-            nodeList.add(currentNode);
+            nodeMap.put(currentNode.getID(), currentNode);
             currentNode = null;
             parentElement = null;
         }
