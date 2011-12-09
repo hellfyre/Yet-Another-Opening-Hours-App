@@ -68,10 +68,7 @@ public class OsmXmlHandler extends DefaultHandler {
                 String key = attributes.getValue(keyIndex);
                 String value = attributes.getValue(valueIndex);
                 
-                if (key.equals("name")) currentNode.setName(value);
-                else if (key.equals("amenity")) currentNode.setAmenity(value);
-                else if (key.equals("opening_hours")) currentNode.setOpening_hours(value);
-                else currentNode.putAttribute(key, value);
+                currentNode.putAttribute(key, value);
             }
         }
         super.startElement(uri, localName, qName, attributes);
