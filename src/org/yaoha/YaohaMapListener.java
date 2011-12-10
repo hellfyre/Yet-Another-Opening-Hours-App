@@ -33,7 +33,7 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
                 update(arg0.getSource().getBoundingBox());
             }
             boundingBox = arg0.getSource().getBoundingBox();
-            //Toast.makeText(mapContext, "Scrolled to " + mapCenter.getLatitudeE6()/1000000.0 + ", " + mapCenter.getLongitudeE6()/1000000.0 + ", " + zoomLevel, Toast.LENGTH_SHORT).show();
+
             return true;
         }
         return false;
@@ -52,17 +52,13 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
             }
             zoomLevel = newZoomLevel;
             boundingBox = event.getSource().getBoundingBox();
-            //Toast.makeText(mapContext, "Zoomed to " + mapCenter.getLatitudeE6()/1000000.0 + ", " + mapCenter.getLongitudeE6()/1000000.0 + ", " + zoomLevel, Toast.LENGTH_SHORT).show();
+
             return true;
         }
         return false;
     }
     
     private void update(BoundingBoxE6 bbox) {
-        String toastTxt = "Update! Center: " + mapCenter.getLatitudeE6()/1000000.0 + ", " + mapCenter.getLongitudeE6()/1000000.0 + ", " + zoomLevel + "\n" +
-                "Bb lat N S " + boundingBox.getLatNorthE6()/1000000.0 + ", " + boundingBox.getLatSouthE6()/1000000.0 + "\n" +
-                "Bb lon E W " + boundingBox.getLonEastE6()/1000000.0 + ", " + boundingBox.getLonWestE6()/1000000.0;
-        Toast.makeText(mapActivity, toastTxt, Toast.LENGTH_LONG).show();
         
         if (this.boundingBox == null) {
             this.mapActivity.updateShops(bbox.getLatNorthE6(), bbox.getLatSouthE6(), bbox.getLonEastE6(), bbox.getLonWestE6());
