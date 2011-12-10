@@ -105,8 +105,10 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         search_term = text.toString();
         Log.i(YaohaMapActivity.class.getSimpleName(), "Search field input was: " + text);
         
+        /*
         if (zoom > 13)
             this.nodes = retrieveShops();
+        */
 	}
 
     @Override
@@ -184,6 +186,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         editor.commit();
     }
     
+    /*
     HashMap<Integer, OsmNode> retrieveShops() {
         return retrieveShops(mapview.getBoundingBox());
     }
@@ -209,6 +212,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
     void updateShops(float north, float south, float east, float west) {
         this.nodes.putAll(retrieveShops(north, south, east, west));
     }
+    */
     
     @Override
     protected void onSaveInstanceState(Bundle outState) {
