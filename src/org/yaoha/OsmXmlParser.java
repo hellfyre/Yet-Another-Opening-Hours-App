@@ -11,11 +11,9 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 public class OsmXmlParser {
-    HashMap<Integer, OsmNode> nodeMap;
     SAXParser parser;
 
     public OsmXmlParser() {
-        nodeMap = new HashMap<Integer, OsmNode>();
         SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
             parser = factory.newSAXParser();
@@ -28,11 +26,7 @@ public class OsmXmlParser {
         }
     }
     
-    public HashMap<Integer, OsmNode> getNodes() {
-        return nodeMap;
-    }
-    
-    public void parse(InputStream in) {
+    public void parse(InputStream in, HashMap<Integer, OsmNode> nodeMap) {
         try {
             parser.parse(in, new OsmXmlHandler(nodeMap));
         } catch (SAXException e) {
