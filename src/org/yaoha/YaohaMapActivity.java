@@ -1,7 +1,11 @@
 package org.yaoha;
 
 
+import java.io.InputStream;
+import java.util.HashMap;
+
 import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
@@ -173,6 +177,28 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         editor.putInt("longitude", center.getLongitudeE6());
         editor.putInt("latitude", center.getLatitudeE6());
         editor.commit();
+    }
+    
+    HashMap<Integer, OsmNode> retrieveShops() {
+        return retrieveShops(mapview.getBoundingBox());
+    }
+    
+    HashMap<Integer, OsmNode> retrieveShops(BoundingBoxE6 bbox) {
+        return retrieveShops(bbox.getLatNorthE6() / 1e6f, bbox.getLatSouthE6() / 1e6f, bbox.getLonEastE6() / 1e6f, bbox.getLonWestE6() / 1e6f);
+    }
+    
+    HashMap<Integer, OsmNode> retrieveShops(float north, float south, float east, float west) {
+        OverpassConnector opc = new OverpassConnector();
+        InputStream shops = opc.getResponseInputStream("node[shop=*][bbox=" + west + "," + south +"," + east + ","+ north +"]");
+        InputStream amenites = opc.getResponseInputStream("node[amenity=*][bbox=" + west + "," + south +"," + east + ","+ north +"]");
+        
+        OsmXmlParser oxp = new OsmXmlParser();
+        oxp.parse(shops);
+        HashMap<Integer, OsmNode> nodes = oxp.getNodes();
+        oxp.parse(amenites);
+        nodes.putAll(oxp.getNodes());
+        
+        return nodes;
     }
     
     @Override
