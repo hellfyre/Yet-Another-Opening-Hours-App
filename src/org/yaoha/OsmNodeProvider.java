@@ -1,8 +1,12 @@
 package org.yaoha;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -11,6 +15,27 @@ import android.util.Log;
 
 public class OsmNodeProvider extends ContentProvider {
     private OsmNodeDbHelper dbHelper;
+    private static final String nodesAuthority = "org.yaoha.nodes";
+    private static final UriMatcher sUriMatcher = new UriMatcher(
+            UriMatcher.NO_MATCH);
+    private static final Map<String, String> nodeProjectionMap = new HashMap<String, String>();
+    private static final Map<String, String> keyProjectionMap = new HashMap<String, String>();
+
+    private static final int NODES = 1;
+
+    static {
+        sUriMatcher.addURI(nodesAuthority, "nodes", NODES);
+
+        nodeProjectionMap.put("_id", "_id");
+        nodeProjectionMap.put("node_id", "node_id");
+        nodeProjectionMap.put("lat", "lat");
+        nodeProjectionMap.put("lon", "lon");
+        
+        keyProjectionMap.put("_id", "_id");
+        keyProjectionMap.put("key_id", "key_id");
+        keyProjectionMap.put("key", "key");
+        keyProjectionMap.put("value", "value");
+    }
 
     private static class OsmNodeDbHelper extends SQLiteOpenHelper {
         private static final String DATABASE_NAME = "osm_node.db";
@@ -22,20 +47,21 @@ public class OsmNodeProvider extends ContentProvider {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE nodes (_id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + "node_id INTEGER NOT NULL,"
-                    + "lat INTEGER NOT NULL,"
-                    + "lon INTEGER NOT NULL,"
-                    + "name VARCHAR(255),"
-                    + "amenity VARCHAR(255),"
-                    + "opening_hours VARCHAR(255),"
-                    + "last_updated INTEGER NOT NULL);");
-
+            db.execSQL("CREATE TABLE nodes (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "node_id INTEGER NOT NULL, "
+                    + "lat INTEGER NOT NULL, "
+                    + "lon INTEGER NOT NULL; ");
+            db.execSQL("CREATE TABLE node_attr (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "key_id INTEGER NOT NULL, "
+                    + "key TEXT NOT NULL, "
+                    + "value TEXT, "
+                    + "FOREIGN KEY (key_id) REFERENCES nodes (node_id ));");
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w("OsmNodeProvider", "Upgrading database from version " + oldVersion + " to " + newVersion);
+            Log.w("OsmNodeProvider", "Upgrading database from version "
+                    + oldVersion + " to " + newVersion);
             db.execSQL("DROP TABLE IF EXISTS nodes;");
             onCreate(db);
         }
