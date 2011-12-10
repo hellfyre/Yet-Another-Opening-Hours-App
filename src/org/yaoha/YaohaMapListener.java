@@ -6,8 +6,7 @@ import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 
-import android.content.Context;
-import android.widget.Toast;
+import android.util.Log;
 
 public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     YaohaMapActivity mapActivity;
@@ -73,8 +72,9 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     }
 
     @Override
-    public void updateCompleteCallback() {
-        // TODO Auto-generated method stub
+    public void onRequestComplete() {
+        Log.d("YaohaMapListener", "callback called");
+        Log.d("YaohaMapListener", "There are " + Nodes.getInstance().getNodeMap().size() + " nodes in the nodeMap");
         // Draw nodes in map
     }
 
