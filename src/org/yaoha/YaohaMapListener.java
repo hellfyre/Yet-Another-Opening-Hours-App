@@ -59,12 +59,47 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     }
     
     private void update(BoundingBoxE6 bbox) {
+        String latLow = "";
+        String latHigh = "";
+        String lonLow = "";
+        String lonHigh = "";
+        if ( (bbox.getLatNorthE6() == bbox.getLatSouthE6()) || (bbox.getLonEastE6() == bbox.getLonWestE6()) ) return;
         
+        if (bbox.getLatNorthE6() > bbox.getLatSouthE6()) {
+            latHigh = Double.toString(bbox.getLatNorthE6()/1000000.0);
+            latLow = Double.toString(bbox.getLatSouthE6()/1000000.0);
+        }
+        else {
+            latLow =Double.toString( bbox.getLatNorthE6()/1000000.0);
+            latHigh = Double.toString(bbox.getLatSouthE6()/1000000.0);
+        }
+        if (bbox.getLonEastE6() > bbox.getLonWestE6()) {
+            lonHigh = Double.toString(bbox.getLonEastE6()/1000000.0);
+            lonLow = Double.toString(bbox.getLonWestE6()/1000000.0);
+        }
+        else {
+            lonLow = Double.toString(bbox.getLonEastE6()/1000000.0);
+            lonHigh = Double.toString(bbox.getLonWestE6()/1000000.0);
+        }
+        
+        latLow = latLow.replace(',', '.');
+        latHigh = latHigh.replace(',', '.');
+        lonLow = lonLow.replace(',', '.');
+        lonHigh = lonHigh.replace(',', '.');
+        
+        OsmNodeRetrieverTask task = new OsmNodeRetrieverTask();
+        task.addListener(this);
+        String requestString = "node[bbox=" + lonLow + "," + latLow + "," + lonHigh + "," + latHigh + "][opening_hours=*]";
+        task.execute(requestString);
+        
+        Log.d("YaohaMapListener", "Updated; request String: " + requestString);
+        /*
         if (this.boundingBox == null) {
             this.mapActivity.updateShops(bbox.getLatNorthE6(), bbox.getLatSouthE6(), bbox.getLonEastE6(), bbox.getLonWestE6());
         } else {
             // TODO the user moved the map, only retrieve the shops for the new map content
         }
+        */
     }
 
     @Override
