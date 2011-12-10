@@ -186,34 +186,6 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         editor.commit();
     }
     
-    /*
-    HashMap<Integer, OsmNode> retrieveShops() {
-        return retrieveShops(mapview.getBoundingBox());
-    }
-    
-    HashMap<Integer, OsmNode> retrieveShops(BoundingBoxE6 bbox) {
-        return retrieveShops(bbox.getLatNorthE6() / 1e6f, bbox.getLatSouthE6() / 1e6f, bbox.getLonEastE6() / 1e6f, bbox.getLonWestE6() / 1e6f);
-    }
-    
-    HashMap<Integer, OsmNode> retrieveShops(float north, float south, float east, float west) {
-        OverpassConnector opc = new OverpassConnector();
-        InputStream shops = opc.getResponseInputStream("node[shop=*][bbox=" + west + "," + south +"," + east + ","+ north +"]");
-        InputStream amenites = opc.getResponseInputStream("node[amenity=*][bbox=" + west + "," + south +"," + east + ","+ north +"]");
-        
-        OsmXmlParser oxp = new OsmXmlParser();
-        oxp.parse(shops);
-        HashMap<Integer, OsmNode> nodes = oxp.getNodes();
-        oxp.parse(amenites);
-        nodes.putAll(oxp.getNodes());
-        
-        return nodes;
-    }
-    
-    void updateShops(float north, float south, float east, float west) {
-        this.nodes.putAll(retrieveShops(north, south, east, west));
-    }
-    */
-    
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

@@ -124,7 +124,8 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         latHighs = latHighs.replace(',', '.');
         lonLows = lonLows.replace(',', '.');
         lonHighs = lonHighs.replace(',', '.');
-        
+
+        // TODO query for [shop=*] or [amenity=*] too
         OsmNodeRetrieverTask task = new OsmNodeRetrieverTask();
         task.addListener(this);
         String requestString = "node[bbox=" + lonLows + "," + latLows + "," + lonHighs + "," + latHighs + "][opening_hours=*]";
