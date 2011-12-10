@@ -39,6 +39,8 @@ public class YaohaMapActivity extends Activity implements LocationListener {
 	
 	SharedPreferences mprefs = null;
 	SharedPreferences default_shared_prefs = null;
+	
+	HashMap<Integer, OsmNode> nodes = null;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -102,6 +104,9 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         CharSequence text = intent.getCharSequenceExtra("org.yaoha.YaohaMapActivity.SearchText");
         search_term = text.toString();
         Log.i(YaohaMapActivity.class.getSimpleName(), "Search field input was: " + text);
+        
+        if (zoom > 13)
+            this.nodes = retrieveShops();
 	}
 
     @Override
@@ -199,6 +204,10 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         nodes.putAll(oxp.getNodes());
         
         return nodes;
+    }
+    
+    void updateShops(float north, float south, float east, float west) {
+        this.nodes.putAll(retrieveShops(north, south, east, west));
     }
     
     @Override
