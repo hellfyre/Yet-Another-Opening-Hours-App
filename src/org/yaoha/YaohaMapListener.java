@@ -10,14 +10,14 @@ import android.content.Context;
 import android.widget.Toast;
 
 public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
-    Context mapContext;
+    YaohaMapActivity mapActivity;
     GeoPoint mapCenter;
     int zoomLevel;
     BoundingBoxE6 boundingBox;
     Boolean updateAmenities;
     
-    public YaohaMapListener(Context mapContext) {
-        this.mapContext = mapContext;
+    public YaohaMapListener(YaohaMapActivity mapContext) {
+        this.mapActivity = mapContext;
         mapCenter = new GeoPoint(0, 0);
         zoomLevel = 0;
         updateAmenities = false;
@@ -30,10 +30,10 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         int lonDiff = Math.abs(newMapCenter.getLongitudeE6() - mapCenter.getLongitudeE6());
         if (latDiff > 1000 || lonDiff > 1000) {
             mapCenter = newMapCenter;
-            boundingBox = arg0.getSource().getBoundingBox();
             if (updateAmenities) {
-                update();
+                update(arg0.getSource().getBoundingBox());
             }
+            boundingBox = arg0.getSource().getBoundingBox();
             //Toast.makeText(mapContext, "Scrolled to " + mapCenter.getLatitudeE6()/1000000.0 + ", " + mapCenter.getLongitudeE6()/1000000.0 + ", " + zoomLevel, Toast.LENGTH_SHORT).show();
             return true;
         }
@@ -46,7 +46,7 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         if (newZoomLevel != this.zoomLevel) {
             if (newZoomLevel >= 13) {
                 updateAmenities = true;
-                if(zoomLevel < 13) update();
+                if(zoomLevel < 13) update(event.getSource().getBoundingBox());
             }
             else {
                 updateAmenities = false;
@@ -59,11 +59,17 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         return false;
     }
     
-    private void update() {
+    private void update(BoundingBoxE6 bbox) {
         String toastTxt = "Update! Center: " + mapCenter.getLatitudeE6()/1000000.0 + ", " + mapCenter.getLongitudeE6()/1000000.0 + ", " + zoomLevel + "\n" +
                 "Bb lat N S " + boundingBox.getLatNorthE6()/1000000.0 + ", " + boundingBox.getLatSouthE6()/1000000.0 + "\n" +
                 "Bb lon E W " + boundingBox.getLonEastE6()/1000000.0 + ", " + boundingBox.getLonWestE6()/1000000.0;
-        Toast.makeText(mapContext, toastTxt, Toast.LENGTH_LONG).show();
+        Toast.makeText(mapActivity, toastTxt, Toast.LENGTH_LONG).show();
+        
+        if (this.boundingBox == null) {
+            this.mapActivity.updateShops(bbox.getLatNorthE6(), bbox.getLatSouthE6(), bbox.getLonEastE6(), bbox.getLonWestE6());
+        } else {
+            // TODO the user moved the map, only retrieve the shops for the new map content
+        }
     }
 
     @Override

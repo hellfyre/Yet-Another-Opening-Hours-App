@@ -7,9 +7,6 @@ public class OsmNode {
     private int ID;
     private int latitudeE6;
     private int longitudeE6;
-    private String name;
-    private String amenity;
-    private String opening_hours;
     private Date lastUpdated;
     private HashMap<String, String> attributes;
     
@@ -46,27 +43,27 @@ public class OsmNode {
     }
 
     public String getName() {
-        return name;
+        return getAttribute("name");
     }
 
     public void setName(String name) {
-        this.name = name;
+        putAttribute("name", name);
     }
 
     public String getAmenity() {
-        return amenity;
+        return getAttribute("amenity");
     }
 
     public void setAmenity(String amenity) {
-        this.amenity = amenity;
+        putAttribute("amenity", amenity);
     }
 
     public String getOpening_hours() {
-        return opening_hours;
+        return getAttribute("opening_hours");
     }
 
     public void setOpening_hours(String opening_hours) {
-        this.opening_hours = opening_hours;
+        putAttribute("opening_hours", opening_hours);
     }
 
     public Date getLastUpdated() {

@@ -4,19 +4,20 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class OsmXmlHandler extends DefaultHandler {
-    ArrayList<OsmNode> nodeList;
+    HashMap<Integer, OsmNode> nodeMap;
     OsmNode currentNode;
     String timestamp;
     String parentElement;
     
-    public OsmXmlHandler(ArrayList<OsmNode> nodeList) {
-        this.nodeList = nodeList;
+    public OsmXmlHandler(HashMap<Integer, OsmNode> nodeList) {
+        this.nodeMap = nodeList;
         currentNode = null;
         timestamp = null;
         parentElement = null;
@@ -68,10 +69,7 @@ public class OsmXmlHandler extends DefaultHandler {
                 String key = attributes.getValue(keyIndex);
                 String value = attributes.getValue(valueIndex);
                 
-                if (key.equals("name")) currentNode.setName(value);
-                else if (key.equals("amenity")) currentNode.setAmenity(value);
-                else if (key.equals("opening_hours")) currentNode.setOpening_hours(value);
-                else currentNode.putAttribute(key, value);
+                currentNode.putAttribute(key, value);
             }
         }
         super.startElement(uri, localName, qName, attributes);
@@ -81,7 +79,7 @@ public class OsmXmlHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
         if (qName.equals("node") && (currentNode != null) && parentElement.equals("node")) {
-            nodeList.add(currentNode);
+            nodeMap.put(currentNode.getID(), currentNode);
             currentNode = null;
             parentElement = null;
         }

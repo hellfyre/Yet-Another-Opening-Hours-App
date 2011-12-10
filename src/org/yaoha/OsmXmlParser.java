@@ -3,6 +3,7 @@ package org.yaoha;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -11,11 +12,11 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 public class OsmXmlParser {
-    ArrayList<OsmNode> nodeList;
+    HashMap<Integer, OsmNode> nodeMap;
     SAXParser parser;
 
     public OsmXmlParser() {
-        nodeList = new ArrayList<OsmNode>();
+        nodeMap = new HashMap<Integer, OsmNode>();
         SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
             parser = factory.newSAXParser();
@@ -28,13 +29,13 @@ public class OsmXmlParser {
         }
     }
     
-    public ArrayList<OsmNode> getNodeList() {
-        return nodeList;
+    public HashMap<Integer, OsmNode> getNodes() {
+        return nodeMap;
     }
     
     public void parse(InputStream in) {
         try {
-            parser.parse(in, new OsmXmlHandler(nodeList));
+            parser.parse(in, new OsmXmlHandler(nodeMap));
         } catch (SAXException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
