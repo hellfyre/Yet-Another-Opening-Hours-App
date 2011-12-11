@@ -5,6 +5,7 @@ import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
 
 import android.util.Log;
 
@@ -138,7 +139,10 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     public void onRequestComplete() {
         Log.d("YaohaMapListener", "callback called");
         Log.d("YaohaMapListener", "There are " + Nodes.getInstance().getNodeMap().size() + " nodes in the nodeMap");
+        
         // Draw nodes in map
+        MapView mv = (MapView) mapActivity.findViewById(R.id.mapview);
+//        mv.invalidate(); // made it crash one time
     }
 
 }
