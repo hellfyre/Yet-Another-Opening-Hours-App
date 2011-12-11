@@ -1,11 +1,8 @@
 package org.yaoha;
 
-
-import java.io.InputStream;
 import java.util.HashMap;
 
 import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
@@ -105,11 +102,8 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         search_term = text.toString();
         Log.i(YaohaMapActivity.class.getSimpleName(), "Search field input was: " + text);
         
-        /*
-        if (zoom > 13)
-            this.nodes = retrieveShops();
-        */
-	}
+        mapview.getOverlays().add(new NodesOverlay(this));
+    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -120,6 +114,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
 //        locationManager.removeUpdates(this);
         Log.i(this.getClass().getSimpleName(), "got location update from " + location.getProvider());
         Log.i(this.getClass().getSimpleName(), "new location is " + location.getLatitude() + "," + location.getLongitude());
+        
     }
     
 
