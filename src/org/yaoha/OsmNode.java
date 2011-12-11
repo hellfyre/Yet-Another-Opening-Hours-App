@@ -21,6 +21,7 @@ public class OsmNode {
         this.ID = ID;
         this.latitudeE6 = latitudeE6;
         this.longitudeE6 = longitudeE6;
+        this.attributes = new HashMap<String, String>();
     }
     
     public void putAttribute(String key, String value) {
