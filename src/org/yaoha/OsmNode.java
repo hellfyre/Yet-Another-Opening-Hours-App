@@ -12,8 +12,8 @@ public class OsmNode {
     
     public OsmNode(String ID, String latitude, String longitude) {
         this.ID = Integer.parseInt(ID);
-        this.latitudeE6 = new Double(Double.parseDouble(latitude)).intValue()*1000000;
-        this.longitudeE6 = new Double(Double.parseDouble(longitude)).intValue()*1000000;
+        this.latitudeE6 = new Double(Double.parseDouble(latitude)*1e6).intValue();
+        this.longitudeE6 = new Double(Double.parseDouble(longitude)*1e6).intValue();
         this.attributes = new HashMap<String, String>();
     }
     
