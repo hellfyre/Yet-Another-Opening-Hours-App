@@ -93,16 +93,9 @@ public class NodesOverlay extends Overlay {
                 continue;
             
             Log.d(NodesOverlay.class.getSimpleName(), "drawing one node");
-            //Define path
-            Path path = new Path();
-            path.moveTo(pt.x-offset, pt.y-offset);
             
-            path.lineTo(pt.x-offset, pt.y+offset);
-            path.lineTo(pt.x+offset, pt.y+offset);
-            path.lineTo(pt.x+offset, pt.y-offset);
-            path.lineTo(pt.x-offset, pt.y-offset);
-            
-            c.drawPath(path, paint);
+            c.drawText(node.getAttribute("name"), pt.x - offset, pt.y - offset, paint);
+            c.drawText(node.getAttribute("opening_hours"), pt.x - offset, pt.y, paint);
         }
     }
 }
