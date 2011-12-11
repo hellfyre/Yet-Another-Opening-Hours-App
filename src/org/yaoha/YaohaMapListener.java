@@ -15,6 +15,7 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     int zoomLevel;
     BoundingBoxE6 boundingBox;
     Boolean updateAmenities;
+    Boolean requestPending = false;
     
     public YaohaMapListener(YaohaMapActivity mapContext) {
         this.mapActivity = mapContext;
@@ -127,18 +128,20 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         lonHighs = lonHighs.replace(',', '.');
 
         // TODO query for [shop=*] or [amenity=*] too
+        if (requestPending) return;
+        requestPending = true;
         OsmNodeRetrieverTask task = new OsmNodeRetrieverTask();
         task.addListener(this);
         String requestString = "node[bbox=" + lonLows + "," + latLows + "," + lonHighs + "," + latHighs + "][opening_hours=*]";
         task.execute(requestString);
         
-        Log.d("YaohaMapListener", "Updated; request String: " + requestString);
+        Log.d(YaohaMapListener.class.getSimpleName(), "Update request String: " + requestString);
     }
     
     @Override
     public void onRequestComplete() {
-        Log.d("YaohaMapListener", "callback called");
-        Log.d("YaohaMapListener", "There are " + Nodes.getInstance().getNodeMap().size() + " nodes in the nodeMap");
+        requestPending = false;
+        Log.d(YaohaMapListener.class.getSimpleName(), "There are " + Nodes.getInstance().getNodeMap().size() + " nodes in the nodeMap");
         
         // Draw nodes in map
         MapView mv = (MapView) mapActivity.findViewById(R.id.mapview);
@@ -146,4 +149,3 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     }
 
 }
-// min zoom lvl 13
