@@ -142,7 +142,7 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         
         // Draw nodes in map
         MapView mv = (MapView) mapActivity.findViewById(R.id.mapview);
-//        mv.invalidate(); // made it crash one time
+        mv.postInvalidate();
     }
 
 }
