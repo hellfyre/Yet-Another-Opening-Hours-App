@@ -86,7 +86,10 @@ public class NodesOverlay extends Overlay {
             Point pt = projection.toMapPixels(igeo_in, null);
             
             //Is the node outside the viewing area? If yes, do not draw it
-            if(pt.x < viewportRect.left-offset || pt.x > viewportRect.right+offset || pt.y < viewportRect.bottom-offset || pt.y > viewportRect.top+offset)
+            if (!viewportRect.contains(pt.x-offset, pt.y-offset) 
+                    && !viewportRect.contains(pt.x-offset, pt.y+offset) 
+                    && !viewportRect.contains(pt.x+offset, pt.y+offset) 
+                    && !viewportRect.contains(pt.x+offset, pt.y-offset) )
                 continue;
             
             Log.d(NodesOverlay.class.getSimpleName(), "drawing one node");
