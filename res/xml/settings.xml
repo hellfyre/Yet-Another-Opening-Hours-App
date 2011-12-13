@@ -2,7 +2,7 @@
     <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="Settings" android:summary="General Settings" android:key="settings">
         <PreferenceScreen android:title="OSM Settings" android:summary="Set your OSM Account" android:key="osm_settings">
             <PreferenceCategory android:title="OpenStreetMap-Account" android:key="osm_category"></PreferenceCategory><EditTextPreference android:summary="The OSM Username" android:title="Username" android:key="username"/>
-            <EditTextPreference android:summary="The OSM password" android:title="Password" android:key="password"/>
+            <EditTextPreference android:summary="The OSM password" android:title="Password" android:key="password" android:inputType="textPassword"/>
             
             <PreferenceCategory android:title="General" android:key="general_settings"></PreferenceCategory>
         </PreferenceScreen>
