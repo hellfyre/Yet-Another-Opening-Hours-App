@@ -11,5 +11,6 @@
     <string name="checkbox_save_password">Save Password</string>
     <string name="osm_settings">OSM Settings</string>
     <string name="gasStation">gas</string>
+    <string name="add_favorite">+</string>
 
 </resources>

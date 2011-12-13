@@ -19,4 +19,32 @@
         android:layout_height="wrap_content"
         android:text="@string/start" />
 
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.40" >
+
+        <Button
+            android:id="@+id/button_fav_1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="34dp"
+            android:layout_marginTop="34dp"
+            android:text="@string/add_favorite" />
+
+        <Button
+            android:id="@+id/button_fav_2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignBaseline="@+id/button_fav_1"
+            android:layout_alignBottom="@+id/button_fav_1"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="42dp"
+            android:text="@string/add_favorite" />
+
+    </RelativeLayout>
+
 </LinearLayout>
