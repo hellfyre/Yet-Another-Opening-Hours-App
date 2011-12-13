@@ -2,3 +2,11 @@ bin/
 Thumbs.db
 R.java
 
+*.aux
+*.toc
+*.log
+*.nav
+*.out
+*.snm
+*.tex.bak
+*.pdf
