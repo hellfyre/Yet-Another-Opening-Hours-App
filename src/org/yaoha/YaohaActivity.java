@@ -90,7 +90,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
             searchMapWithKey(textView.getText());
         }
         if(v.getId() == R.id.button_fav_1) {
-            if (button_favorite_1.equals("+")) {
+            if (button_favorite_1.getText().equals("+")) {
                 Toast.makeText(this, "Hold button to edit.", Toast.LENGTH_SHORT).show();
             } else {
                 searchMapWithKey(button_favorite_1.getText());
