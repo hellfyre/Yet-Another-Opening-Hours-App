@@ -31,10 +31,12 @@ public class YaohaActivity extends Activity implements OnClickListener {
         setContentView(R.layout.main);
         SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getBaseContext()); 
         if (prefs.getBoolean("start_with_map",false) == true) {
-        	startActivity(new Intent(this, YaohaMapActivity.class));
+            MultiAutoCompleteTextView textView = (MultiAutoCompleteTextView) findViewById(R.id.searchTextfield);
+            
+            Intent intent = new Intent(this, YaohaMapActivity.class);
+            intent.putExtra("org.yaoha.YaohaMapActivity.SearchText", textView.getText());
+            startActivity(intent);
 		}
-        mapButton = (Button) findViewById(R.id.fooButton);
-        mapButton.setOnClickListener(this);
         startButton = (Button) findViewById(R.id.button_start);
         startButton.setOnClickListener(this);
         
@@ -71,7 +73,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
     
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.fooButton) {
+        if(v.getId() == R.id.button_start) {
             MultiAutoCompleteTextView textView = (MultiAutoCompleteTextView) findViewById(R.id.searchTextfield);
             
             Intent intent = new Intent(this, YaohaMapActivity.class);
