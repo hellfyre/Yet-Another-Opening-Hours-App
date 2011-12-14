@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView.ScaleType;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +42,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
 	TextView text_fav_3;
 	TextView text_fav_4;
 	final static int SELECT_PICTURE = 1;
-	private String selectedImagePath;
 	Uri selectedImageUri;
 	
 	private static final String[] SHOP_TYPES = new String[] {
@@ -64,6 +64,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
         startButton.setOnClickListener(this);
         button_favorite_1 = (ImageButton) findViewById(R.id.button_fav_1);
         button_favorite_1.setOnClickListener(this);
+//        button_favorite_1.setScaleType(F)
         button_favorite_2 = (ImageButton) findViewById(R.id.button_fav_2);
         button_favorite_2.setOnClickListener(this);
         button_favorite_3 = (ImageButton) findViewById(R.id.button_fav_3);
