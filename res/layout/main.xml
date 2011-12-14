@@ -25,24 +25,86 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.40" >
 
-        <Button
+        <ImageButton
             android:id="@+id/button_fav_1"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:src="@drawable/plus_sign_small"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="34dp"
             android:layout_marginTop="34dp"
             android:text="@string/add_favorite" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_fav_2"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:src="@drawable/plus_sign_small"
             android:layout_alignBaseline="@+id/button_fav_1"
             android:layout_alignBottom="@+id/button_fav_1"
             android:layout_alignParentRight="true"
             android:layout_marginRight="42dp"
+            android:text="@string/add_favorite" />
+
+        <ImageButton
+            android:id="@+id/button_fav_3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/plus_sign_small"
+            android:layout_alignLeft="@+id/button_fav_1"
+            android:layout_below="@+id/button_fav_1"
+            android:layout_marginTop="33dp"
+            android:text="@string/add_favorite" />
+
+        <ImageButton
+            android:id="@+id/button_fav_4"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/plus_sign_small"
+            android:layout_alignBaseline="@+id/button_fav_3"
+            android:layout_alignBottom="@+id/button_fav_3"
+            android:layout_alignLeft="@+id/button_fav_2"
+            android:text="@string/add_favorite" />
+
+        <TextView
+            android:id="@+id/textView_fav_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/button_fav_2"
+            android:layout_alignRight="@+id/button_fav_2"
+            android:layout_below="@+id/button_fav_2"
+            android:gravity="center_horizontal"
+            android:text="@string/add_favorite" />
+
+        <TextView
+            android:id="@+id/textView_fav_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/button_fav_3"
+            android:layout_alignRight="@+id/button_fav_3"
+            android:layout_below="@+id/button_fav_3"
+            android:gravity="center_horizontal"
+            android:text="@string/add_favorite" />
+
+        <TextView
+            android:id="@+id/textView_fav_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/button_fav_4"
+            android:layout_alignRight="@+id/button_fav_4"
+            android:layout_below="@+id/button_fav_4"
+            android:gravity="center_horizontal"
+            android:text="@string/add_favorite" />
+
+        <TextView
+            android:id="@+id/textView_fav_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/button_fav_1"
+            android:layout_alignRight="@+id/button_fav_1"
+            android:layout_below="@+id/button_fav_1"
+            android:gravity="center_horizontal"
             android:text="@string/add_favorite" />
 
     </RelativeLayout>
