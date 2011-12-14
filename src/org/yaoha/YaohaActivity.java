@@ -54,15 +54,12 @@ public class YaohaActivity extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-//        SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getBaseContext()); 
-//        if (prefs.getBoolean("start_with_map",false) == true) {
-//            //startButton.performClick();
-//            //TODO make this work
+        
         text_fav_1 = (TextView) findViewById(R.id.textView_fav_1);
     	text_fav_2 = (TextView) findViewById(R.id.textView_fav_2);
     	text_fav_3 = (TextView) findViewById(R.id.textView_fav_3);
     	text_fav_4 = (TextView) findViewById(R.id.textView_fav_4);
-//		}
+    	
         startButton = (Button) findViewById(R.id.button_start);
         startButton.setOnClickListener(this);
         button_favorite_1 = (ImageButton) findViewById(R.id.button_fav_1);
@@ -83,6 +80,11 @@ public class YaohaActivity extends Activity implements OnClickListener {
         registerForContextMenu(button_favorite_2);
         registerForContextMenu(button_favorite_3);
         registerForContextMenu(button_favorite_4);
+        
+        SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getBaseContext()); 
+        if (prefs.getBoolean("start_with_map",false) == true) {
+            startButton.performClick();
+        }
     }
     
     @Override
@@ -224,8 +226,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
 		        if (requestCode == SELECT_PICTURE) {
 		            selectedImageUri = data.getData();
 		            actualButton.setImageURI(selectedImageUri);
-//		            selectedImagePath = getPath(selectedImageUri);
-//		            Bitmap yourSelectedImage = BitmapFactory.decodeFile(selectedImagePath);
 		        }
 		    }
 	}
