@@ -5,8 +5,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -27,6 +32,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
 	Button mapButton;
 	Button startButton;
 	ImageButton button_favorite_1, button_favorite_2, button_favorite_3, button_favorite_4;
+	ImageButton actualButton;
 	final static String EDIT_FAV_STRING = "edit favorite";
 	final static String EDIT_FAV_PIC = "edit picture";
 	final static String REMOVE_FAV = "remove favorite";
@@ -34,6 +40,9 @@ public class YaohaActivity extends Activity implements OnClickListener {
 	TextView text_fav_2;
 	TextView text_fav_3;
 	TextView text_fav_4;
+	final static int SELECT_PICTURE = 1;
+	private String selectedImagePath;
+	Uri selectedImageUri;
 	
 	private static final String[] SHOP_TYPES = new String[] {
         "groceries", "computer", "sport", "clothes", "gas station"
@@ -171,8 +180,11 @@ public class YaohaActivity extends Activity implements OnClickListener {
         if(item.getTitle()==EDIT_FAV_STRING){
         	openFavMenu(btn, tv);
         } else if (item.getTitle()==EDIT_FAV_PIC){
-           //TODO Placeholder, we need a new menu for that
-           btn.setImageResource(R.drawable.placeholder_logo);
+        	Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            actualButton = btn;  //workaround, there must be a better way
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
         } else if (item.getTitle()==REMOVE_FAV){
            tv.setText(getText(R.string.add_favorite));
            btn.setImageResource(R.drawable.plus_sign_small);
@@ -204,5 +216,26 @@ public class YaohaActivity extends Activity implements OnClickListener {
               } 
             }); 
         alert.show();
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		 if (resultCode == RESULT_OK) {
+		        if (requestCode == SELECT_PICTURE) {
+		            selectedImageUri = data.getData();
+		            actualButton.setImageURI(selectedImageUri);
+//		            selectedImagePath = getPath(selectedImageUri);
+//		            Bitmap yourSelectedImage = BitmapFactory.decodeFile(selectedImagePath);
+		        }
+		    }
+	}
+	
+	public String getPath(Uri uri) {
+	    String[] projection = { MediaStore.Images.Media.DATA };
+	    Cursor cursor = managedQuery(uri, projection, null, null, null);
+	    int column_index = cursor
+	            .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+	    cursor.moveToFirst();
+	    return cursor.getString(column_index);
 	}
 }
