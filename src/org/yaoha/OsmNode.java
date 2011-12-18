@@ -94,9 +94,10 @@ public class OsmNode {
     }
     
     public void parseOpeningHours() {
-        String openingHoursString = this.getOpening_hours().toLowerCase();
+        String openingHoursString = this.getOpening_hours();
         // If the node doesn't have a key 'opening_hours', the weekDayMap is to remain null
         if (openingHoursString == null) return;
+        openingHoursString = openingHoursString.toLowerCase();
         
         // Split the string into day ranges (i.e. Mo-Fr, Sa-Su etc) and don't
         // care if the semi colon has a trailing space or not (regex)
@@ -164,12 +165,14 @@ public class OsmNode {
         // 1 - open
         // 2 - maybe (open end)
         // -1 not set
-        int result = 0;
-        Calendar now = Calendar.getInstance();
-        ArrayList<HourRange> today = weekDayMap.get(now.get(Calendar.DAY_OF_WEEK));
-
         if (weekDayMap == null)
             return -1;
+        
+        int result = 0;
+        Calendar now = Calendar.getInstance();
+
+        ArrayList<HourRange> today = weekDayMap.get(now.get(Calendar.DAY_OF_WEEK));
+
         if (today == null)
             return 0;
 
