@@ -38,8 +38,6 @@ public class NodesOverlay extends Overlay {
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
 //        paint.setStrokeWidth(10);
-//        paint.setStyle(Paint.Style.FILL);
-//        paint.setStyle(Paint.Style.STROKE);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         
         paint.setTextAlign(Paint.Align.LEFT);
@@ -50,39 +48,26 @@ public class NodesOverlay extends Overlay {
         // Save the Mercator coordinates of what is on the screen
         viewportRect.set(projection.getScreenRect());
         
-        if (false) {
-            Log.d(NodesOverlay.class.getSimpleName(), "drawing black center");
-            int center_x = viewportRect.centerX();
-            int center_y = viewportRect.centerY();
-            
-            Point pt = new Point(center_x, center_y);
-            Path path = new Path();
-            path.moveTo(pt.x-offset, pt.y-offset);
-            
-            path.lineTo(pt.x-offset, pt.y+offset);
-            path.lineTo(pt.x+offset, pt.y+offset);
-            path.lineTo(pt.x+offset, pt.y-offset);
-            path.lineTo(pt.x-offset, pt.y-offset);
-            
-            c.drawPath(path, paint);
-            c.drawLine(viewportRect.left, viewportRect.top, viewportRect.left + 100, viewportRect.top + 100, paint);
-            c.drawText("Hier könnte ihre Werbung stehen", viewportRect.left + 100, viewportRect.top + 110, paint);
-            
-            // DON'T set offset with either of below
-            //viewportRect.offset(-mWorldSize_2, -mWorldSize_2);
-            //viewportRect.offset(mWorldSize_2, mWorldSize_2);
-
-            // Draw a line from one corner to the other
-//            c.drawLine(viewportRect.left, viewportRect.top, viewportRect.right, viewportRect.bottom, paint);
-        }
-        
-        HashMap<Integer, OsmNode> nodes = Nodes.getInstance().getNodeMap();
+        @SuppressWarnings("unchecked")
+        HashMap<Integer, OsmNode> nodes = (HashMap<Integer, OsmNode>) Nodes.getInstance().getNodeMap().clone();
         for (Integer index : nodes.keySet()) {
             OsmNode node = nodes.get(index);
-            // TODO draw node
+            switch (node.isOpenNow()) {
+                case 0:
+                    paint.setColor(Color.RED);
+                    break;
+                case 1:
+                    paint.setColor(Color.GREEN);
+                    break;
+                case 2:
+                    paint.setColor(Color.BLUE);
+                    break;
+                default:
+                    paint.setColor(Color.BLACK);
+                    break;
+            }
             //Translate point to x y coordinates on the screen
             IGeoPoint igeo_in = new GeoPoint(node.getLatitudeE6(), node.getLongitudeE6());
-//            Point pt = osmv.getProjection().toPixels(igeo, null);
             Point pt = projection.toMapPixels(igeo_in, null);
             
             //Is the node outside the viewing area? If yes, do not draw it
@@ -94,8 +79,7 @@ public class NodesOverlay extends Overlay {
             
             Log.d(NodesOverlay.class.getSimpleName(), "drawing one node");
             
-            c.drawText(node.getAttribute("name"), pt.x - offset, pt.y - offset, paint);
-            c.drawText(node.getAttribute("opening_hours"), pt.x - offset, pt.y, paint);
+            c.drawCircle(pt.x, pt.y, 10, paint);
         }
     }
 }
