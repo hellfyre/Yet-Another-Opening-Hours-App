@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OsmNode {
+    public enum shopStatus {OPEN, CLOSED, UNSET, MAYBE};
     private int ID;
     private int latitudeE6;
     private int longitudeE6;
@@ -159,22 +160,22 @@ public class OsmNode {
 
     }
     
-    public int isOpenNow() {
+    public shopStatus isOpenNow() {
         // return values (for now):
         // 0 - closed
         // 1 - open
         // 2 - maybe (open end)
         // -1 not set
         if (weekDayMap == null)
-            return -1;
+            return shopStatus.UNSET;
         
-        int result = 0;
+        shopStatus result = shopStatus.CLOSED;
         Calendar now = Calendar.getInstance();
 
         ArrayList<HourRange> today = weekDayMap.get(now.get(Calendar.DAY_OF_WEEK));
 
         if (today == null)
-            return 0;
+            return shopStatus.CLOSED;
 
         for (int i = 0; i < today.size(); i++) {
             int nowHour = now.get(Calendar.HOUR_OF_DAY);
@@ -182,10 +183,10 @@ public class OsmNode {
             HourRange curRange = today.get(i);
             if (nowHour >= curRange.getStartingHour() && nowMinute >= curRange.getStartingMinute()) {
                 if (nowHour <= curRange.getEndingHour() && nowMinute <= curRange.getEndingMinute()) {
-                    result = 1;
+                    result = shopStatus.OPEN;
                 }
                 else if (curRange.getEndingHour() == -1) {
-                    result = 2;
+                    result = shopStatus.MAYBE;
                 }
             }
         }

@@ -53,13 +53,13 @@ public class NodesOverlay extends Overlay {
         for (Integer index : nodes.keySet()) {
             OsmNode node = nodes.get(index);
             switch (node.isOpenNow()) {
-                case 0:
+                case CLOSED:
                     paint.setColor(Color.RED);
                     break;
-                case 1:
+                case OPEN:
                     paint.setColor(Color.GREEN);
                     break;
-                case 2:
+                case MAYBE:
                     paint.setColor(Color.BLUE);
                     break;
                 default:
