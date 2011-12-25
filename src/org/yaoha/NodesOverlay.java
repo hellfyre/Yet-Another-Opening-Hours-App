@@ -9,6 +9,9 @@ import org.osmdroid.views.MapView.Projection;
 import org.osmdroid.views.overlay.Overlay;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,7 +26,6 @@ public class NodesOverlay extends Overlay {
     
     public NodesOverlay(Context ctx) {
         super(ctx);
-        // TODO Auto-generated constructor stub
     }
     
     @Override
@@ -49,18 +51,19 @@ public class NodesOverlay extends Overlay {
         HashMap<Integer, OsmNode> nodes = (HashMap<Integer, OsmNode>) Nodes.getInstance().getNodeMap().clone();
         for (Integer index : nodes.keySet()) {
             OsmNode node = nodes.get(index);
+            int res_id;
             switch (node.isOpenNow()) {
                 case CLOSED:
-                    paint.setColor(Color.RED);
+                    res_id = R.drawable.closed;
                     break;
                 case OPEN:
-                    paint.setColor(Color.GREEN);
+                    res_id = R.drawable.open;
                     break;
                 case MAYBE:
-                    paint.setColor(Color.BLUE);
+                    res_id = R.drawable.maybe;
                     break;
                 default:
-                    paint.setColor(Color.BLACK);
+                    res_id = R.drawable.dontknow;
                     break;
             }
             //Translate point to x y coordinates on the screen
@@ -76,13 +79,15 @@ public class NodesOverlay extends Overlay {
             
             Log.d(NodesOverlay.class.getSimpleName(), "drawing one node");
             
-            c.drawCircle(pt.x, pt.y, 10, paint);
+            Resources res = osmv.getContext().getResources();
+            Bitmap bm = BitmapFactory.decodeResource(res, res_id);
+            
+            c.drawBitmap(bm, pt.x - bm.getWidth()/2, pt.y - bm.getHeight()/2, paint);
         }
     }
     
     @Override
     public boolean onTouchEvent(MotionEvent event, MapView mapView) {
-        // TODO Auto-generated method stub
         boolean ret_val = super.onTouchEvent(event, mapView);
         if (event.getAction() != MotionEvent.ACTION_DOWN)
             return ret_val;
