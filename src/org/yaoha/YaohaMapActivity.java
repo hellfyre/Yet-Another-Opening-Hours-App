@@ -55,7 +55,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         default_shared_prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         assert(mprefs != default_shared_prefs);
         int zoom = Integer.parseInt(default_shared_prefs.getString("zoomlevel", "-1"));
-        //zoom = mprefs.getInt("zoomlevel", zoom); //TODO this line seems to trouble the zoom
+        zoom = mprefs.getInt("zoomlevel", zoom); //TODO this line seems to trouble the zoom
         //Toast.makeText(this, "Set zoom to " + zoom +"m!", Toast.LENGTH_LONG).show();
         //mapController.setZoom(prefs.getInt("zoomlevel", 15));
 
@@ -157,7 +157,10 @@ public class YaohaMapActivity extends Activity implements LocationListener {
                 Toast.makeText(this, "Tracking me!", Toast.LENGTH_LONG).show();
             }
             return true;
-
+        case R.id.debug_track_me:
+            mapController.setZoom(17);
+            mapController.setCenter(braunschweig);
+            Toast.makeText(this, "DEBUG Tracking me!", Toast.LENGTH_LONG).show();
         default:
             return false;
         }
