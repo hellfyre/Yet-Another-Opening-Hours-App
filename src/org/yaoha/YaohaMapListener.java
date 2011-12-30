@@ -16,12 +16,14 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     BoundingBoxE6 boundingBox;
     Boolean updateAmenities;
     Boolean requestPending = false;
+    NodesOverlay no;
     
-    public YaohaMapListener(YaohaMapActivity mapContext) {
+    public YaohaMapListener(YaohaMapActivity mapContext, NodesOverlay no) {
         this.mapActivity = mapContext;
         mapCenter = new GeoPoint(0, 0);
         zoomLevel = 0;
         updateAmenities = false;
+        this.no = no;
     }
 
     @Override
@@ -146,6 +148,7 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         // Draw nodes in map
         MapView mv = (MapView) mapActivity.findViewById(R.id.mapview);
         mv.postInvalidate();
+        no.getNodes();
     }
 
 }

@@ -48,8 +48,11 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         mapview.setBuiltInZoomControls(true);
         mapview.setMultiTouchControls(true);
         mapController = this.mapview.getController();
-
-        mapview.setMapListener(new YaohaMapListener(this));
+        
+        NodesOverlay no = new NodesOverlay(getResources().getDrawable(R.drawable.dontknow_old), new org.osmdroid.DefaultResourceProxyImpl(mapview.getContext()), this);
+        
+        mapview.getOverlays().add(no);
+        mapview.setMapListener(new YaohaMapListener(this, no));
 
         mprefs = getPreferences(MODE_PRIVATE);
         default_shared_prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -102,7 +105,6 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         search_term = text.toString();
         Log.i(YaohaMapActivity.class.getSimpleName(), "Search field input was: " + text);
         
-        mapview.getOverlays().add(new NodesOverlay(this));
     }
 
     @Override
