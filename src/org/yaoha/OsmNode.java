@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,6 +49,10 @@ public class OsmNode {
     
     public String getAttribute(String key) {
         return attributes.get(key);
+    }
+    
+    public Set<String> getKeys() {
+        return attributes.keySet();
     }
     
     public int getID() {
