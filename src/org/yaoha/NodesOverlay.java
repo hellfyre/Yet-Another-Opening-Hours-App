@@ -2,13 +2,15 @@ package org.yaoha;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.MapView.LayoutParams;
 import org.osmdroid.views.overlay.ItemizedOverlay;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import android.app.Activity;
@@ -18,33 +20,35 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
 public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
     HashMap<Integer, OsmNode> nodes;
     Iterator<Integer> iter;
     Activity act;
+    MapView mapView;
     long last_toast_started;
     OsmNode last_node;
+    BalloonOverlayView<OverlayItem> balloonView;
+    int viewOffset;
+    private View clickRegion;
     
-    public NodesOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy, Activity act) {
+    public NodesOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy, Activity act, MapView mapview) {
         super(pDefaultMarker, pResourceProxy);
         this.act = act;
-        getNodes();
+        this.mapView = mapview;
+        this.nodes = new HashMap<Integer, OsmNode>();
     }
 
     @SuppressWarnings("unchecked")
     void getNodes() {
-        int old_size;
-        if (nodes == null)
-            old_size = 0;
-        else
-            old_size = nodes.size();
-        if (nodes == null || nodes.size() != Nodes.getInstance().getNodeMap().size())
+        if (nodes.size() != Nodes.getInstance().getNodeMap().size()) {
             nodes = (HashMap<Integer, OsmNode>)Nodes.getInstance().getNodeMap().clone();
-        iter = nodes.keySet().iterator();
-        if (old_size != nodes.size())
+            iter = nodes.keySet().iterator();
             populate();
+        }
     }
     
     @Override
@@ -59,6 +63,10 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
             iter = nodes.keySet().iterator();
         
         OsmNode node = nodes.get(iter.next());
+        return createItemFromNode(node);
+    }
+    
+    private OverlayItem createItemFromNode(OsmNode node) {
         GeoPoint geop = new GeoPoint(node.getLatitudeE6(), node.getLongitudeE6());
         OverlayItem oi = new OverlayItem(node.getName(), node.getOpening_hours(), geop);
         switch (node.isOpenNow()) {
@@ -85,22 +93,31 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
     }
     
     @Override
-    public boolean onTouchEvent(MotionEvent event, MapView mapView) {
-        boolean ret_val = super.onTouchEvent(event, mapView);
-        if (event.getAction() != MotionEvent.ACTION_DOWN)
-            return ret_val;
+    public boolean onDoubleTapEvent(MotionEvent e, MapView mapView) {
+        boolean ret_val = super.onDoubleTapEvent(e, mapView);
         
-        if (System.currentTimeMillis() < last_toast_started + 5000) {
+        if (System.currentTimeMillis() < last_toast_started + 500 && last_node != null) {
             // start activity displaying more information, which can be editable
             Intent intent = new Intent("displayStuff");
             intent = new Intent(act, NodeActivity.class);
             
-            Set<String> keys = last_node.getKeys();
-            for (String key : keys) {
+            for (String key : last_node.getKeys()) {
                 intent.putExtra(key, last_node.getAttribute(key));
             }
             act.startActivity(intent);
+            last_toast_started = 0;
+            last_node = null;
+            ret_val |= true;
         }
+        
+        return ret_val;
+    }
+    
+    @Override
+    public boolean onTouchEvent(MotionEvent event, MapView mapView) {
+        boolean ret_val = super.onTouchEvent(event, mapView);
+        if (event.getAction() != MotionEvent.ACTION_DOWN)
+            return ret_val;
         
         float x = event.getX();
         float y = event.getY();
@@ -120,8 +137,6 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
                 event_on_map_minus_offset.getLatitudeE6());
          
         OsmNode n = null;
-        @SuppressWarnings("unchecked")
-        HashMap<Integer, OsmNode> nodes = (HashMap<Integer, OsmNode>) Nodes.getInstance().getNodeMap().clone();
         for (Integer index : nodes.keySet()) {
             OsmNode tmp_node = nodes.get(index);
             if (rect_around_event.contains(tmp_node.getLongitudeE6(), tmp_node.getLatitudeE6())) {
@@ -131,14 +146,134 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
         }
         
         if (n != null) {
-            String text = "name = " + n.getName()
-                    + "\n opening_hours = " + n.getOpening_hours();
-            Toast t = Toast.makeText(mapView.getContext(), text, Toast.LENGTH_SHORT);
             last_toast_started = System.currentTimeMillis();
             last_node = n;
-            t.show();
+            createAndDisplayBalloonOverlay(n);
         }
         
         return ret_val;
+    }
+    
+    /**
+     * Set the horizontal distance between the marker and the bottom of the information
+     * balloon. The default is 0 which works well for center bounded markers. If your
+     * marker is center-bottom bounded, call this before adding overlay items to ensure
+     * the balloon hovers exactly above the marker. 
+     * 
+     * @param pixels - The padding between the center point and the bottom of the
+     * information balloon.
+     */
+    public void setBalloonBottomOffset(int pixels) {
+        viewOffset = pixels;
+    }
+    public int getBalloonBottomOffset() {
+        return viewOffset;
+    }
+    
+    /**
+     * Creates the balloon view. Override to create a sub-classed view that
+     * can populate additional sub-views.
+     */
+    protected BalloonOverlayView<OverlayItem> createBalloonOverlayView() {
+        return new BalloonOverlayView<OverlayItem>(getMapView().getContext(), getBalloonBottomOffset());
+    }
+    
+    /**
+     * Expose map view to subclasses.
+     * Helps with creation of balloon views. 
+     */
+    protected MapView getMapView() {
+        return mapView;
+    }
+    
+    /**
+     * Sets the onTouchListener for the balloon being displayed, calling the
+     * overridden {@link #onBalloonTap} method.
+     */
+    private OnTouchListener createBalloonTouchListener() {
+        return new OnTouchListener() {
+            
+            float startX;
+            float startY;
+            
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                
+                View l =  ((View) v.getParent()).findViewById(R.id.balloon_main_layout);
+                Drawable d = l.getBackground();
+                
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    int[] states = {android.R.attr.state_pressed};
+                    if (d.setState(states)) {
+                        d.invalidateSelf();
+                    }
+                    startX = event.getX();
+                    startY = event.getY();
+                    return true;
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    int newStates[] = {};
+                    if (d.setState(newStates)) {
+                        d.invalidateSelf();
+                    }
+                    if (Math.abs(startX - event.getX()) < 40 && 
+                            Math.abs(startY - event.getY()) < 40 ) {
+                        // call overridden method
+                        onBalloonTap(last_node);
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+                
+            }
+        };
+    }
+    
+    
+    protected void onBalloonTap(OsmNode last_node2) {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    /**
+     * Creates and displays the balloon overlay by recycling the current 
+     * balloon or by inflating it from xml. 
+     * @return true if the balloon was recycled false otherwise 
+     */
+    private boolean createAndDisplayBalloonOverlay(OsmNode node){
+        boolean isRecycled;
+        if (balloonView == null) {
+            balloonView = createBalloonOverlayView();
+            clickRegion = (View) balloonView.findViewById(R.id.balloon_inner_layout);
+            clickRegion.setOnTouchListener(createBalloonTouchListener());
+            isRecycled = false;
+        } else {
+            isRecycled = true;
+        }
+    
+        balloonView.setVisibility(View.GONE);
+        
+        OverlayItem item = createItemFromNode(last_node);
+        if (balloonView != null && last_node != null)
+            balloonView.setData(item);
+        
+        GeoPoint point = item.getPoint();
+        
+        MapView.LayoutParams params = new MapView.LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT,
+                point,
+                MapView.LayoutParams.BOTTOM_CENTER, 0, 0);
+//        params.mode = MapView.LayoutParams.MODE_MAP;
+        
+        balloonView.setVisibility(View.VISIBLE);
+        
+        if (isRecycled) {
+            balloonView.setLayoutParams(params);
+        } else {
+            mapView.addView(balloonView, params);
+        }
+        
+        return isRecycled;
     }
 }
