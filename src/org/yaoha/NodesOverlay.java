@@ -7,6 +7,7 @@ import java.util.List;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapController.AnimationType;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.MapView.LayoutParams;
 import org.osmdroid.views.overlay.ItemizedOverlay;
@@ -249,6 +250,7 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
                 MapView.LayoutParams.BOTTOM_CENTER, 0, 0);
         
         balloonView.setVisibility(View.VISIBLE);
+        mapView.getController().animateTo(node.getLatitudeE6(), node.getLongitudeE6(), AnimationType.EXPONENTIALDECELERATING);
         
         if (isRecycled) {
             balloonView.setLayoutParams(params);
