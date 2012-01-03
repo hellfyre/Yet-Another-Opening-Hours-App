@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.Toast;
 
 public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
     HashMap<Integer, OsmNode> nodes;
@@ -90,27 +89,6 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
     public int size() {
         Log.d(this.getClass().getSimpleName(), "returning size of " + nodes.size() + " nodes");
         return nodes.size();
-    }
-    
-    @Override
-    public boolean onDoubleTapEvent(MotionEvent e, MapView mapView) {
-        boolean ret_val = super.onDoubleTapEvent(e, mapView);
-        
-        if (System.currentTimeMillis() < last_toast_started + 500 && last_node != null) {
-            // start activity displaying more information, which can be editable
-            Intent intent = new Intent("displayStuff");
-            intent = new Intent(act, NodeActivity.class);
-            
-            for (String key : last_node.getKeys()) {
-                intent.putExtra(key, last_node.getAttribute(key));
-            }
-            act.startActivity(intent);
-            last_toast_started = 0;
-            last_node = null;
-            ret_val |= true;
-        }
-        
-        return ret_val;
     }
     
     @Override
@@ -229,10 +207,15 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
         };
     }
     
-    
     protected void onBalloonTap(OsmNode last_node2) {
-        // TODO Auto-generated method stub
+     // start activity displaying more information, which can be editable
+        Intent intent = new Intent("displayStuff");
+        intent = new Intent(act, NodeActivity.class);
         
+        for (String key : last_node2.getKeys()) {
+            intent.putExtra(key, last_node2.getAttribute(key));
+        }
+        act.startActivity(intent);
     }
     
     /**
@@ -264,7 +247,6 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
                 LayoutParams.WRAP_CONTENT,
                 point,
                 MapView.LayoutParams.BOTTOM_CENTER, 0, 0);
-//        params.mode = MapView.LayoutParams.MODE_MAP;
         
         balloonView.setVisibility(View.VISIBLE);
         
