@@ -40,6 +40,7 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
         this.mapView = mapview;
         this.nodes = new HashMap<Integer, OsmNode>();
         this.iQuery = iQuery;
+        getNodes();
     }
 
     void getNodes() {

@@ -2,11 +2,11 @@ package org.yaoha;
 
 import java.util.HashMap;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInterface<OsmNode>, NodesQueryInterface<Integer, OsmNode> {
@@ -19,8 +19,6 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     private static final String nodesAttributesTableName = "nodes_attr";
     private static final String nodesAttributesTableKey = "key";
     private static final String nodesAttributesTableValue = "value";
-    SQLiteStatement insertNode;
-    SQLiteStatement insertAttribute;
     
     private static class SingletonHolder {
         public static OsmNodeDbHelper instance;
@@ -38,7 +36,6 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
 
     public OsmNodeDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        getReadableDatabase();
     }
 
     @Override
@@ -51,8 +48,6 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
                 + nodesAttributesTableValue + " TEXT, "
                 + "FOREIGN KEY (" + nodesTablePrimaryKey + ") REFERENCES nodes (" + nodesTablePrimaryKey + "), "
                 + "PRIMARY KEY (" + nodesTablePrimaryKey + "," + nodesAttributesTableKey + "," + nodesAttributesTableValue + "));");
-        insertNode = db.compileStatement("INSERT INTO " + nodesTableName + " (" + nodesTablePrimaryKey + "," + nodesTableLatitude + "," + nodesTableLongitude + ") VALUES (?,?,?);");
-        insertAttribute = db.compileStatement("INSERT INTO " + nodesAttributesTableName + " (" + nodesTablePrimaryKey + "," + nodesAttributesTableKey + "," + nodesAttributesTableValue + ") VALUES (?,?,?);");
     }
     
     private Cursor queryNodes() {
@@ -86,31 +81,38 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     
     @Override
     public void put(OsmNode node) {
-        insertNode.bindLong(0, node.getID());
-        insertNode.bindLong(1, node.getLongitudeE6());
-        insertNode.bindLong(2, node.getLatitudeE6());
-        insertNode.executeInsert();
-        insertNode.clearBindings();
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues(3);
+        cv.put(nodesTablePrimaryKey, node.getID());
+        cv.put(nodesTableLatitude, node.getLatitudeE6());
+        cv.put(nodesTableLongitude, node.getLongitudeE6());
+        db.insert(nodesTableName, null, cv);
+        
         for (String key : node.getKeys()) {
             String value = node.getAttribute(key);
-            insertAttribute.bindLong(0, node.getID());
-            insertAttribute.bindString(1, key);
-            insertAttribute.bindString(2, value);
-            insertAttribute.executeInsert();
-            insertAttribute.clearBindings();
+            cv = new ContentValues(3);
+            cv.put(nodesTablePrimaryKey, node.getID());
+            cv.put(nodesAttributesTableKey, key);
+            cv.put(nodesAttributesTableValue, value);
+            db.insert(nodesAttributesTableName, null, cv);
         }
+        
+        Log.d(YaohaMapListener.class.getSimpleName(), "There are " + queryNodes().getCount() + " nodes in the nodeMap");
     }
     
     private OsmNode createNodeFromRow(Cursor c) {
     	int keyIndex = c.getColumnIndexOrThrow(nodesTablePrimaryKey);
     	int latIndex = c.getColumnIndexOrThrow(nodesTableLatitude);
         int lonIndex = c.getColumnIndexOrThrow(nodesTableLongitude);
-        return new OsmNode(c.getInt(keyIndex), c.getInt(latIndex), c.getInt(lonIndex));
+        int id = c.getInt(keyIndex);
+        int latitude = c.getInt(latIndex);
+        int longitude = c.getInt(lonIndex);
+        return new OsmNode(id, latitude, longitude);
     }
     
     private void addAttributesToNode(OsmNode node) {
     	Cursor c = queryAttributes(node.getID());
-        for (int i = 0; i < c.getCount(); i++, c.moveToNext()) {
+        while (c.moveToNext()) {
         	int keyIndex = c.getColumnIndexOrThrow(nodesAttributesTableKey);
         	int valueIndex = c.getColumnIndexOrThrow(nodesAttributesTableValue);
         	node.putAttribute(c.getString(keyIndex), c.getString(valueIndex));
@@ -130,9 +132,10 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     
     private HashMap<Integer, OsmNode> createNodesFromRows(Cursor c) {
     	HashMap<Integer, OsmNode> nodesMap = new HashMap<Integer, OsmNode>();
-    	for (int i = 0; i < c.getCount(); i++, c.moveToNext()) {
+    	while (c.moveToNext()) {
     		OsmNode node = createNodeFromRow(c);
     		addAttributesToNode(node);
+    		node.parseOpeningHours();
     		nodesMap.put(node.getID(), node);
     	}
     	c.close();

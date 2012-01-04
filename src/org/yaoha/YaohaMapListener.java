@@ -143,7 +143,6 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     @Override
     public void onRequestComplete() {
         requestPending = false;
-        Log.d(YaohaMapListener.class.getSimpleName(), "There are " + Nodes.getInstance().getNodeMap().size() + " nodes in the nodeMap");
         
         // Draw nodes in map
         MapView mv = (MapView) mapActivity.findViewById(R.id.mapview);

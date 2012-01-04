@@ -2,7 +2,6 @@ package org.yaoha;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.os.AsyncTask;
 
@@ -20,20 +19,7 @@ public class OsmNodeRetrieverTask extends AsyncTask<String, Void, Void> {
         InputStream in = connector.getResponseInputStream(requestString);
         
         OsmXmlParser parser = new OsmXmlParser();
-        parser.parse(in, new NodeReceiverInterface<OsmNode>() {
-            
-            @Override
-            public void put(OsmNode value) {
-                Nodes.getInstance().getNodeMap().put(value.getID(), value);
-            }
-        });
-        
-        // Parse opening_hours
-        HashMap<Integer, OsmNode> nodes = Nodes.getInstance().getNodeMap();
-        for (Integer i : nodes.keySet()) {
-            OsmNode node = nodes.get(i);
-            node.parseOpeningHours();
-        }
+        parser.parse(in, OsmNodeDbHelper.getInstance());
         
         callListeners();
         
