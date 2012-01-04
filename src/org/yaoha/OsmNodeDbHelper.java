@@ -11,7 +11,7 @@ import android.util.Log;
 
 public class OsmNodeDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "osm_node.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String nodesTableName = "nodes";
     private static final String nodesTablePrimaryKey = "node_id";
     private static final String nodesTableLatitude = "lat";
@@ -21,17 +21,35 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper {
     private static final String nodesAttributesTableValue = "value";
     SQLiteStatement insertNode;
     SQLiteStatement insertAttribute;
+    
+    private static class SingletonHolder {
+        public static OsmNodeDbHelper instance;
+    }
+    
+    public static OsmNodeDbHelper create(Context context) {
+    	if (SingletonHolder.instance == null)
+    		SingletonHolder.instance = new OsmNodeDbHelper(context);
+    	return getInstance();
+    }
+    
+    public static OsmNodeDbHelper getInstance() {
+        return SingletonHolder.instance;
+    }
 
     public OsmNodeDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        getReadableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + nodesTableName + " (" + nodesTablePrimaryKey + " INTEGER PRIMARY KEY NOT NULL, "
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + nodesTableName + " (" + nodesTablePrimaryKey + " INTEGER PRIMARY KEY NOT NULL, "
                 + nodesTableLatitude + " INTEGER NOT NULL, "
-                + nodesTableLongitude + " INTEGER NOT NULL; ");
-        db.execSQL("CREATE TABLE " + nodesAttributesTableName + " (" + nodesTablePrimaryKey + " INTEGER NOT NULL, "
+                + nodesTableLongitude + " INTEGER NOT NULL);");
+/*        db.execSQL("CREATE TABLE " + nodesTableName + " (" + nodesTablePrimaryKey + " INTEGER, "
+                + nodesTableLatitude + " INTEGER, "
+                + nodesTableLongitude + " INTEGER);");*/
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + nodesAttributesTableName + " (" + nodesTablePrimaryKey + " INTEGER NOT NULL, "
                 + nodesAttributesTableKey + " TEXT NOT NULL, "
                 + nodesAttributesTableValue + " TEXT, "
                 + "FOREIGN KEY (" + nodesTablePrimaryKey + ") REFERENCES nodes (" + nodesTablePrimaryKey + "), "

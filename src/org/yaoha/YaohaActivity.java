@@ -86,6 +86,8 @@ public class YaohaActivity extends Activity implements OnClickListener {
         if (prefs.getBoolean("start_with_map",false) == true) {
             startButton.performClick();
         }
+        
+        OsmNodeDbHelper.create(getApplicationContext());
     }
     
     @Override
@@ -106,7 +108,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
                 this.finish();
                 return true;
             case R.id.buy_pro:
-                Toast.makeText(this, "You just payed 49,99€. Enjoy this Pro-Version!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "You just payed 49,99ï¿½. Enjoy this Pro-Version!", Toast.LENGTH_LONG).show();
                 return true;
             default:
                 return false;
