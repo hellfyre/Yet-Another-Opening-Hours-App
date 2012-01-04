@@ -20,7 +20,13 @@ public class OsmNodeRetrieverTask extends AsyncTask<String, Void, Void> {
         InputStream in = connector.getResponseInputStream(requestString);
         
         OsmXmlParser parser = new OsmXmlParser();
-        parser.parse(in, Nodes.getInstance().getNodeMap());
+        parser.parse(in, new NodeReceiverInterface<OsmNode>() {
+            
+            @Override
+            public void put(OsmNode value) {
+                Nodes.getInstance().getNodeMap().put(value.getID(), value);
+            }
+        });
         
         // Parse opening_hours
         HashMap<Integer, OsmNode> nodes = Nodes.getInstance().getNodeMap();

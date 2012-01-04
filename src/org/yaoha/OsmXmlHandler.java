@@ -3,19 +3,18 @@ package org.yaoha;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class OsmXmlHandler extends DefaultHandler {
-    HashMap<Integer, OsmNode> nodeMap;
+    NodeReceiverInterface<OsmNode> nodeMap;
     OsmNode currentNode;
     String timestamp;
     String parentElement;
     
-    public OsmXmlHandler(HashMap<Integer, OsmNode> nodeList) {
+    public OsmXmlHandler(NodeReceiverInterface<OsmNode> nodeList) {
         this.nodeMap = nodeList;
         currentNode = null;
         timestamp = null;
@@ -78,7 +77,7 @@ public class OsmXmlHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
         if (qName.equals("node") && (currentNode != null) && parentElement.equals("node")) {
-            nodeMap.put(currentNode.getID(), currentNode);
+            nodeMap.put(currentNode);
             currentNode = null;
             parentElement = null;
         }

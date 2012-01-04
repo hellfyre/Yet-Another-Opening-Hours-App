@@ -2,7 +2,6 @@ package org.yaoha;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -26,7 +25,7 @@ public class OsmXmlParser {
         }
     }
     
-    public void parse(InputStream in, HashMap<Integer, OsmNode> nodeMap) {
+    public void parse(InputStream in, NodeReceiverInterface<OsmNode> nodeMap) {
         try {
             parser.parse(in, new OsmXmlHandler(nodeMap));
         } catch (SAXException e) {

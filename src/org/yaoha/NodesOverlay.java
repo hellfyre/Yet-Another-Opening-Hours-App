@@ -2,7 +2,6 @@ package org.yaoha;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IGeoPoint;
@@ -11,7 +10,6 @@ import org.osmdroid.views.MapController.AnimationType;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.MapView.LayoutParams;
 import org.osmdroid.views.overlay.ItemizedOverlay;
-import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import android.app.Activity;
@@ -34,18 +32,20 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
     BalloonOverlayView<OverlayItem> balloonView;
     int viewOffset;
     private View clickRegion;
+    NodesQueryInterface<Integer, OsmNode> iQuery;
     
-    public NodesOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy, Activity act, MapView mapview) {
+    public NodesOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy, Activity act, MapView mapview, NodesQueryInterface<Integer, OsmNode> iQuery) {
         super(pDefaultMarker, pResourceProxy);
         this.act = act;
         this.mapView = mapview;
         this.nodes = new HashMap<Integer, OsmNode>();
+        this.iQuery = iQuery;
     }
 
-    @SuppressWarnings("unchecked")
     void getNodes() {
-        if (nodes.size() != Nodes.getInstance().getNodeMap().size()) {
-            nodes = (HashMap<Integer, OsmNode>)Nodes.getInstance().getNodeMap().clone();
+        HashMap<Integer, OsmNode> tmp_nodes = iQuery.getAllNodes();
+        if (nodes.size() != tmp_nodes.size()) {
+            nodes = tmp_nodes;
             iter = nodes.keySet().iterator();
             populate();
         }

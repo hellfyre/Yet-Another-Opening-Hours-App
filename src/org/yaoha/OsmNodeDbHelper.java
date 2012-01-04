@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
-public class OsmNodeDbHelper extends SQLiteOpenHelper {
+public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInterface<OsmNode>, NodesQueryInterface<Integer, OsmNode> {
     private static final String DATABASE_NAME = "osm_node.db";
     private static final int DATABASE_VERSION = 2;
     private static final String nodesTableName = "nodes";
@@ -46,9 +46,6 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + nodesTableName + " (" + nodesTablePrimaryKey + " INTEGER PRIMARY KEY NOT NULL, "
                 + nodesTableLatitude + " INTEGER NOT NULL, "
                 + nodesTableLongitude + " INTEGER NOT NULL);");
-/*        db.execSQL("CREATE TABLE " + nodesTableName + " (" + nodesTablePrimaryKey + " INTEGER, "
-                + nodesTableLatitude + " INTEGER, "
-                + nodesTableLongitude + " INTEGER);");*/
         db.execSQL("CREATE TABLE IF NOT EXISTS " + nodesAttributesTableName + " (" + nodesTablePrimaryKey + " INTEGER NOT NULL, "
                 + nodesAttributesTableKey + " TEXT NOT NULL, "
                 + nodesAttributesTableValue + " TEXT, "
@@ -87,7 +84,8 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
     
-    public void storeNode(OsmNode node) {
+    @Override
+    public void put(OsmNode node) {
         insertNode.bindLong(0, node.getID());
         insertNode.bindLong(1, node.getLongitudeE6());
         insertNode.bindLong(2, node.getLatitudeE6());
@@ -120,11 +118,13 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper {
         c.close();
     }
     
-    public HashMap<Integer, OsmNode> createNodesFromEntireDatabase() {
+    @Override
+    public HashMap<Integer, OsmNode> getAllNodes() {
     	return createNodesFromRows(queryNodes());
     }
     
-    public HashMap<Integer, OsmNode> createNodesFromMapExtract(int left, int top, int right, int bottom) {
+    @Override
+    public HashMap<Integer, OsmNode> getNodesFromMapExtract(int left, int top, int right, int bottom) {
     	return createNodesFromRows(queryNodesFromMapExtract(left, top, right, bottom));
     }
     
@@ -138,5 +138,4 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper {
     	c.close();
         return nodesMap;
     }
-
 }
