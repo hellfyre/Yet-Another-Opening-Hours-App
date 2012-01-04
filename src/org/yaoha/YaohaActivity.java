@@ -30,25 +30,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class YaohaActivity extends Activity implements OnClickListener {
-	Button mapButton;
-	Button startButton;
-	ImageButton button_favorite_1, button_favorite_2, button_favorite_3, button_favorite_4;
-	ImageButton actualButton;
-	final static String EDIT_FAV_STRING = "edit favorite";
-	final static String EDIT_FAV_PIC = "edit picture";
-	final static String REMOVE_FAV = "remove favorite";
-	TextView text_fav_1;
-	TextView text_fav_2;
-	TextView text_fav_3;
-	TextView text_fav_4;
-	final static int SELECT_PICTURE = 1;
-	Uri selectedImageUri;
-	
-	private static final String[] SHOP_TYPES = new String[] {
+    Button mapButton;
+    Button startButton;
+    ImageButton button_favorite_1, button_favorite_2, button_favorite_3, button_favorite_4;
+    ImageButton actualButton;
+    final static String EDIT_FAV_STRING = "edit favorite";
+    final static String EDIT_FAV_PIC = "edit picture";
+    final static String REMOVE_FAV = "remove favorite";
+    TextView text_fav_1;
+    TextView text_fav_2;
+    TextView text_fav_3;
+    TextView text_fav_4;
+    final static int SELECT_PICTURE = 1;
+    Uri selectedImageUri;
+    
+    private static final String[] SHOP_TYPES = new String[] {
         "groceries", "computer", "sport", "clothes", "gas station"
     };
-	
-	
+    
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,10 +56,10 @@ public class YaohaActivity extends Activity implements OnClickListener {
         setContentView(R.layout.main);
         
         text_fav_1 = (TextView) findViewById(R.id.textView_fav_1);
-    	text_fav_2 = (TextView) findViewById(R.id.textView_fav_2);
-    	text_fav_3 = (TextView) findViewById(R.id.textView_fav_3);
-    	text_fav_4 = (TextView) findViewById(R.id.textView_fav_4);
-    	
+        text_fav_2 = (TextView) findViewById(R.id.textView_fav_2);
+        text_fav_3 = (TextView) findViewById(R.id.textView_fav_3);
+        text_fav_4 = (TextView) findViewById(R.id.textView_fav_4);
+        
         startButton = (Button) findViewById(R.id.button_start);
         startButton.setOnClickListener(this);
         button_favorite_1 = (ImageButton) findViewById(R.id.button_fav_1);
@@ -130,21 +130,21 @@ public class YaohaActivity extends Activity implements OnClickListener {
         }
         if(v.getId() == R.id.button_fav_2) {
             if (text_fav_2.getText().equals(getText(R.string.add_favorite))) {
-            	openFavMenu(button_favorite_2, text_fav_2);
+                openFavMenu(button_favorite_2, text_fav_2);
             } else {
                 searchMapWithKey(text_fav_2.getText());
             }
         }
         if(v.getId() == R.id.button_fav_3) {
             if (text_fav_3.getText().equals(getText(R.string.add_favorite))) {
-            	openFavMenu(button_favorite_3, text_fav_3);
+                openFavMenu(button_favorite_3, text_fav_3);
             } else {
                 searchMapWithKey(text_fav_3.getText());
             }
         }
         if(v.getId() == R.id.button_fav_4) {
             if (text_fav_4.getText().equals(getText(R.string.add_favorite))) {
-            	openFavMenu(button_favorite_4, text_fav_4);
+                openFavMenu(button_favorite_4, text_fav_4);
             } else {
                 searchMapWithKey(text_fav_4.getText());
             }
@@ -183,9 +183,9 @@ public class YaohaActivity extends Activity implements OnClickListener {
     
     public boolean editFavs(MenuItem item, final ImageButton btn, final TextView tv){
         if(item.getTitle()==EDIT_FAV_STRING){
-        	openFavMenu(btn, tv);
+            openFavMenu(btn, tv);
         } else if (item.getTitle()==EDIT_FAV_PIC){
-        	Intent intent = new Intent();
+            Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             actualButton = btn;  //workaround, there must be a better way
@@ -200,7 +200,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
         return super.onContextItemSelected(item);
     }
 
-	private void openFavMenu(final ImageButton btn, final TextView tv) {
+    private void openFavMenu(final ImageButton btn, final TextView tv) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this); 
         final EditText input = new EditText(this);
         alert.setTitle("Adding favorite"); 
@@ -221,24 +221,24 @@ public class YaohaActivity extends Activity implements OnClickListener {
               } 
             }); 
         alert.show();
-	}
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		 if (resultCode == RESULT_OK) {
-		        if (requestCode == SELECT_PICTURE) {
-		            selectedImageUri = data.getData();
-		            actualButton.setImageURI(selectedImageUri);
-		        }
-		    }
-	}
-	
-	public String getPath(Uri uri) {
-	    String[] projection = { MediaStore.Images.Media.DATA };
-	    Cursor cursor = managedQuery(uri, projection, null, null, null);
-	    int column_index = cursor
-	            .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-	    cursor.moveToFirst();
-	    return cursor.getString(column_index);
-	}
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+         if (resultCode == RESULT_OK) {
+                if (requestCode == SELECT_PICTURE) {
+                    selectedImageUri = data.getData();
+                    actualButton.setImageURI(selectedImageUri);
+                }
+            }
+    }
+    
+    public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
 }

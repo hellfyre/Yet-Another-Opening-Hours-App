@@ -26,23 +26,23 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 public class YaohaMapActivity extends Activity implements LocationListener {
-	MapView mapview;
-	MapController mapController;
-	LocationManager locationManager;
-	MyLocationOverlay mOverlay;
-	static final GeoPoint braunschweig = new GeoPoint(52265000, 10525000);
-	
-	String search_term = "";
-	
-	SharedPreferences mprefs = null;
-	SharedPreferences default_shared_prefs = null;
-	
-	HashMap<Integer, OsmNode> nodes = null;
+    MapView mapview;
+    MapController mapController;
+    LocationManager locationManager;
+    MyLocationOverlay mOverlay;
+    static final GeoPoint braunschweig = new GeoPoint(52265000, 10525000);
+    
+    String search_term = "";
+    
+    SharedPreferences mprefs = null;
+    SharedPreferences default_shared_prefs = null;
+    
+    HashMap<Integer, OsmNode> nodes = null;
 
-	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.mapview);
         mapview = (MapView) findViewById(R.id.mapview);
         mapview.setBuiltInZoomControls(true);
@@ -68,28 +68,28 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         GeoPoint myPosition = new GeoPoint(latitude, longitude);
         
         // get saved values
-	    if (savedInstanceState != null) {
-	        savedInstanceState.getInt("zoomlevel", zoom);
+        if (savedInstanceState != null) {
+            savedInstanceState.getInt("zoomlevel", zoom);
             myPosition.setLatitudeE6(savedInstanceState.getInt("latitude", myPosition.getLatitudeE6()));
             myPosition.setLongitudeE6(savedInstanceState.getInt("longitude", myPosition.getLongitudeE6()));
-	    }
-	    
-	 // Acquire a reference to the system Location Manager
-	    locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-	    Location loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-	    
-	    if (loc != null) {
+        }
+        
+     // Acquire a reference to the system Location Manager
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        Location loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        
+        if (loc != null) {
             myPosition = new GeoPoint(loc);
             Log.i(YaohaMapActivity.class.getSimpleName(), "last known location is " + myPosition);
-	    }
-	    else {
-	        Log.i(YaohaMapActivity.class.getSimpleName(), "no last known location " + myPosition);
-	    }
+        }
+        else {
+            Log.i(YaohaMapActivity.class.getSimpleName(), "no last known location " + myPosition);
+        }
 
         mapController.setZoom(zoom);
         mapController.setCenter(myPosition);
 
-	 // Register the listener with the Location Manager to receive location updates
+     // Register the listener with the Location Manager to receive location updates
 //        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 300, 200, this);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300000, 200, this);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300000, 200, this);

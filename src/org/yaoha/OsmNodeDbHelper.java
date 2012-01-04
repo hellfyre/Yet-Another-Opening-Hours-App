@@ -25,9 +25,9 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     }
     
     public static OsmNodeDbHelper create(Context context) {
-    	if (SingletonHolder.instance == null)
-    		SingletonHolder.instance = new OsmNodeDbHelper(context);
-    	return getInstance();
+        if (SingletonHolder.instance == null)
+            SingletonHolder.instance = new OsmNodeDbHelper(context);
+        return getInstance();
     }
     
     public static OsmNodeDbHelper getInstance() {
@@ -51,23 +51,23 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     }
     
     private Cursor queryNodes() {
-    	// "SELECT * FROM " + nodesTableName + ";"
-    	SQLiteDatabase db = getReadableDatabase();
-    	return db.query(nodesTableName, null, null, null, null, null, null);
+        // "SELECT * FROM " + nodesTableName + ";"
+        SQLiteDatabase db = getReadableDatabase();
+        return db.query(nodesTableName, null, null, null, null, null, null);
     }
     
     private Cursor queryAttributes(int key) {
-    	// "SELECT * FROM " + nodesAttributesTableName + " WHERE " + nodesTablePrimaryKey + " = ?;"
-    	SQLiteDatabase db = getReadableDatabase();
-    	return db.query(nodesAttributesTableName, null, nodesTablePrimaryKey + " = ?", new String[] {"" + key}, null, null, null);
+        // "SELECT * FROM " + nodesAttributesTableName + " WHERE " + nodesTablePrimaryKey + " = ?;"
+        SQLiteDatabase db = getReadableDatabase();
+        return db.query(nodesAttributesTableName, null, nodesTablePrimaryKey + " = ?", new String[] {"" + key}, null, null, null);
     }
 
     // TODO we should optimize the database for rangequeries containing latitude and longitude
     private Cursor queryNodesFromMapExtract(int left, int top, int right, int bottom) {
-    	SQLiteDatabase db = getReadableDatabase();
-    	return db.query(nodesTableName, null,
-    			nodesTableLongitude + " >= " + left + "AND " + nodesTableLongitude + " <= " + right + " AND " + nodesTableLatitude + " >= " + bottom + " AND " + nodesTableLatitude + " <= " + top,
-    			new String[] {"" + left, "" + right, "" + bottom, "" + top}, null, null, null);
+        SQLiteDatabase db = getReadableDatabase();
+        return db.query(nodesTableName, null,
+                nodesTableLongitude + " >= " + left + "AND " + nodesTableLongitude + " <= " + right + " AND " + nodesTableLatitude + " >= " + bottom + " AND " + nodesTableLatitude + " <= " + top,
+                new String[] {"" + left, "" + right, "" + bottom, "" + top}, null, null, null);
     }
 
     @Override
@@ -101,8 +101,8 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     }
     
     private OsmNode createNodeFromRow(Cursor c) {
-    	int keyIndex = c.getColumnIndexOrThrow(nodesTablePrimaryKey);
-    	int latIndex = c.getColumnIndexOrThrow(nodesTableLatitude);
+        int keyIndex = c.getColumnIndexOrThrow(nodesTablePrimaryKey);
+        int latIndex = c.getColumnIndexOrThrow(nodesTableLatitude);
         int lonIndex = c.getColumnIndexOrThrow(nodesTableLongitude);
         int id = c.getInt(keyIndex);
         int latitude = c.getInt(latIndex);
@@ -111,34 +111,34 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     }
     
     private void addAttributesToNode(OsmNode node) {
-    	Cursor c = queryAttributes(node.getID());
+        Cursor c = queryAttributes(node.getID());
         while (c.moveToNext()) {
-        	int keyIndex = c.getColumnIndexOrThrow(nodesAttributesTableKey);
-        	int valueIndex = c.getColumnIndexOrThrow(nodesAttributesTableValue);
-        	node.putAttribute(c.getString(keyIndex), c.getString(valueIndex));
+            int keyIndex = c.getColumnIndexOrThrow(nodesAttributesTableKey);
+            int valueIndex = c.getColumnIndexOrThrow(nodesAttributesTableValue);
+            node.putAttribute(c.getString(keyIndex), c.getString(valueIndex));
         }
         c.close();
     }
     
     @Override
     public HashMap<Integer, OsmNode> getAllNodes() {
-    	return createNodesFromRows(queryNodes());
+        return createNodesFromRows(queryNodes());
     }
     
     @Override
     public HashMap<Integer, OsmNode> getNodesFromMapExtract(int left, int top, int right, int bottom) {
-    	return createNodesFromRows(queryNodesFromMapExtract(left, top, right, bottom));
+        return createNodesFromRows(queryNodesFromMapExtract(left, top, right, bottom));
     }
     
     private HashMap<Integer, OsmNode> createNodesFromRows(Cursor c) {
-    	HashMap<Integer, OsmNode> nodesMap = new HashMap<Integer, OsmNode>();
-    	while (c.moveToNext()) {
-    		OsmNode node = createNodeFromRow(c);
-    		addAttributesToNode(node);
-    		node.parseOpeningHours();
-    		nodesMap.put(node.getID(), node);
-    	}
-    	c.close();
+        HashMap<Integer, OsmNode> nodesMap = new HashMap<Integer, OsmNode>();
+        while (c.moveToNext()) {
+            OsmNode node = createNodeFromRow(c);
+            addAttributesToNode(node);
+            node.parseOpeningHours();
+            nodesMap.put(node.getID(), node);
+        }
+        c.close();
         return nodesMap;
     }
 }
