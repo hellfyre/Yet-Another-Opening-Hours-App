@@ -32,15 +32,13 @@ import android.widget.Toast;
 public class YaohaActivity extends Activity implements OnClickListener {
     Button mapButton;
     Button startButton;
-    ImageButton button_favorite_1, button_favorite_2, button_favorite_3, button_favorite_4;
+    ImageButton button_favorite_1, button_favorite_2, button_favorite_3, button_favorite_4, button_favorite_5, button_favorite_6;
     ImageButton actualButton;
     final static String EDIT_FAV_STRING = "edit favorite";
     final static String EDIT_FAV_PIC = "edit picture";
     final static String REMOVE_FAV = "remove favorite";
-    TextView text_fav_1;
-    TextView text_fav_2;
-    TextView text_fav_3;
-    TextView text_fav_4;
+    String searchKeyWord_fav_1, searchKeyWord_fav_2, searchKeyWord_fav_3, searchKeyWord_fav_4, searchKeyWord_fav_5, searchKeyWord_fav_6 = "";
+    TextView text_fav_1, text_fav_2, text_fav_3, text_fav_4, text_fav_5, text_fav_6; //evil workaround, need to fix this... maybe...
     final static int SELECT_PICTURE = 1;
     Uri selectedImageUri;
     
@@ -55,10 +53,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        text_fav_1 = (TextView) findViewById(R.id.textView_fav_1);
-        text_fav_2 = (TextView) findViewById(R.id.textView_fav_2);
-        text_fav_3 = (TextView) findViewById(R.id.textView_fav_3);
-        text_fav_4 = (TextView) findViewById(R.id.textView_fav_4);
         
         startButton = (Button) findViewById(R.id.button_start);
         startButton.setOnClickListener(this);
@@ -71,6 +65,10 @@ public class YaohaActivity extends Activity implements OnClickListener {
         button_favorite_3.setOnClickListener(this);
         button_favorite_4 = (ImageButton) findViewById(R.id.button_fav_4);
         button_favorite_4.setOnClickListener(this);
+        button_favorite_5 = (ImageButton) findViewById(R.id.button_fav_5);
+        button_favorite_5.setOnClickListener(this);
+        button_favorite_6 = (ImageButton) findViewById(R.id.button_fav_6);
+        button_favorite_6.setOnClickListener(this);
         
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, SHOP_TYPES);
         MultiAutoCompleteTextView textView = (MultiAutoCompleteTextView) findViewById(R.id.searchTextfield);
@@ -81,6 +79,8 @@ public class YaohaActivity extends Activity implements OnClickListener {
         registerForContextMenu(button_favorite_2);
         registerForContextMenu(button_favorite_3);
         registerForContextMenu(button_favorite_4);
+        registerForContextMenu(button_favorite_5);
+        registerForContextMenu(button_favorite_6);
         
         SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getBaseContext()); 
         if (prefs.getBoolean("start_with_map",false) == true) {
@@ -125,7 +125,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
             if (text_fav_1.getText().equals(getText(R.string.add_favorite))) {
                 openFavMenu(button_favorite_1, text_fav_1);
             } else {
-                searchMapWithKey(text_fav_1.getText());
+                searchMapWithKey(searchKeyWord_fav_1);
             }
         }
         if(v.getId() == R.id.button_fav_2) {
@@ -147,6 +147,20 @@ public class YaohaActivity extends Activity implements OnClickListener {
                 openFavMenu(button_favorite_4, text_fav_4);
             } else {
                 searchMapWithKey(text_fav_4.getText());
+            }
+        }
+        if(v.getId() == R.id.button_fav_5) {
+            if (text_fav_5.getText().equals(getText(R.string.add_favorite))) {
+                openFavMenu(button_favorite_5, text_fav_5);
+            } else {
+                searchMapWithKey(text_fav_5.getText());
+            }
+        }
+        if(v.getId() == R.id.button_fav_6) {
+            if (text_fav_6.getText().equals(getText(R.string.add_favorite))) {
+                openFavMenu(button_favorite_6, text_fav_6);
+            } else {
+                searchMapWithKey(text_fav_6.getText());
             }
         }
     }
@@ -177,6 +191,10 @@ public class YaohaActivity extends Activity implements OnClickListener {
             editFavs(item, button_favorite_3, text_fav_3);
         }else if (item.getItemId() == button_favorite_4.getId()){
             editFavs(item, button_favorite_4, text_fav_4);
+        }else if (item.getItemId() == button_favorite_5.getId()){
+            editFavs(item, button_favorite_5, text_fav_5);
+        }else if (item.getItemId() == button_favorite_6.getId()){
+            editFavs(item, button_favorite_6, text_fav_6);
         }
     return super.onContextItemSelected(item);
     }
@@ -203,9 +221,9 @@ public class YaohaActivity extends Activity implements OnClickListener {
     private void openFavMenu(final ImageButton btn, final TextView tv) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this); 
         final EditText input = new EditText(this);
-        alert.setTitle("Adding favorite"); 
+        alert.setTitle("Adding favorite");
         alert.setMessage("Enter your favorite search"); 
-        alert.setView(input); 
+        alert.setView(input);
 
         alert.setPositiveButton("Set", new DialogInterface.OnClickListener() { 
             public void onClick(DialogInterface dialog, int whichButton) {
