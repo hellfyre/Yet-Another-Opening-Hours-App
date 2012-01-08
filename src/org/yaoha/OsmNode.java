@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.util.Log;
+
 public class OsmNode {
     public enum shopStatus {OPEN, CLOSED, UNSET, MAYBE};
     private int ID;
@@ -140,7 +142,14 @@ public class OsmNode {
                 if (wdComponents[0].contains("-")) {
                     String weekDays[] = wdComponents[0].split("-");
                     int start, end;
-                    start = end = weekDayToInt.get(weekDays[0]);
+                    // TODO extremely broken, fix later :D
+                    Integer bla = weekDayToInt.get(weekDays[0]);
+                    if (bla == null) {
+                        Log.d(getClass().getSimpleName(), "output of weekDayToInt is null, crash very likely to happen... wait let me fix this the dirty way");
+                        String _weekDays[] = weekDays[0].split(",");
+                        bla = weekDayToInt.get(_weekDays[0]);
+                    }
+                    start = end = bla;
                     // If we have a range of week days, adjust 'end'
                     if (weekDays.length == 2) {
                         end = weekDayToInt.get(weekDays[1]);
