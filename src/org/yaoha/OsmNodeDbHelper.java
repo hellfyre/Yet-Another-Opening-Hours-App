@@ -1,6 +1,8 @@
 package org.yaoha;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -19,6 +21,7 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     private static final String nodesAttributesTableName = "nodes_attr";
     private static final String nodesAttributesTableKey = "key";
     private static final String nodesAttributesTableValue = "value";
+    List<NodeReceiverInterface<OsmNode>> receiver;
     
     private static class SingletonHolder {
         public static OsmNodeDbHelper instance;
@@ -36,6 +39,7 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
 
     public OsmNodeDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        receiver = new LinkedList<NodeReceiverInterface<OsmNode>>();
     }
 
     @Override
@@ -66,7 +70,7 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     private Cursor queryNodesFromMapExtract(int left, int top, int right, int bottom) {
         SQLiteDatabase db = getReadableDatabase();
         return db.query(nodesTableName, null,
-                nodesTableLongitude + " >= " + left + "AND " + nodesTableLongitude + " <= " + right + " AND " + nodesTableLatitude + " >= " + bottom + " AND " + nodesTableLatitude + " <= " + top,
+                nodesTableLongitude + " >= ? AND " + nodesTableLongitude + " <= ? AND " + nodesTableLatitude + " >= ? AND " + nodesTableLatitude + " <= ?",
                 new String[] {"" + left, "" + right, "" + bottom, "" + top}, null, null, null);
     }
 
@@ -96,6 +100,10 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
             cv.put(nodesAttributesTableValue, value);
             db.insert(nodesAttributesTableName, null, cv);
         }
+        
+        // TODO call this for new nodes only
+        for (NodeReceiverInterface<OsmNode> irec : receiver)
+            irec.put(node);
         
         Log.d(YaohaMapListener.class.getSimpleName(), "There are " + queryNodes().getCount() + " nodes in the nodeMap");
     }
@@ -140,5 +148,13 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
         }
         c.close();
         return nodesMap;
+    }
+    
+    void addListener(NodeReceiverInterface<OsmNode> irec) {
+        receiver.add(irec);
+    }
+    
+    void removeListener(NodeReceiverInterface<OsmNode> irec) {
+        receiver.remove(irec);
     }
 }
