@@ -274,6 +274,7 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
             this.nodes.put(value.getID(), value);
             this.iter = nodes.keySet().iterator();
             populate();
+            mapView.postInvalidate();
         }
     }
 }
