@@ -13,7 +13,7 @@ import android.util.Log;
 
 public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInterface<OsmNode>, NodesQueryInterface<Integer, OsmNode> {
     private static final String DATABASE_NAME = "osm_node.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String nodesTableName = "nodes";
     private static final String nodesTablePrimaryKey = "node_id";
     private static final String nodesTableLatitude = "lat";
@@ -51,7 +51,7 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
                 + nodesAttributesTableKey + " TEXT NOT NULL, "
                 + nodesAttributesTableValue + " TEXT, "
                 + "FOREIGN KEY (" + nodesTablePrimaryKey + ") REFERENCES nodes (" + nodesTablePrimaryKey + "), "
-                + "PRIMARY KEY (" + nodesTablePrimaryKey + "," + nodesAttributesTableKey + "," + nodesAttributesTableValue + "));");
+                + "PRIMARY KEY (" + nodesTablePrimaryKey + "," + nodesAttributesTableKey + "));");
     }
     
     private Cursor queryNodes() {
@@ -86,24 +86,39 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     @Override
     public void put(OsmNode node) {
         SQLiteDatabase db = getWritableDatabase();
+        
+        Cursor c = db.query(nodesTableName, null, nodesTablePrimaryKey + " = ?", new String[] {"" + node.getID()}, null, null, null);
+        boolean isUpdate = c.getCount() > 0;
+        c.close();
+        
         ContentValues cv = new ContentValues(3);
         cv.put(nodesTablePrimaryKey, node.getID());
         cv.put(nodesTableLatitude, node.getLatitudeE6());
         cv.put(nodesTableLongitude, node.getLongitudeE6());
-        db.insert(nodesTableName, null, cv);
+        if (!isUpdate)
+            db.insert(nodesTableName, null, cv);
+        else
+            db.update(nodesTableName, cv, nodesTablePrimaryKey + " = ?", new String[] {"" + node.getID()});
         
         for (String key : node.getKeys()) {
+            c = db.query(nodesAttributesTableName, null, nodesTablePrimaryKey + " = ? AND " + nodesAttributesTableKey + " = ?", new String[] {"" + node.getID(), key}, null, null, null);
+            boolean isAttributeUpdate = c.getCount() > 0;
+            c.close();
+            
             String value = node.getAttribute(key);
             cv = new ContentValues(3);
             cv.put(nodesTablePrimaryKey, node.getID());
             cv.put(nodesAttributesTableKey, key);
             cv.put(nodesAttributesTableValue, value);
-            db.insert(nodesAttributesTableName, null, cv);
+            if (!isAttributeUpdate)
+                db.insert(nodesAttributesTableName, null, cv);
+            else
+                db.update(nodesAttributesTableName, cv, nodesTablePrimaryKey + " = ? AND " + nodesAttributesTableKey + " = ?", new String[] {"" + node.getID(), key});
         }
         
-        // TODO call this for new nodes only
-        for (NodeReceiverInterface<OsmNode> irec : receiver)
-            irec.put(node);
+        if (!isUpdate)
+            for (NodeReceiverInterface<OsmNode> irec : receiver)
+                irec.put(node);
         
         Log.d(YaohaMapListener.class.getSimpleName(), "There are " + queryNodes().getCount() + " nodes in the nodeMap");
     }
