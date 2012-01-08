@@ -104,6 +104,7 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         }
         
         this.boundingBox = bbox;
+        no.getNodes(bbox);
     }
     
     void queryShopsInRectangle(double latHigh, double latLow, double lonHigh, double lonLow) {
@@ -143,11 +144,6 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     @Override
     public void onRequestComplete() {
         requestPending = false;
-        
-        // Draw nodes in map
-        MapView mv = (MapView) mapActivity.findViewById(R.id.mapview);
-        mv.postInvalidate();
-        no.getNodes();
     }
 
 }

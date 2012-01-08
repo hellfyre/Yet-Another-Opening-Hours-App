@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController.AnimationType;
 import org.osmdroid.views.MapView;
@@ -22,7 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
+public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeReceiverInterface<OsmNode> {
     HashMap<Integer, OsmNode> nodes;
     Iterator<Integer> iter;
     Activity act;
@@ -40,11 +41,15 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
         this.mapView = mapview;
         this.nodes = new HashMap<Integer, OsmNode>();
         this.iQuery = iQuery;
-        getNodes();
+        OsmNodeDbHelper.getInstance().addListener(this);
     }
 
-    void getNodes() {
+    void getNodes(BoundingBoxE6 bb) {
         HashMap<Integer, OsmNode> tmp_nodes = iQuery.getAllNodes();
+        
+        // TODO don't query all nodes, just like with XAPI query only nodes in new map extracts
+        tmp_nodes = iQuery.getNodesFromMapExtract(bb.getLonWestE6(), bb.getLatNorthE6(), bb.getLonEastE6(), bb.getLatSouthE6());
+        
         if (nodes.size() != tmp_nodes.size()) {
             nodes = tmp_nodes;
             iter = nodes.keySet().iterator();
@@ -260,5 +265,15 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> {
         }
         
         return isRecycled;
+    }
+
+    @Override
+    public void put(OsmNode value) {
+        BoundingBoxE6 bb = mapView.getBoundingBox();
+        if (bb.contains(value.getLatitudeE6(), value.getLongitudeE6())) {
+            this.nodes.put(value.getID(), value);
+            this.iter = nodes.keySet().iterator();
+            populate();
+        }
     }
 }

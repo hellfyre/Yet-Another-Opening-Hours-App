@@ -105,6 +105,8 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         search_term = text.toString();
         Log.i(YaohaMapActivity.class.getSimpleName(), "Search field input was: " + text);
         
+        no.getNodes(mapview.getBoundingBox());
+        
     }
 
     @Override
