@@ -152,7 +152,13 @@ public class OsmNode {
                     start = end = bla;
                     // If we have a range of week days, adjust 'end'
                     if (weekDays.length == 2) {
-                        end = weekDayToInt.get(weekDays[1]);
+                        bla = weekDayToInt.get(weekDays[1]);
+                        if (bla == null) {
+                            Log.d(getClass().getSimpleName(), "output of weekDayToInt is null, crash very likely to happen... wait let me fix this the dirty way");
+                            String _weekDays[] = weekDays[1].split(",");
+                            bla = weekDayToInt.get(_weekDays[0]);
+                        }
+                        end = bla;
                     }
                     // For every week day in the range, assign the list of hour
                     // ranges
