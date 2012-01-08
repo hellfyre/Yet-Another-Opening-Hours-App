@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.EditText;
 
@@ -17,22 +18,26 @@ public class NodeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.nodeview);
         Intent i = getIntent();
         Bundle b = i.getExtras();
-        
-        LinearLayout ll = (LinearLayout) findViewById(R.id.list);
-        
-        List<String> nodeElements = new LinkedList<String>();
-        Set<String> keySet = b.keySet();
-        for (String key : keySet) {
-            nodeElements.add(key);
-            TextView name = new TextView(getApplicationContext());
-            name.setText(key);
-            ll.addView(name);
-            EditText value = new EditText(getApplicationContext());
-            value.setText(b.getString(key));
-            ll.addView(value);
-        }
+
+        ScrollView sv = new ScrollView(this);
+        LinearLayout ll = new LinearLayout(this);
+        ll.setOrientation(LinearLayout.VERTICAL);
+        sv.addView(ll);
+      List<String> nodeElements = new LinkedList<String>();
+      Set<String> keySet = b.keySet();
+      for (String key : keySet) {
+          nodeElements.add(key);
+          TextView name = new TextView(getApplicationContext());
+          name.setText(key);
+          ll.addView(name);
+          EditText value = new EditText(getApplicationContext());
+          value.setText(b.getString(key));
+          ll.addView(value);
+      }
+      this.setContentView(sv);
+
+
     }
 }
