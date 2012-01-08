@@ -49,7 +49,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         mapview.setMultiTouchControls(true);
         mapController = this.mapview.getController();
         
-        NodesOverlay no = new NodesOverlay(getResources().getDrawable(R.drawable.dontknow_old), new org.osmdroid.DefaultResourceProxyImpl(mapview.getContext()), this, mapview, OsmNodeDbHelper.getInstance());
+        NodesOverlay no = new NodesOverlay(getResources().getDrawable(R.drawable.dontknow), new org.osmdroid.DefaultResourceProxyImpl(mapview.getContext()), this, mapview, OsmNodeDbHelper.getInstance());
         
         mapview.getOverlays().add(no);
         mapview.setMapListener(new YaohaMapListener(this, no));
