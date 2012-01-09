@@ -1,6 +1,7 @@
 package org.yaoha;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.osmdroid.events.MapListener;
@@ -130,15 +131,10 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
             lonHigh = tmp;
         }
         
-        String latLows = Double.toString(latLow/1e6);
-        String latHighs = Double.toString(latHigh/1e6);
-        String lonLows = Double.toString(lonLow/1e6);
-        String lonHighs = Double.toString(lonHigh/1e6);
-        
-        latLows = latLows.replace(',', '.');
-        latHighs = latHighs.replace(',', '.');
-        lonLows = lonLows.replace(',', '.');
-        lonHighs = lonHighs.replace(',', '.');
+        String latLows = String.format(Locale.US, "%f", latLow/1e6);
+        String latHighs = String.format(Locale.US, "%f", latHigh/1e6);
+        String lonLows = String.format(Locale.US, "%f", lonLow/1e6);
+        String lonHighs = String.format(Locale.US, "%f", lonHigh/1e6);
 
         // TODO query for [shop=*] or [amenity=*] too
         if (requestPending) return;
