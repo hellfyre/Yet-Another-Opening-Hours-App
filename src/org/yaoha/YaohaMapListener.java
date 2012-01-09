@@ -1,11 +1,13 @@
 package org.yaoha;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 
 import android.util.Log;
 
@@ -17,6 +19,7 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     Boolean updateAmenities;
     Boolean requestPending = false;
     NodesOverlay no;
+    enum Direction {NORTH, SOUTH, WEST, EAST};
     
     public YaohaMapListener(YaohaMapActivity mapContext, NodesOverlay no) {
         this.mapActivity = mapContext;
@@ -58,46 +61,53 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         return false;
     }
     
+    
+    static Map<Direction, Boolean> getBoundingBoxMove(BoundingBoxE6 old_bb, BoundingBoxE6 new_bb) {
+        // check for intersection between old and new bounding box
+        if (old_bb == null 
+                || (old_bb.getLatNorthE6() < new_bb.getLatSouthE6() 
+                        || old_bb.getLatSouthE6() > new_bb.getLatNorthE6()
+                        || old_bb.getLonEastE6() < new_bb.getLonWestE6()
+                        || old_bb.getLonWestE6() > new_bb.getLonEastE6())
+                        ) {
+            // no intersection found
+            return null;
+        }
+        Map<Direction, Boolean> ret_val = new HashMap<YaohaMapListener.Direction, Boolean>(4);
+        ret_val.put(Direction.NORTH, old_bb.getLatNorthE6() - new_bb.getLatNorthE6() < 0);
+        ret_val.put(Direction.SOUTH, old_bb.getLatSouthE6() - new_bb.getLatSouthE6() > 0);
+        ret_val.put(Direction.EAST, old_bb.getLonEastE6() - new_bb.getLonEastE6() < 0);
+        ret_val.put(Direction.WEST, old_bb.getLonWestE6() - new_bb.getLonWestE6() > 0);
+        return ret_val;
+    }
+    
     private void update(BoundingBoxE6 bbox) {
         if ( (bbox.getLatNorthE6() == bbox.getLatSouthE6()) || (bbox.getLonEastE6() == bbox.getLonWestE6()) )
             return;
         
-        // check for intersection between old and new bounding box
-        if (this.boundingBox != null 
-                && (this.boundingBox.getLatNorthE6() < bbox.getLatSouthE6() 
-                        || this.boundingBox.getLatSouthE6() > bbox.getLatNorthE6()
-                        || this.boundingBox.getLonEastE6() < bbox.getLonWestE6()
-                        || this.boundingBox.getLonWestE6() > bbox.getLonEastE6())
-                        ) {
-            // no intersection found
-            this.boundingBox = null;
-        }
+        Map<Direction, Boolean> bbox_stats = getBoundingBoxMove(this.boundingBox, bbox);
         
-        if (this.boundingBox == null) {
+        if (bbox_stats == null) {
             queryShopsInRectangle(bbox.getLatNorthE6(), bbox.getLatSouthE6(), bbox.getLonEastE6(), bbox.getLonWestE6());
         } else {
             // bounding box moved
             // assumes zooming out, too
-            int northdiff = this.boundingBox.getLatNorthE6() - bbox.getLatNorthE6();
-            int southdiff = this.boundingBox.getLatSouthE6() - bbox.getLatSouthE6();
-            int eastdiff = this.boundingBox.getLonEastE6() - bbox.getLonEastE6();
-            int westdiff = this.boundingBox.getLonWestE6() - bbox.getLonWestE6();
             
             // moved north
-            if (northdiff < 0) {
+            if (bbox_stats.get(Direction.NORTH)) {
                 queryShopsInRectangle(bbox.getLatNorthE6(), this.boundingBox.getLatNorthE6(), this.boundingBox.getLonWestE6(), this.boundingBox.getLonEastE6());
             }
             // moved south
-            if (southdiff > 0) {
+            if (bbox_stats.get(Direction.SOUTH)) {
                 queryShopsInRectangle(this.boundingBox.getLatSouthE6(), bbox.getLatSouthE6(), this.boundingBox.getLonWestE6(), this.boundingBox.getLonEastE6());
             }
             // with latitude of bbox to get the entire height
             // moved east
-            if (eastdiff < 0) {
+            if (bbox_stats.get(Direction.EAST)) {
                 queryShopsInRectangle(bbox.getLatNorthE6(), bbox.getLatSouthE6(), bbox.getLonEastE6(), this.boundingBox.getLonEastE6());
             }
             // moved west
-            if (westdiff > 0) {
+            if (bbox_stats.get(Direction.WEST)) {
                 queryShopsInRectangle(bbox.getLatNorthE6(), bbox.getLatSouthE6(), this.boundingBox.getLonWestE6(), bbox.getLonWestE6());
             }
 
