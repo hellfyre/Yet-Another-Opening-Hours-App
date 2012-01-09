@@ -2,6 +2,9 @@ package org.yaoha;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IGeoPoint;
@@ -12,6 +15,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.MapView.LayoutParams;
 import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.yaoha.YaohaMapListener.Direction;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -34,6 +38,7 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
     int viewOffset;
     private View clickRegion;
     NodesQueryInterface<Integer, OsmNode> iQuery;
+    BoundingBoxE6 old_box;
     
     public NodesOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy, Activity act, MapView mapview, NodesQueryInterface<Integer, OsmNode> iQuery) {
         super(pDefaultMarker, pResourceProxy);
@@ -45,16 +50,29 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
     }
 
     void getNodes(BoundingBoxE6 bb) {
-        HashMap<Integer, OsmNode> tmp_nodes = iQuery.getAllNodes();
+        Map<Integer, OsmNode> tmp_nodes = new HashMap<Integer, OsmNode>();
         
-        // TODO don't query all nodes, just like with XAPI query only nodes in new map extracts
-        tmp_nodes = iQuery.getNodesFromMapExtract(bb.getLonWestE6(), bb.getLatNorthE6(), bb.getLonEastE6(), bb.getLatSouthE6());
+        Map<Direction, Boolean> bbox_stats = YaohaMapListener.getBoundingBoxMove(old_box, bb);
+        if (bbox_stats != null) {
+            // moved north
+            if (bbox_stats.get(YaohaMapListener.Direction.NORTH))
+                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLatNorthE6(), old_box.getLatNorthE6(), old_box.getLonWestE6(), old_box.getLonEastE6()));
+            // moved south
+            if (bbox_stats.get(Direction.SOUTH))
+                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(old_box.getLatSouthE6(), bb.getLatSouthE6(), old_box.getLonWestE6(), old_box.getLonEastE6()));
+            // with latitude of bbox to get the entire height
+            // moved east
+            if (bbox_stats.get(Direction.EAST))
+                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLatNorthE6(), bb.getLatSouthE6(), bb.getLonEastE6(), old_box.getLonEastE6()));
+            // moved west
+            if (bbox_stats.get(Direction.WEST))
+                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLatNorthE6(), bb.getLatSouthE6(), old_box.getLonWestE6(), bb.getLonWestE6()));
+        } else
+            tmp_nodes = iQuery.getNodesFromMapExtract(bb.getLonWestE6(), bb.getLatNorthE6(), bb.getLonEastE6(), bb.getLatSouthE6());
         
-        if (nodes.size() != tmp_nodes.size()) {
-            nodes = tmp_nodes;
-            iter = nodes.keySet().iterator();
-            populate();
-        }
+        nodes.putAll(tmp_nodes);
+        iter = nodes.keySet().iterator();
+        populate();
     }
     
     @Override
@@ -122,13 +140,22 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
                 event_on_map_minus_offset.getLatitudeE6());
          
         OsmNode n = null;
+        List<Integer> nodesToRemove = new LinkedList<Integer>();
+        BoundingBoxE6 bb = mapView.getBoundingBox();
         for (Integer index : nodes.keySet()) {
             OsmNode tmp_node = nodes.get(index);
             if (rect_around_event.contains(tmp_node.getLongitudeE6(), tmp_node.getLatitudeE6())) {
                 n = tmp_node;
                 break;
             }
+            if (!bb.contains(tmp_node.getLatitudeE6(), tmp_node.getLongitudeE6()))
+                nodesToRemove.add(index);
         }
+        
+        for (Integer i : nodesToRemove)
+            nodes.remove(i);
+        if (nodesToRemove.size() != 0)
+            this.iter = nodes.keySet().iterator();
         
         if (n != null) {
             last_toast_started = System.currentTimeMillis();
