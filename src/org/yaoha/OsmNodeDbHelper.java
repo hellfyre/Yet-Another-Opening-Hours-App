@@ -120,7 +120,7 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
             for (NodeReceiverInterface<OsmNode> irec : receiver)
                 irec.put(node);
         
-        Log.d(YaohaMapListener.class.getSimpleName(), "There are " + queryNodes().getCount() + " nodes in the nodeMap");
+        Log.d(getClass().getSimpleName(), "There are " + queryNodes().getCount() + " nodes in the database");
     }
     
     private OsmNode createNodeFromRow(Cursor c) {
