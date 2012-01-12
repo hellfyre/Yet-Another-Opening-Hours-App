@@ -26,6 +26,7 @@ public class OsmNode {
         weekDayToInt.put("tu", Calendar.TUESDAY);
         weekDayToInt.put("we", Calendar.WEDNESDAY);
         weekDayToInt.put("th", Calendar.THURSDAY);
+        weekDayToInt.put("do", Calendar.THURSDAY);
         weekDayToInt.put("fr", Calendar.FRIDAY);
         weekDayToInt.put("sa", Calendar.SATURDAY);
         weekDayToInt.put("su", Calendar.SUNDAY);
@@ -157,6 +158,9 @@ public class OsmNode {
                             Log.d(getClass().getSimpleName(), "output of weekDayToInt is null, crash very likely to happen... wait let me fix this the dirty way");
                             String _weekDays[] = weekDays[1].split(",");
                             bla = weekDayToInt.get(_weekDays[0]);
+                            if (bla == null) {
+                                Log.d(getClass().getSimpleName(), "output of weekDayToInt is null, crash very likely to happen and I won't fix again");
+                            }
                         }
                         end = bla;
                     }
