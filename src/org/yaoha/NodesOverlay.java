@@ -32,7 +32,6 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
     Iterator<Integer> iter;
     Activity act;
     MapView mapView;
-    long last_toast_started;
     OsmNode last_node;
     BalloonOverlayView<OverlayItem> balloonView;
     int viewOffset;
@@ -72,12 +71,7 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         } else
             tmp_nodes = iQuery.getNodesFromMapExtract(bb.getLonWestE6(), bb.getLatNorthE6(), bb.getLonEastE6(), bb.getLatSouthE6(), search_terms);
         
-        // TODO do search with the database
-        for (Integer key : tmp_nodes.keySet()) {
-            OsmNode node = tmp_nodes.get(key);
-            if (nodeMatchesSearchTerms(node))
-                nodes.put(key, node);
-        }
+        nodes.putAll(tmp_nodes);
         iter = nodes.keySet().iterator();
         populate();
     }
@@ -165,7 +159,6 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
             this.iter = nodes.keySet().iterator();
         
         if (n != null) {
-            last_toast_started = System.currentTimeMillis();
             last_node = n;
             createAndDisplayBalloonOverlay(n);
         }
@@ -180,7 +173,7 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         if (!bb.contains(value.getLatitudeE6(), value.getLongitudeE6()))
             return;
         
-        if (!nodeMatchesSearchTerms(value))
+        if (!iQuery.nodeMatchesSearchTerms(value, search_terms))
             return;
         
         // this must be a node we are interested in
@@ -188,24 +181,6 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         this.iter = nodes.keySet().iterator();
         populate();
         mapView.postInvalidate();
-    }
-    
-    boolean nodeMatchesSearchTerms(OsmNode node) {
-        // check if there was no search or a search term matches
-        boolean search_matches = search_terms.length == 0;
-        for (String key : node.getKeys()) {
-            String tag_value = node.getAttribute(key);
-            search_matches |= checkSearchStringForTagAndValue(key.toLowerCase(), tag_value.toLowerCase());
-        }
-        return search_matches;
-    }
-
-    boolean checkSearchStringForTagAndValue(String tag, String value) {
-        for (String seach_term : search_terms) {
-            if (tag.contains(seach_term) || value.contains(seach_term))
-                return true;
-        }
-        return false;
     }
 
     /**
@@ -312,8 +287,8 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
     
         balloonView.setVisibility(View.GONE);
         
-        OverlayItem item = createItemFromNode(last_node);
-        if (balloonView != null && last_node != null)
+        OverlayItem item = createItemFromNode(node);
+        if (balloonView != null && node != null)
             balloonView.setData(item);
         
         GeoPoint point = item.getPoint();
@@ -325,7 +300,6 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
                 MapView.LayoutParams.BOTTOM_CENTER, 0, 0);
         
         balloonView.setVisibility(View.VISIBLE);
-        mapView.getController().animateTo(node.getLatitudeE6(), node.getLongitudeE6(), AnimationType.EXPONENTIALDECELERATING);
         
         if (isRecycled) {
             balloonView.setLayoutParams(params);

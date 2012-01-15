@@ -1,5 +1,6 @@
 package org.yaoha;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,9 +67,44 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
         return db.query(nodesAttributesTableName, null, nodesTablePrimaryKey + " = ?", new String[] {"" + key}, null, null, null);
     }
 
-    // TODO we should optimize the database for rangequeries containing latitude and longitude
-    private Cursor queryNodesFromMapExtract(int left, int top, int right, int bottom, String[] search_terms) {
+// old query: 
+// select * from table NODESTABLENAME
+//   where LONGITUDE >= left and LONGITUDE <= right and LATITUDE >= bottom and LATITUDE <= top;
+// new query:
+// select n.PRIMARYKEY, n.LONGITUDE, n.LATITUDE from table NODES n INNER JOIN NODESATTRIBUTS na ON n.PRIMARYKEY = na.PRIMARYKEY
+//   where n.LONGITUDE >= left and n.LONGITUDE <= right and n.LATITUDE >= bottom and n.LATITUDE <= top
+//     and (na.KEY = st1 or na.VALUE = st1 or na.key = st2 or na.value = st2 or ...);
+// 
+// it seems as db.query() cannot do JOIN
+// select n.PRIMARYKEY, n.LONGITUDE, n.LATITUDE from table NODES n, NODESATTRIBUTS na
+//  where n.LONGITUDE >= left and n.LONGITUDE <= right and n.LATITUDE >= bottom and n.LATITUDE <= top
+//   and n.PRIMARYKEY = na.PRIMARYKEY
+//   and (na.KEY = st1 or na.VALUE = st1 or na.key = st2 or na.value = st2 or ...);
+    private Cursor queryNodesFromMapExtract(int left, int top, int right, int bottom) {
         SQLiteDatabase db = getReadableDatabase();
+        /*
+        StringBuilder sb = new StringBuilder();
+        sb.append("select n." + nodesTablePrimaryKey + ", n." + nodesTableLatitude + ", n." + nodesTableLongitude);
+        sb.append(" from " + nodesTableName + " n inner join " + nodesAttributesTableName + " na on n." + nodesTablePrimaryKey + " = na." + nodesTablePrimaryKey);
+        sb.append(" where n." + nodesTableLongitude + " >= ? AND n." + nodesTableLongitude + " <= ? AND n." + nodesTableLatitude + " >= ? AND n." + nodesTableLatitude + " <= ?");
+        sb.append(" and ( ");
+        for (String search_item : search_terms) {
+            // TODO can we do queries like String("12345").contains(234); with SQL?
+            sb.append(nodeA)
+        }
+        sb.append(" )");
+        
+        List<String> selectionArgsList = new ArrayList<String>(4 + 2*search_terms.length);
+        selectionArgsList.add("" + left);
+        selectionArgsList.add("" + right);
+        selectionArgsList.add("" + bottom);
+        selectionArgsList.add("" + top);
+        for (String search_term : search_terms) {
+            selectionArgsList.add(search_term);
+            selectionArgsList.add(search_term);
+        }
+        return db.rawQuery(sb.toString(), selectionArgsList.toArray(new String[] {}));
+        */
         return db.query(nodesTableName, null,
                 nodesTableLongitude + " >= ? AND " + nodesTableLongitude + " <= ? AND " + nodesTableLatitude + " >= ? AND " + nodesTableLatitude + " <= ?",
                 new String[] {"" + left, "" + right, "" + bottom, "" + top}, null, null, null);
@@ -144,22 +180,19 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     }
     
     @Override
-    public HashMap<Integer, OsmNode> getAllNodes() {
-        return createNodesFromRows(queryNodes());
-    }
-    
-    @Override
     public HashMap<Integer, OsmNode> getNodesFromMapExtract(int left, int top, int right, int bottom, String[] search_terms) {
-        return createNodesFromRows(queryNodesFromMapExtract(left, top, right, bottom, search_terms));
+        return createNodesFromRows(queryNodesFromMapExtract(left, top, right, bottom), search_terms);
     }
     
-    private HashMap<Integer, OsmNode> createNodesFromRows(Cursor c) {
+    private HashMap<Integer, OsmNode> createNodesFromRows(Cursor c, String[] search_terms) {
         HashMap<Integer, OsmNode> nodesMap = new HashMap<Integer, OsmNode>();
         while (c.moveToNext()) {
             OsmNode node = createNodeFromRow(c);
             addAttributesToNode(node);
-            node.parseOpeningHours();
-            nodesMap.put(node.getID(), node);
+            if (nodeMatchesSearchTerms(node, search_terms)) {
+                node.parseOpeningHours();
+                nodesMap.put(node.getID(), node);
+            }
         }
         c.close();
         return nodesMap;
@@ -171,5 +204,23 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     
     void removeListener(NodeReceiverInterface<OsmNode> irec) {
         receiver.remove(irec);
+    }
+    
+    public boolean nodeMatchesSearchTerms(OsmNode node, String[] search_terms) {
+        // check if there was no search or a search term matches
+        boolean search_matches = search_terms.length == 0;
+        for (String key : node.getKeys()) {
+            String tag_value = node.getAttribute(key);
+            search_matches |= checkSearchStringForTagAndValue(key.toLowerCase(), tag_value.toLowerCase(), search_terms);
+        }
+        return search_matches;
+    }
+
+    static boolean checkSearchStringForTagAndValue(String tag, String value, String[] search_terms) {
+        for (String seach_term : search_terms) {
+            if (tag.contains(seach_term) || value.contains(seach_term))
+                return true;
+        }
+        return false;
     }
 }
