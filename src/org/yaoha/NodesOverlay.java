@@ -38,15 +38,17 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
     int viewOffset;
     private View clickRegion;
     NodesQueryInterface<Integer, OsmNode> iQuery;
+    String[] search_terms;
     BoundingBoxE6 old_box;
     
-    public NodesOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy, Activity act, MapView mapview, NodesQueryInterface<Integer, OsmNode> iQuery) {
+    public NodesOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy, Activity act, MapView mapview, NodesQueryInterface<Integer, OsmNode> iQuery, String search_term) {
         super(pDefaultMarker, pResourceProxy);
         this.act = act;
         this.mapView = mapview;
         this.nodes = new HashMap<Integer, OsmNode>();
         this.iQuery = iQuery;
         this.iQuery.addListener(this);
+        this.search_terms = search_term.toLowerCase().split(" ");
     }
 
     void getNodes(BoundingBoxE6 bb) {
@@ -165,7 +167,37 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         
         return ret_val;
     }
-    
+
+    @Override
+    public void put(OsmNode value) {
+        // check if node is displayable
+        BoundingBoxE6 bb = mapView.getBoundingBox();
+        if (!bb.contains(value.getLatitudeE6(), value.getLongitudeE6()))
+            return;
+        // check if there was no search or a search term matches
+        boolean search_matches = search_terms.length == 0;
+        for (String key : value.getKeys()) {
+            String tag_value = value.getAttribute(key);
+            search_matches |= checkSearchStringForTagAndValue(key.toLowerCase(), tag_value.toLowerCase());
+        }
+        if (!search_matches)
+            return;
+        
+        // this must be a node we are interested in
+        this.nodes.put(value.getID(), value);
+        this.iter = nodes.keySet().iterator();
+        populate();
+        mapView.postInvalidate();
+    }
+
+    boolean checkSearchStringForTagAndValue(String tag, String value) {
+        for (String seach_term : search_terms) {
+            if (tag.contains(seach_term) || value.contains(seach_term))
+                return true;
+        }
+        return false;
+    }
+
     /**
      * Set the horizontal distance between the marker and the bottom of the information
      * balloon. The default is 0 which works well for center bounded markers. If your
@@ -292,16 +324,5 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         }
         
         return isRecycled;
-    }
-
-    @Override
-    public void put(OsmNode value) {
-        BoundingBoxE6 bb = mapView.getBoundingBox();
-        if (bb.contains(value.getLatitudeE6(), value.getLongitudeE6())) {
-            this.nodes.put(value.getID(), value);
-            this.iter = nodes.keySet().iterator();
-            populate();
-            mapView.postInvalidate();
-        }
     }
 }

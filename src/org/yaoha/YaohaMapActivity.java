@@ -49,7 +49,14 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         mapview.setMultiTouchControls(true);
         mapController = this.mapview.getController();
         
-        NodesOverlay no = new NodesOverlay(getResources().getDrawable(R.drawable.dontknow), new org.osmdroid.DefaultResourceProxyImpl(mapview.getContext()), this, mapview, OsmNodeDbHelper.getInstance());
+        // just save the search term
+        // we may later add a method to actually look in maps after it
+        Intent intent = getIntent();
+        CharSequence text = intent.getCharSequenceExtra("org.yaoha.YaohaMapActivity.SearchText");
+        search_term = text.toString();
+        Log.i(YaohaMapActivity.class.getSimpleName(), "Search field input was: " + text);
+        
+        NodesOverlay no = new NodesOverlay(getResources().getDrawable(R.drawable.dontknow), new org.osmdroid.DefaultResourceProxyImpl(mapview.getContext()), this, mapview, OsmNodeDbHelper.getInstance(), search_term);
         
         mapview.getOverlays().add(no);
         mapview.setMapListener(new YaohaMapListener(this, no));
@@ -97,13 +104,6 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         mOverlay = new MyLocationOverlay(this, mapview);
         mapview.getOverlays().add(mOverlay);
         mapview.postInvalidate();
-        
-        // just save the search term
-        // we may later add a method to actually look in maps after it
-        Intent intent = getIntent();
-        CharSequence text = intent.getCharSequenceExtra("org.yaoha.YaohaMapActivity.SearchText");
-        search_term = text.toString();
-        Log.i(YaohaMapActivity.class.getSimpleName(), "Search field input was: " + text);
         
         no.getNodes(mapview.getBoundingBox());
         
