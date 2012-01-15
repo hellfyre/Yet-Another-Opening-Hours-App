@@ -165,7 +165,7 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
         return nodesMap;
     }
     
-    void addListener(NodeReceiverInterface<OsmNode> irec) {
+    public void addListener(NodeReceiverInterface<OsmNode> irec) {
         receiver.add(irec);
     }
     
