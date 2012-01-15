@@ -67,7 +67,7 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     }
 
     // TODO we should optimize the database for rangequeries containing latitude and longitude
-    private Cursor queryNodesFromMapExtract(int left, int top, int right, int bottom) {
+    private Cursor queryNodesFromMapExtract(int left, int top, int right, int bottom, String[] search_terms) {
         SQLiteDatabase db = getReadableDatabase();
         return db.query(nodesTableName, null,
                 nodesTableLongitude + " >= ? AND " + nodesTableLongitude + " <= ? AND " + nodesTableLatitude + " >= ? AND " + nodesTableLatitude + " <= ?",
@@ -149,8 +149,8 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     }
     
     @Override
-    public HashMap<Integer, OsmNode> getNodesFromMapExtract(int left, int top, int right, int bottom) {
-        return createNodesFromRows(queryNodesFromMapExtract(left, top, right, bottom));
+    public HashMap<Integer, OsmNode> getNodesFromMapExtract(int left, int top, int right, int bottom, String[] search_terms) {
+        return createNodesFromRows(queryNodesFromMapExtract(left, top, right, bottom, search_terms));
     }
     
     private HashMap<Integer, OsmNode> createNodesFromRows(Cursor c) {

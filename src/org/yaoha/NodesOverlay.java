@@ -58,21 +58,26 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         if (bbox_stats != null) {
             // moved north
             if (bbox_stats.get(YaohaMapListener.Direction.NORTH))
-                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLatNorthE6(), old_box.getLatNorthE6(), old_box.getLonWestE6(), old_box.getLonEastE6()));
+                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLatNorthE6(), old_box.getLatNorthE6(), old_box.getLonWestE6(), old_box.getLonEastE6(), search_terms));
             // moved south
             if (bbox_stats.get(Direction.SOUTH))
-                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(old_box.getLatSouthE6(), bb.getLatSouthE6(), old_box.getLonWestE6(), old_box.getLonEastE6()));
+                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(old_box.getLatSouthE6(), bb.getLatSouthE6(), old_box.getLonWestE6(), old_box.getLonEastE6(), search_terms));
             // with latitude of bbox to get the entire height
             // moved east
             if (bbox_stats.get(Direction.EAST))
-                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLatNorthE6(), bb.getLatSouthE6(), bb.getLonEastE6(), old_box.getLonEastE6()));
+                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLatNorthE6(), bb.getLatSouthE6(), bb.getLonEastE6(), old_box.getLonEastE6(), search_terms));
             // moved west
             if (bbox_stats.get(Direction.WEST))
-                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLatNorthE6(), bb.getLatSouthE6(), old_box.getLonWestE6(), bb.getLonWestE6()));
+                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLatNorthE6(), bb.getLatSouthE6(), old_box.getLonWestE6(), bb.getLonWestE6(), search_terms));
         } else
-            tmp_nodes = iQuery.getNodesFromMapExtract(bb.getLonWestE6(), bb.getLatNorthE6(), bb.getLonEastE6(), bb.getLatSouthE6());
+            tmp_nodes = iQuery.getNodesFromMapExtract(bb.getLonWestE6(), bb.getLatNorthE6(), bb.getLonEastE6(), bb.getLatSouthE6(), search_terms);
         
-        nodes.putAll(tmp_nodes);
+        // TODO do search with the database
+        for (Integer key : tmp_nodes.keySet()) {
+            OsmNode node = tmp_nodes.get(key);
+            if (nodeMatchesSearchTerms(node))
+                nodes.put(key, node);
+        }
         iter = nodes.keySet().iterator();
         populate();
     }
@@ -174,13 +179,8 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         BoundingBoxE6 bb = mapView.getBoundingBox();
         if (!bb.contains(value.getLatitudeE6(), value.getLongitudeE6()))
             return;
-        // check if there was no search or a search term matches
-        boolean search_matches = search_terms.length == 0;
-        for (String key : value.getKeys()) {
-            String tag_value = value.getAttribute(key);
-            search_matches |= checkSearchStringForTagAndValue(key.toLowerCase(), tag_value.toLowerCase());
-        }
-        if (!search_matches)
+        
+        if (!nodeMatchesSearchTerms(value))
             return;
         
         // this must be a node we are interested in
@@ -188,6 +188,16 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         this.iter = nodes.keySet().iterator();
         populate();
         mapView.postInvalidate();
+    }
+    
+    boolean nodeMatchesSearchTerms(OsmNode node) {
+        // check if there was no search or a search term matches
+        boolean search_matches = search_terms.length == 0;
+        for (String key : node.getKeys()) {
+            String tag_value = node.getAttribute(key);
+            search_matches |= checkSearchStringForTagAndValue(key.toLowerCase(), tag_value.toLowerCase());
+        }
+        return search_matches;
     }
 
     boolean checkSearchStringForTagAndValue(String tag, String value) {
