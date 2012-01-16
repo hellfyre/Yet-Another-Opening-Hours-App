@@ -47,6 +47,8 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         this.iQuery = iQuery;
         this.iQuery.addListener(this);
         this.search_terms = search_term.toLowerCase().split(" ");
+        if (search_terms.length == 1 && search_terms[0] == "")
+            search_terms = new String[] {};
     }
 
     void getNodes(BoundingBoxE6 bb) {

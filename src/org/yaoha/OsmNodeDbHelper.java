@@ -1,6 +1,7 @@
 package org.yaoha;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -80,34 +81,46 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
 //  where n.LONGITUDE >= left and n.LONGITUDE <= right and n.LATITUDE >= bottom and n.LATITUDE <= top
 //   and n.PRIMARYKEY = na.PRIMARYKEY
 //   and (na.KEY = st1 or na.VALUE = st1 or na.key = st2 or na.value = st2 or ...);
-    private Cursor queryNodesFromMapExtract(int left, int top, int right, int bottom) {
+    private Cursor queryNodesFromMapExtract(int left, int top, int right, int bottom, String[] search_terms) {
         SQLiteDatabase db = getReadableDatabase();
         /*
         StringBuilder sb = new StringBuilder();
         sb.append("select n." + nodesTablePrimaryKey + ", n." + nodesTableLatitude + ", n." + nodesTableLongitude);
         sb.append(" from " + nodesTableName + " n inner join " + nodesAttributesTableName + " na on n." + nodesTablePrimaryKey + " = na." + nodesTablePrimaryKey);
         sb.append(" where n." + nodesTableLongitude + " >= ? AND n." + nodesTableLongitude + " <= ? AND n." + nodesTableLatitude + " >= ? AND n." + nodesTableLatitude + " <= ?");
-        sb.append(" and ( ");
-        for (String search_item : search_terms) {
-            // TODO can we do queries like String("12345").contains(234); with SQL?
-            sb.append(nodeA)
+        if (search_terms != null && search_terms.length > 0) {
+            sb.append(" and ( ");
+            for (int i = 0; i < search_terms.length-1; i++) {
+                // SELECT * FROM suppliers
+                //  WHERE supplier_name like '%bob%';
+                sb.append("na." + nodesAttributesTableKey + " like '%?%' or ");
+                sb.append("na." + nodesAttributesTableValue + " like '%?%' or ");
+            }
+            sb.append("na." + nodesAttributesTableKey + " like '%?%' or ");
+            sb.append("na." + nodesAttributesTableValue + " like '%?%'");
+            sb.append(")");
         }
-        sb.append(" )");
         
-        List<String> selectionArgsList = new ArrayList<String>(4 + 2*search_terms.length);
+        int size = 4;
+        if (search_terms != null)
+            size += 2*search_terms.length;
+        List<String> selectionArgsList = new ArrayList<String>(size);
         selectionArgsList.add("" + left);
         selectionArgsList.add("" + right);
         selectionArgsList.add("" + bottom);
         selectionArgsList.add("" + top);
-        for (String search_term : search_terms) {
-            selectionArgsList.add(search_term);
-            selectionArgsList.add(search_term);
-        }
+        if (search_terms != null)
+            for (String search_term : search_terms) {
+                selectionArgsList.add(search_term);
+                selectionArgsList.add(search_term);
+            }
         return db.rawQuery(sb.toString(), selectionArgsList.toArray(new String[] {}));
         */
+        
         return db.query(nodesTableName, null,
                 nodesTableLongitude + " >= ? AND " + nodesTableLongitude + " <= ? AND " + nodesTableLatitude + " >= ? AND " + nodesTableLatitude + " <= ?",
                 new String[] {"" + left, "" + right, "" + bottom, "" + top}, null, null, null);
+        
     }
 
     @Override
@@ -181,7 +194,7 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     
     @Override
     public HashMap<Integer, OsmNode> getNodesFromMapExtract(int left, int top, int right, int bottom, String[] search_terms) {
-        return createNodesFromRows(queryNodesFromMapExtract(left, top, right, bottom), search_terms);
+        return createNodesFromRows(queryNodesFromMapExtract(left, top, right, bottom, search_terms), search_terms);
     }
     
     private HashMap<Integer, OsmNode> createNodesFromRows(Cursor c, String[] search_terms) {
@@ -193,7 +206,6 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
                 try {
                     node.parseOpeningHours();
                 } catch (ParseException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                     Log.e(OsmNode.class.getSimpleName(), e.getMessage());
                 }
@@ -214,7 +226,9 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     
     public boolean nodeMatchesSearchTerms(OsmNode node, String[] search_terms) {
         // check if there was no search or a search term matches
-        boolean search_matches = search_terms.length == 0;
+        if (search_terms == null || search_terms.length == 0)
+            return true;
+        boolean search_matches = false;
         for (String key : node.getKeys()) {
             String tag_value = node.getAttribute(key);
             search_matches |= checkSearchStringForTagAndValue(key.toLowerCase(), tag_value.toLowerCase(), search_terms);
@@ -223,6 +237,8 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     }
 
     static boolean checkSearchStringForTagAndValue(String tag, String value, String[] search_terms) {
+        if (search_terms == null)
+            return true;
         for (String seach_term : search_terms) {
             if (tag.contains(seach_term) || value.contains(seach_term))
                 return true;
