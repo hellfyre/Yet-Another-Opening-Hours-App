@@ -257,9 +257,9 @@ public class YaohaActivity extends Activity implements OnClickListener {
          if (resultCode == RESULT_OK) {
                 if (requestCode == SELECT_PICTURE) {
                     selectedImageUri = data.getData();
-                    Bitmap fav_bitmap = null;
+                    Bitmap tmpbitmap = null;
                     try {
-                        fav_bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                        tmpbitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
                     } catch (FileNotFoundException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -267,17 +267,19 @@ public class YaohaActivity extends Activity implements OnClickListener {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
+                    int tmp_width = tmpbitmap.getWidth();
+                    int tmp_height = tmpbitmap.getHeight();
+                    Bitmap fav_bitmap = null;
+                    if (tmp_width < tmp_height) {
+                        fav_bitmap = Bitmap.createBitmap(tmpbitmap, 0, (tmp_height-tmp_width)/2, tmp_width, tmp_width);
+                    } else if (tmp_height < tmp_width) {
+                        fav_bitmap = Bitmap.createBitmap(tmpbitmap, (tmp_width-tmp_height)/2, 0, tmp_height, tmp_height);
+                    } else {
+                        fav_bitmap = tmpbitmap;
+                    }
+                    
                     actualButton.setImageBitmap(Bitmap.createScaledBitmap(fav_bitmap, actualButton.getWidth()-20, actualButton.getHeight()-20, false));
                 }
             }
     }
-    
-//    public String getPath(Uri uri) {
-//        String[] projection = { MediaStore.Images.Media.DATA };
-//        Cursor cursor = managedQuery(uri, projection, null, null, null);
-//        int column_index = cursor
-//                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-//        cursor.moveToFirst();
-//        return cursor.getString(column_index);
-//    }
 }
