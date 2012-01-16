@@ -1,5 +1,6 @@
 package org.yaoha;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -190,7 +191,13 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
             OsmNode node = createNodeFromRow(c);
             addAttributesToNode(node);
             if (nodeMatchesSearchTerms(node, search_terms)) {
-                node.parseOpeningHours();
+                try {
+                    node.parseOpeningHours();
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    Log.e(OsmNode.class.getSimpleName(), e.getMessage());
+                }
                 nodesMap.put(node.getID(), node);
             }
         }

@@ -20,6 +20,7 @@ public class OsmNode {
     private HashMap<Integer, ArrayList<HourRange>> weekDayMap = new HashMap<Integer, ArrayList<HourRange>>();
     private static HashMap<String, Integer> weekDayToInt = new HashMap<String, Integer>();
     private static Pattern openingHoursPattern = Pattern.compile("[0-9]{1,2}:[0-9]{2}[-|+][0-9]{0,2}[:]{0,1}[0-9]{0,2}");
+    private int parseError;
     
     static {
         weekDayToInt.put("mo", Calendar.MONDAY);
@@ -102,123 +103,105 @@ public class OsmNode {
         this.lastUpdated = lastUpdated;
     }
     
-    public void parseOpeningHours() {
-        String openingHoursString = this.getOpening_hours();
-        // If the node doesn't have a key 'opening_hours', the weekDayMap is to remain null
-        if (openingHoursString == null) return;
-        openingHoursString = openingHoursString.toLowerCase();
-        
-        // Split the string into day ranges (i.e. Mo-Fr, Sa-Su etc) and don't
-        // care if the semi colon has a trailing space or not (regex)
-        String[] ohComponents = openingHoursString.split("[;][ ]{0,1}");
-
-        // Process every single oh component (d'uh)
-        for (int i = 0; i < ohComponents.length; i++) {
-
-            if (ohComponents[i].substring(0, 1).matches("[mtwfs]")) {
-                // For all hour ranges 'hh:mm-hh:mm' of one day, create a list
-                // of HourRanges. To do that, split the current oh comp in week
-                // day components. First field contains the week days, second
-                // field contains one or more hour ranges
-                String[] wdComponents = ohComponents[i].split(" ");
-                ArrayList<HourRange> hours = null;
-                if (wdComponents.length > 1) {
-                    // Split all hour ranges in seperate ones
-                    String[] hoursString = wdComponents[1].split(",");
-                    hours = new ArrayList<HourRange>();
-                    for (int j = 0; j < hoursString.length; j++) {
-                        // Only create HourRange object, if string matches
-                        // certain
-                        // regex pattern, because HourRange doesn't have any
-                        // sanity
-                        // checks
-                        Matcher regularOpeningHoursMatcher = openingHoursPattern.matcher(hoursString[j]);
-                        if (regularOpeningHoursMatcher.matches()) {
-                            hours.add(new HourRange(hoursString[j]));
-                        }
-                    }
-                }
-
-                // Split the week days (if they're a range)
-                if (wdComponents[0].contains("-")) {
-                    String weekDays[] = wdComponents[0].split("-");
-                    int start, end;
-                    // TODO extremely broken, fix later :D
-                    Integer bla = weekDayToInt.get(weekDays[0]);
-                    if (bla == null) {
-                        Log.d(getClass().getSimpleName(), "output of weekDayToInt is null, crash very likely to happen... wait let me fix this the dirty way");
-                        String _weekDays[] = weekDays[0].split(",");
-                        bla = weekDayToInt.get(_weekDays[0]);
-                    }
-                    start = end = bla;
-                    // If we have a range of week days, adjust 'end'
-                    if (weekDays.length == 2) {
-                        bla = weekDayToInt.get(weekDays[1]);
-                        if (bla == null) {
-                            Log.d(getClass().getSimpleName(), "output of weekDayToInt is null, crash very likely to happen... wait let me fix this the dirty way");
-                            String _weekDays[] = weekDays[1].split(",");
-                            bla = weekDayToInt.get(_weekDays[0]);
-                            if (bla == null) {
-                                Log.d(getClass().getSimpleName(), "output of weekDayToInt is null, crash very likely to happen and I won't fix again");
-                            }
-                        }
-                        end = bla;
-                    }
-                    // For every week day in the range, assign the list of hour
-                    // ranges
-                    // to the appropriate int key of the weekDayMap
-                    if (end < start) {
-                        int tmp = end;
-                        end = start;
-                        start = tmp;
-                    }
-                    for (int j = start; j <= end; j++) {
-                        weekDayMap.put(j, hours);
-                    }
-                }
-                else if (wdComponents[0].contains(",")) {
-                    String weekDays[] = wdComponents[0].split(",");
-                    for (String day : weekDays) {
-                        weekDayMap.put(weekDayToInt.get(day), hours);
-                    }
-                }
-                else {
-                    weekDayMap.put(weekDayToInt.get(wdComponents[0]), hours);
-                }
-            }
-            else if (ohComponents[i].substring(0, 1).matches("[0-9]")) {
-                String[] hoursString = ohComponents[i].split(",");
-                ArrayList<HourRange> hours = new ArrayList<HourRange>();
-                
-                // If the <node> is open 24 hours a day, 7 times a week, put midnight
-                // to midnight for every day in the week
-                if (hoursString[0].equals("24/7")) {
-                    HourRange hr = new HourRange(0, 0, 23, 59);
-                    hours.add(hr);
-                }
-                else {
-                    for (int j = 0; j < hoursString.length; j++) {
-                        Matcher regularOpeningHoursMatcher = openingHoursPattern
-                                .matcher(hoursString[j]);
-                        if (regularOpeningHoursMatcher.matches()) {
-                            hours.add(new HourRange(hoursString[j]));
-                        }
-                    }
-                }
-                weekDayMap.put(Calendar.MONDAY, hours);
-                weekDayMap.put(Calendar.TUESDAY, hours);
-                weekDayMap.put(Calendar.WEDNESDAY, hours);
-                weekDayMap.put(Calendar.THURSDAY, hours);
-                weekDayMap.put(Calendar.FRIDAY, hours);
-                weekDayMap.put(Calendar.SATURDAY, hours);
-                weekDayMap.put(Calendar.SUNDAY, hours);
-            }
-            else {
-                // TODO not parsable
+    public void parseOpeningHours() throws java.text.ParseException {
+        parseError = 0;
+        String openingHoursString = this.getOpening_hours().toLowerCase();
+        if (openingHoursString.equals("24/7")) {
+            ArrayList<HourRange> hours = new ArrayList<HourRange>();
+            HourRange hr = new HourRange(0, 0, 23, 59);
+            hours.add(hr);
+            weekDayMap.put(Calendar.MONDAY, hours);
+            weekDayMap.put(Calendar.TUESDAY, hours);
+            weekDayMap.put(Calendar.WEDNESDAY, hours);
+            weekDayMap.put(Calendar.THURSDAY, hours);
+            weekDayMap.put(Calendar.FRIDAY, hours);
+            weekDayMap.put(Calendar.SATURDAY, hours);
+            weekDayMap.put(Calendar.SUNDAY, hours);
+        }
+        else {
+            String[] components = openingHoursString.split("[;][ ]{0,1}");
+            for (String part : components) {
+                parseComponent(part);
+                parseError += part.length();
             }
         }
     }
     
+    private void parseComponent(String part) throws java.text.ParseException {
+        if (part.substring(0, 1).matches("[mtwfs]")) {
+            parseWeekDayRange(part);
+        }
+        else if (part.substring(0, 1).matches("[0-9]")) {
+            parseHourDayRange(part);
+        }
+        else {
+            throw new java.text.ParseException("Part " + part + " not parsable: Doesn't start with a weekday nor with a time.", parseError);
+        }
+    }
+
+    private void parseHourDayRange(String part) throws java.text.ParseException {
+        ArrayList<HourRange> hours = parseHours(part);
+        weekDayMap.put(Calendar.MONDAY, hours);
+        weekDayMap.put(Calendar.TUESDAY, hours);
+        weekDayMap.put(Calendar.WEDNESDAY, hours);
+        weekDayMap.put(Calendar.THURSDAY, hours);
+        weekDayMap.put(Calendar.FRIDAY, hours);
+        weekDayMap.put(Calendar.SATURDAY, hours);
+        weekDayMap.put(Calendar.SUNDAY, hours);
+    }
+
+    private void parseWeekDayRange(String part) throws java.text.ParseException {
+        String[] weekDayComponents = part.split(" ");
+        if (weekDayComponents.length != 2) {
+            throw new java.text.ParseException("Week day range " + part + " not parsable: Should contain 2 parts divided by a space.", parseError);
+        }
+        ArrayList<Integer> weekDays = parseDays(weekDayComponents[0]);
+        ArrayList<HourRange> hours = parseHours(weekDayComponents[1]);
+        
+        for (int i = 0; i < weekDays.size(); i++) {
+            weekDayMap.put(weekDays.get(i), hours);
+        }
+    }
+
+    private ArrayList<HourRange> parseHours(String rawHourRange) throws java.text.ParseException {
+        ArrayList<HourRange> hours = new ArrayList<HourRange>();
+        String[] hourRanges = rawHourRange.split(",");
+        for (String hourRange : hourRanges) {
+            Matcher regularOpeningHoursMatcher = openingHoursPattern.matcher(hourRange);
+            if (!regularOpeningHoursMatcher.matches()) throw new java.text.ParseException("Hour range " + hourRange + " not parsable: Doesn't match regular expression.", parseError);
+            hours.add(new HourRange(hourRange));
+        }
+        return hours;
+    }
+
+    private ArrayList<Integer> parseDays(String rawDayRange) throws java.text.ParseException {
+        ArrayList<Integer> weekDays = new ArrayList<Integer>();
+        String[] commaSeparatedDays = rawDayRange.split(",");
+        for (String commaDay : commaSeparatedDays) {
+            if (commaDay.contains("-")) {
+                String[] dashSeparatedDays = commaDay.split("-");
+                if (dashSeparatedDays.length != 2) throw new java.text.ParseException("Week day range " + commaDay + " not parsable: Should contain exactly two weekdays separated by a dash.", parseError);
+                Integer firstIntWeekDay = weekDayToInt.get(dashSeparatedDays[0]);
+                if (firstIntWeekDay == null) throw new java.text.ParseException("Week day " + dashSeparatedDays[0] + " not parsable: Doesn't exist.", parseError);
+                Integer secondIntWeekDay = weekDayToInt.get(dashSeparatedDays[1]);
+                if (secondIntWeekDay == null) throw new java.text.ParseException("Week day " + dashSeparatedDays[1] + " not parsable: Doesn't exist.", parseError);
+                int i = firstIntWeekDay;
+                while (i != secondIntWeekDay) {
+                    weekDays.add(i);
+                    i++;
+                    if (i>7) i=1;
+                }
+                weekDays.add(secondIntWeekDay);
+            }
+            else {
+                Integer weekDay = weekDayToInt.get(commaDay);
+                if (weekDay == null) throw new java.text.ParseException("Week day " + commaDay + " not parsable: Doesn't exist.", parseError);
+                weekDays.add(weekDay);
+            }
+        }
+        return weekDays;
+    }
+
     public shopStatus isOpenNow() {
         // return values (for now):
         // 0 - closed
