@@ -25,7 +25,6 @@ public class OsmNode {
         weekDayToInt.put("tu", Calendar.TUESDAY);
         weekDayToInt.put("we", Calendar.WEDNESDAY);
         weekDayToInt.put("th", Calendar.THURSDAY);
-        weekDayToInt.put("do", Calendar.THURSDAY);
         weekDayToInt.put("fr", Calendar.FRIDAY);
         weekDayToInt.put("sa", Calendar.SATURDAY);
         weekDayToInt.put("su", Calendar.SUNDAY);
@@ -151,7 +150,7 @@ public class OsmNode {
     private void parseWeekDayRange(String part) throws java.text.ParseException {
         String[] weekDayComponents = part.split(" ");
         if (weekDayComponents.length != 2) {
-            throw new java.text.ParseException("Week day range " + part + " not parsable: Should contain 2 parts divided by a space.", parseError);
+            throw new java.text.ParseException("Component " + part + " not parsable: Should contain 2 parts (week day range, e.g. Mo-Fr and hour ranges, e.g. 08:00-18:00) divided by a space.", parseError);
         }
         ArrayList<Integer> weekDays = parseDays(weekDayComponents[0]);
         ArrayList<HourRange> hours = parseHours(weekDayComponents[1]);
@@ -178,7 +177,7 @@ public class OsmNode {
         for (String commaDay : commaSeparatedDays) {
             if (commaDay.contains("-")) {
                 String[] dashSeparatedDays = commaDay.split("-");
-                if (dashSeparatedDays.length != 2) throw new java.text.ParseException("Week day range " + commaDay + " not parsable: Should contain exactly two weekdays separated by a dash.", parseError);
+                if (dashSeparatedDays.length != 2) throw new java.text.ParseException("Day range " + commaDay + " not parsable: Should contain exactly two weekdays separated by a dash (e.g. Mo-Fr).", parseError);
                 Integer firstIntWeekDay = weekDayToInt.get(dashSeparatedDays[0]);
                 if (firstIntWeekDay == null) throw new java.text.ParseException("Week day " + dashSeparatedDays[0] + " not parsable: Doesn't exist.", parseError);
                 Integer secondIntWeekDay = weekDayToInt.get(dashSeparatedDays[1]);
