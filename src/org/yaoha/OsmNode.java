@@ -223,8 +223,8 @@ public class OsmNode {
             int nowHour = now.get(Calendar.HOUR_OF_DAY);
             int nowMinute = now.get(Calendar.MINUTE);
             HourRange curRange = today.get(i);
-            if (nowHour >= curRange.getStartingHour() && nowMinute >= curRange.getStartingMinute()) {
-                if (nowHour <= curRange.getEndingHour() && nowMinute <= curRange.getEndingMinute()) {
+            if (nowHour > curRange.getStartingHour() || (nowHour == curRange.getStartingHour() && nowMinute >= curRange.getStartingMinute())) {
+                if (nowHour < curRange.getEndingHour() || (nowHour == curRange.getEndingHour() && nowMinute <= curRange.getEndingMinute())) {
                     result = shopStatus.OPEN;
                 }
                 else if (curRange.getEndingHour() == -1) {
