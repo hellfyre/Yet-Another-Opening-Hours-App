@@ -10,7 +10,6 @@ import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapController.AnimationType;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.MapView.LayoutParams;
 import org.osmdroid.views.overlay.ItemizedOverlay;

@@ -1,19 +1,14 @@
 package org.yaoha;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
-
-import org.yaoha.R;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.EditText;
 
 public class NodeActivity extends Activity {
     @Override
