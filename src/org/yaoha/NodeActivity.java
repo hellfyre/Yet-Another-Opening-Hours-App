@@ -51,7 +51,7 @@ public class NodeActivity extends Activity {
       TextView name2 = new TextView(getApplicationContext());
       EditText value2 = new EditText(getApplicationContext());
       TextView name3 = new TextView(getApplicationContext());
-      EditText value3 = new EditText(getApplicationContext());      
+      EditText value3 = new EditText(getApplicationContext());
       name.setText("Name");
       ll.addView(name);
       value.setText(shop_name);
@@ -70,14 +70,13 @@ public class NodeActivity extends Activity {
       value3.setKeyListener(null);
       ll.addView(value3);
 //      for (String key : keySet) {
-//          TextView name = new TextView(getApplicationContext());
-//          String tag = tagToReadable(key);
-//          name.setText(tag);
-//          ll.addView(name);
-//          EditText value = new EditText(getApplicationContext());
-//          value.setText(b.getString(key));
-//          value.setKeyListener(null);
-//          ll.addView(value);
+//          TextView name4 = new TextView(getApplicationContext());
+//          name4.setText(key);
+//          ll.addView(name4);
+//          EditText value4 = new EditText(getApplicationContext());
+//          value4.setText(b.getString(key));
+//          value4.setKeyListener(null);
+//          ll.addView(value4);
 //      }
       this.setContentView(sv);
     }

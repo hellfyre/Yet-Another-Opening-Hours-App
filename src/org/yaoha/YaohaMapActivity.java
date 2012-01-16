@@ -64,8 +64,8 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         mprefs = getPreferences(MODE_PRIVATE);
         default_shared_prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         assert(mprefs != default_shared_prefs);
-        int zoom = Integer.parseInt(default_shared_prefs.getString("zoomlevel", "-1"));
-        zoom = mprefs.getInt("zoomlevel", zoom); //TODO this line seems to trouble the zoom
+        int zoom = -1;//Integer.parseInt(default_shared_prefs.getString("zoomlevel", "-1"));
+        zoom = mprefs.getInt("zoomlevel", zoom);
         //Toast.makeText(this, "Set zoom to " + zoom +"m!", Toast.LENGTH_LONG).show();
         //mapController.setZoom(prefs.getInt("zoomlevel", 15));
 
