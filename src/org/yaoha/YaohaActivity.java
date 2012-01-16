@@ -33,8 +33,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
     final static String EDIT_FAV_STRING = "edit favorite";
     final static String EDIT_FAV_PIC = "edit picture";
     final static String REMOVE_FAV = "remove favorite";
-    String searchKeyWord_fav_1, searchKeyWord_fav_2, searchKeyWord_fav_3, searchKeyWord_fav_4, searchKeyWord_fav_5, searchKeyWord_fav_6 = "";
-    TextView text_fav_1, text_fav_2, text_fav_3, text_fav_4, text_fav_5, text_fav_6; //evil workaround, need to fix this... maybe...
+    TextView text_fav_1, text_fav_2, text_fav_3, text_fav_4, text_fav_5, text_fav_6; 
     final static int SELECT_PICTURE = 1;
     Uri selectedImageUri;
     
@@ -48,8 +47,21 @@ public class YaohaActivity extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
-        
+        //TODO Evil Set of workarounds, change this to make favorites persistent
+        text_fav_1 = new TextView(this);
+        text_fav_1.setText(R.string.add_favorite);
+        text_fav_2 = new TextView(this);
+        text_fav_2.setText(R.string.add_favorite);
+        text_fav_3 = new TextView(this);
+        text_fav_3.setText(R.string.add_favorite);
+        text_fav_4 = new TextView(this);
+        text_fav_4.setText(R.string.add_favorite);
+        text_fav_5 = new TextView(this);
+        text_fav_5.setText(R.string.add_favorite);
+        text_fav_6 = new TextView(this);
+        text_fav_6.setText(R.string.add_favorite);
+
+
         startButton = (Button) findViewById(R.id.button_start);
         startButton.setOnClickListener(this);
         button_favorite_1 = (ImageButton) findViewById(R.id.button_fav_1);
@@ -121,7 +133,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
             if (text_fav_1.getText().equals(getText(R.string.add_favorite))) {
                 openFavMenu(button_favorite_1, text_fav_1);
             } else {
-                searchMapWithKey(searchKeyWord_fav_1);
+                searchMapWithKey(text_fav_1.getText());
             }
         }
         if(v.getId() == R.id.button_fav_2) {
