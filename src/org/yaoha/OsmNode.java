@@ -162,11 +162,13 @@ public class OsmNode {
 
     private ArrayList<HourRange> parseHours(String rawHourRange) throws java.text.ParseException {
         ArrayList<HourRange> hours = new ArrayList<HourRange>();
-        String[] hourRanges = rawHourRange.split(",");
-        for (String hourRange : hourRanges) {
-            Matcher regularOpeningHoursMatcher = openingHoursPattern.matcher(hourRange);
-            if (!regularOpeningHoursMatcher.matches()) throw new java.text.ParseException("Hour range " + hourRange + " not parsable: Doesn't match regular expression.", parseError);
-            hours.add(new HourRange(hourRange));
+        if (!rawHourRange.equals("off")) {
+            String[] hourRanges = rawHourRange.split(",");
+            for (String hourRange : hourRanges) {
+                Matcher regularOpeningHoursMatcher = openingHoursPattern.matcher(hourRange);
+                if (!regularOpeningHoursMatcher.matches()) throw new java.text.ParseException("Hour range " + hourRange + " not parsable: Doesn't match regular expression.", parseError);
+                hours.add(new HourRange(hourRange));
+            }
         }
         return hours;
     }
