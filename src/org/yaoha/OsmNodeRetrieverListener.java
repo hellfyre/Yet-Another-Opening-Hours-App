@@ -2,6 +2,6 @@ package org.yaoha;
 
 public interface OsmNodeRetrieverListener {
 
-    public void onRequestComplete();
+    public void onAllRequestsProcessed();
 
 }

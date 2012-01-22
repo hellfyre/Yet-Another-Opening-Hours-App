@@ -1,5 +1,6 @@
 package org.yaoha;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     int zoomLevel;
     BoundingBoxE6 boundingBox;
     Boolean updateAmenities;
-    Boolean requestPending = false;
+    OsmNodeRetrieverTask retrieverTask = null;
     NodesOverlay no;
     enum Direction {NORTH, SOUTH, WEST, EAST};
     
@@ -137,19 +138,24 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         String lonHighs = String.format(Locale.US, "%f", lonHigh/1e6);
 
         // TODO query for [shop=*] or [amenity=*] too
-        if (requestPending) return;
-        requestPending = true;
-        OsmNodeRetrieverTask task = new OsmNodeRetrieverTask();
-        task.addListener(this);
-        String requestString = "node[bbox=" + lonLows + "," + latLows + "," + lonHighs + "," + latHighs + "][opening_hours=*]";
-        task.execute(requestString);
+        URI requestUri = ApiConnector.getRequestUriXapi(lonLows, latLows, lonHighs, latHighs, null, null, null);
+        if (requestUri == null) return;
+        if (retrieverTask != null) {
+            retrieverTask.addTask(requestUri);
+        }
+        else {
+            retrieverTask = new OsmNodeRetrieverTask(requestUri);
+            retrieverTask.addListener(this);
+            retrieverTask.execute();
+        }
         
-        Log.d(YaohaMapListener.class.getSimpleName(), "Update request String: " + requestString);
+        Log.d(YaohaMapListener.class.getSimpleName(), "Update triggered: " + requestUri.toString());
     }
     
     @Override
-    public void onRequestComplete() {
-        requestPending = false;
+    public void onAllRequestsProcessed() {
+        retrieverTask = null;
+        Log.d(YaohaMapListener.class.getSimpleName(), "Retriever task released");
     }
 
 }
