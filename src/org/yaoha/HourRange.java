@@ -1,5 +1,7 @@
 package org.yaoha;
 
+import java.util.Calendar;
+
 public class HourRange {
     private int startingHour;
     private int startingMinute;
@@ -34,6 +36,47 @@ public class HourRange {
         String[] hourMinute = start.split(":");
         startingHour = Integer.parseInt(hourMinute[0]);
         startingMinute = Integer.parseInt(hourMinute[1]);
+    }
+    
+    public boolean overlaps(HourRange range1) {
+        Calendar startTime0 = Calendar.getInstance();
+        Calendar endTime0 = Calendar.getInstance();
+        Calendar startTime1 = Calendar.getInstance();
+        Calendar endTime1 = Calendar.getInstance();
+        startTime0.clear();
+        endTime0.clear();
+        startTime1.clear();
+        endTime1.clear();
+        startTime0.set(Calendar.HOUR_OF_DAY, startingHour);
+        startTime0.set(Calendar.MINUTE, startingMinute);
+        endTime0.set(Calendar.HOUR_OF_DAY, endingHour);
+        endTime0.set(Calendar.MINUTE, endingMinute);
+        startTime1.set(Calendar.HOUR_OF_DAY, range1.getStartingHour());
+        startTime1.set(Calendar.MINUTE, range1.getStartingMinute());
+        endTime1.set(Calendar.HOUR_OF_DAY, range1.getEndingHour());
+        endTime1.set(Calendar.MINUTE, range1.getEndingMinute());
+        
+        if (startTime1.before(startTime0) && endTime1.before(startTime0)) {
+            return true;
+        }
+        if (endTime1.after(endTime0) && startTime1.after(endTime0)) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public boolean after(HourRange range1) {
+        Calendar endTime0 = Calendar.getInstance();
+        Calendar startTime1 = Calendar.getInstance();
+        endTime0.clear();
+        startTime1.clear();
+        endTime0.set(Calendar.HOUR_OF_DAY, endingHour);
+        endTime0.set(Calendar.MINUTE, endingMinute);
+        startTime1.set(Calendar.HOUR_OF_DAY, range1.getStartingHour());
+        startTime1.set(Calendar.MINUTE, range1.getStartingMinute());
+        
+        return startTime1.after(endTime0);
     }
     
     public int getStartingHour() {
