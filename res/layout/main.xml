@@ -13,11 +13,24 @@
         <requestFocus />
     </MultiAutoCompleteTextView>
 
-    <Button
-        android:id="@+id/button_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/start" />
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/button_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start" />
+
+        <Button
+            android:id="@+id/buttonDebugStartNodeEditActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit node (debug button)" />
+
+    </LinearLayout>
 
 
 <LinearLayout

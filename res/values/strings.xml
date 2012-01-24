@@ -12,5 +12,19 @@
     <string name="osm_settings">OSM Settings</string>
     <string name="gasStation">gas</string>
     <string name="add_favorite">+</string>
+    
+    <!-- Strings for node edit activity -->
+    <string name="monday_short">Mo</string>
+    <string name="tuesday_short">Tu</string>
+    <string name="wednesday_short">We</string>
+    <string name="friday_short">Fr</string>
+    <string name="saturday_short">Sa</string>
+    <string name="sunday_short">Su</string>
+    <string name="thursday_short">Th</string>
+    <string name="add_definition">Add hours for selected days</string>
+    <string name="start_time">Start time</string>
+    <string name="end_time">End time</string>
+    <string name="open_end">Open end</string>
+    <string name="dialog_ok">Ok</string>
 
 </resources>

@@ -26,7 +26,8 @@
 
         <activity android:name=".SettingsActivity"></activity>
         <activity android:name=".YaohaMapActivity"></activity>
-        <activity android:name="NodeActivity"></activity>
+        <activity android:name=".NodeActivity"></activity>
+        <activity android:name=".NodeEditActivity"></activity>
     </application>
 
 </manifest>
