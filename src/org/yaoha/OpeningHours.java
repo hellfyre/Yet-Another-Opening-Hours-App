@@ -2,9 +2,10 @@ package org.yaoha;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.TreeSet;
 
-public class OpeningHours implements Iterable<ArrayList<HourRange>> {
-    private ArrayList<ArrayList<HourRange>> weekDays = new ArrayList<ArrayList<HourRange>>();
+public class OpeningHours implements Iterable<TreeSet<HourRange>> {
+    private ArrayList<TreeSet<HourRange>> weekDays = new ArrayList<TreeSet<HourRange>>();
     public static final int MONDAY = 0;
     public static final int TUESDAY = 1;
     public static final int WEDNESDAY = 2;
@@ -15,20 +16,20 @@ public class OpeningHours implements Iterable<ArrayList<HourRange>> {
     
     public OpeningHours() {
         for (int i = 0; i < 7; i++) {
-            weekDays.add(null);
+            weekDays.add(new TreeSet<HourRange>());
         }
     }
 
     @Override
-    public Iterator<ArrayList<HourRange>> iterator() {
+    public Iterator<TreeSet<HourRange>> iterator() {
         return weekDays.iterator();
     }
     
-    public void set(int weekDay, ArrayList<HourRange> hourRanges) {
+    public void set(int weekDay, TreeSet<HourRange> hourRanges) {
         weekDays.set(weekDay, hourRanges);
     }
     
-    public void set(String weekDay, ArrayList<HourRange> hourRanges) {
+    public void set(String weekDay, TreeSet<HourRange> hourRanges) {
         weekDay = weekDay.toLowerCase();
         if (weekDay.equals("mo") || weekDay.equals("monday")) {
             weekDays.set(MONDAY, hourRanges);
@@ -56,11 +57,11 @@ public class OpeningHours implements Iterable<ArrayList<HourRange>> {
         }
     }
     
-    public ArrayList<HourRange> get(int weekDay) {
+    public TreeSet<HourRange> get(int weekDay) {
         return weekDays.get(weekDay);
     }
     
-    public ArrayList<HourRange> get(String weekDay) {
+    public TreeSet<HourRange> get(String weekDay) {
         weekDay = weekDay.toLowerCase();
         if (weekDay.equals("mo") || weekDay.equals("monday")) {
             return weekDays.get(MONDAY);
