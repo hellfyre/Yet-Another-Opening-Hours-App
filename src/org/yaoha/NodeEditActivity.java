@@ -135,27 +135,51 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         }
     }
     
-    private void saveCheckboxes(View v) {
+    private boolean saveCheckboxes(View v) {
+        boolean anyBoxChecked = false;
         CheckBox weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxMonday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked.put(Calendar.MONDAY, true);
-        else weekDaysChecked.put(Calendar.MONDAY, false);
+        if (weekDayCheckBox.isChecked()) {
+            weekDaysChecked[OpeningHours.MONDAY] = true;
+            anyBoxChecked = true;
+        }
+        else weekDaysChecked[OpeningHours.MONDAY] = false;
         weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxTuesday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked.put(Calendar.TUESDAY, true);
-        else weekDaysChecked.put(Calendar.TUESDAY, false);
+        if (weekDayCheckBox.isChecked()) {
+            weekDaysChecked[OpeningHours.TUESDAY] = true;
+            anyBoxChecked = true;
+        }
+        else weekDaysChecked[OpeningHours.TUESDAY] = false;
         weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxWednesday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked.put(Calendar.WEDNESDAY, true);
-        else weekDaysChecked.put(Calendar.WEDNESDAY, false);
+        if (weekDayCheckBox.isChecked()) {
+            weekDaysChecked[OpeningHours.WEDNESDAY] = true;
+            anyBoxChecked = true;
+        }
+        else weekDaysChecked[OpeningHours.WEDNESDAY] = false;
         weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxThursday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked.put(Calendar.THURSDAY, true);
-        else weekDaysChecked.put(Calendar.THURSDAY, false);
+        if (weekDayCheckBox.isChecked()) {
+            weekDaysChecked[OpeningHours.THURSDAY] = true;
+            anyBoxChecked = true;
+        }
+        else weekDaysChecked[OpeningHours.THURSDAY] = false;
         weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxFriday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked.put(Calendar.FRIDAY, true);
-        else weekDaysChecked.put(Calendar.FRIDAY, false);
+        if (weekDayCheckBox.isChecked()) {
+            weekDaysChecked[OpeningHours.FRIDAY] = true;
+            anyBoxChecked = true;
+        }
+        else weekDaysChecked[OpeningHours.FRIDAY] = false;
         weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxSaturday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked.put(Calendar.SATURDAY, true);
-        else weekDaysChecked.put(Calendar.SATURDAY, false);
+        if (weekDayCheckBox.isChecked()) {
+            weekDaysChecked[OpeningHours.SATURDAY] = true;
+            anyBoxChecked = true;
+        }
+        else weekDaysChecked[OpeningHours.SATURDAY] = false;
         weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxSunday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked.put(Calendar.SUNDAY, true);
-        else weekDaysChecked.put(Calendar.SUNDAY, false);
+        if (weekDayCheckBox.isChecked()) {
+            weekDaysChecked[OpeningHours.SUNDAY] = true;
+            anyBoxChecked = true;
+        }
+        else weekDaysChecked[OpeningHours.SUNDAY] = false;
+        
+        return anyBoxChecked;
     }
 }
