@@ -33,6 +33,10 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         
         Button addDefinition = (Button) findViewById(R.id.buttonAddDefiniton);
         addDefinition.setOnClickListener(this);
+        Button checkMoFr = (Button) findViewById(R.id.buttonSelectMoFr);
+        checkMoFr.setOnClickListener(this);
+        Button checkSaSu = (Button) findViewById(R.id.buttonSelectSaSu);
+        checkSaSu.setOnClickListener(this);
     }
 
     @Override
@@ -58,6 +62,29 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             addHourRange(v);
             TextView ohString = (TextView) rootView.findViewById(R.id.TextViewOpeningHoursString);
             ohString.setText(openingHours.compileOpeningHoursString());
+            break;
+        case R.id.buttonSelectMoFr:
+            int[] boxesMoFr = {R.id.checkBoxMonday,
+                    R.id.checkBoxTuesday,
+                    R.id.checkBoxWednesday,
+                    R.id.checkBoxThursday,
+                    R.id.checkBoxFriday};
+            if (anyBoxChecked(boxesMoFr)) {
+                uncheckCheckBoxes(boxesMoFr);
+            }
+            else {
+                checkCheckBoxes(boxesMoFr);
+            }
+            break;
+        case R.id.buttonSelectSaSu:
+            int[] boxesSaSu = {R.id.checkBoxSaturday,
+                    R.id.checkBoxSunday};
+            if (anyBoxChecked(boxesSaSu)) {
+                uncheckCheckBoxes(boxesSaSu);
+            }
+            else {
+                checkCheckBoxes(boxesSaSu);
+            }
             break;
 
         default:
@@ -262,5 +289,28 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         else weekDaysChecked[OpeningHours.SUNDAY] = false;
         
         return anyBoxChecked;
+    }
+    
+    private boolean anyBoxChecked(int ... checkBoxIds) {
+        boolean anyBoxChecked = false;
+        for (int checkBoxId : checkBoxIds) {
+            CheckBox box = (CheckBox) findViewById(checkBoxId);
+            if (box.isChecked()) anyBoxChecked = true;
+        }
+        return anyBoxChecked;
+    }
+    
+    private void checkCheckBoxes(int ... checkBoxIds) {
+        for (int checkBoxId : checkBoxIds) {
+            CheckBox box = (CheckBox) findViewById(checkBoxId);
+            box.setChecked(true);
+        }
+    }
+    
+    private void uncheckCheckBoxes(int ... checkBoxIds) {
+        for (int checkBoxId : checkBoxIds) {
+            CheckBox box = (CheckBox) findViewById(checkBoxId);
+            box.setChecked(false);
+        }
     }
 }
