@@ -66,17 +66,56 @@ public class HourRange implements Comparable<HourRange> {
         return true;
     }
     
-    public boolean after(HourRange range1) {
-        Calendar endTime0 = Calendar.getInstance();
+    public boolean completelyAfter(HourRange range1) {
+        Calendar startTime0 = Calendar.getInstance();
+        Calendar endTime1 = Calendar.getInstance();
+        startTime0.clear();
+        endTime1.clear();
+        startTime0.set(Calendar.HOUR_OF_DAY, startingHour);
+        startTime0.set(Calendar.MINUTE, startingMinute);
+        endTime1.set(Calendar.HOUR_OF_DAY, range1.getEndingHour());
+        endTime1.set(Calendar.MINUTE, range1.getEndingMinute());
+        
+        return startTime0.after(endTime1);
+    }
+    
+    public boolean completelyBefore(HourRange range1) {
         Calendar startTime1 = Calendar.getInstance();
-        endTime0.clear();
+        Calendar endTime0 = Calendar.getInstance();
         startTime1.clear();
+        endTime0.clear();
+        startTime1.set(Calendar.HOUR_OF_DAY, range1.getStartingHour());
+        startTime1.set(Calendar.MINUTE, range1.getStartingMinute());
         endTime0.set(Calendar.HOUR_OF_DAY, endingHour);
         endTime0.set(Calendar.MINUTE, endingMinute);
+        
+        return endTime0.before(startTime1);
+    }
+    
+    public boolean after(HourRange range1) {
+        Calendar startTime0 = Calendar.getInstance();
+        Calendar startTime1 = Calendar.getInstance();
+        startTime0.clear();
+        startTime1.clear();
+        startTime0.set(Calendar.HOUR_OF_DAY, startingHour);
+        startTime0.set(Calendar.MINUTE, startingMinute);
         startTime1.set(Calendar.HOUR_OF_DAY, range1.getStartingHour());
         startTime1.set(Calendar.MINUTE, range1.getStartingMinute());
         
-        return startTime1.after(endTime0);
+        return startTime0.after(startTime1);
+    }
+    
+    public boolean before(HourRange range1) {
+        Calendar startTime0 = Calendar.getInstance();
+        Calendar startTime1 = Calendar.getInstance();
+        startTime0.clear();
+        startTime1.clear();
+        startTime0.set(Calendar.HOUR_OF_DAY, startingHour);
+        startTime0.set(Calendar.MINUTE, startingMinute);
+        startTime1.set(Calendar.HOUR_OF_DAY, range1.getStartingHour());
+        startTime1.set(Calendar.MINUTE, range1.getStartingMinute());
+        
+        return startTime0.before(startTime1);
     }
     
     public int getStartingHour() {
