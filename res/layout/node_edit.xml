@@ -46,8 +46,7 @@
                     android:id="@+id/textViewMonday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Off"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="Off" />
 
             </LinearLayout>
 
@@ -73,8 +72,7 @@
                     android:id="@+id/textViewTuesday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Off"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="Off" />
 
             </LinearLayout>
 
@@ -100,8 +98,7 @@
                     android:id="@+id/textViewWednesday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Off"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="Off" />
 
             </LinearLayout>
 
@@ -127,8 +124,7 @@
                     android:id="@+id/textViewThursday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Off"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="Off" />
 
             </LinearLayout>
 
@@ -154,8 +150,7 @@
                     android:id="@+id/textViewFriday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Off"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="Off" />
 
             </LinearLayout>
 
@@ -181,8 +176,7 @@
                     android:id="@+id/textViewSaturday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Off"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="Off" />
 
             </LinearLayout>
 
@@ -208,8 +202,7 @@
                     android:id="@+id/textViewSunday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Off"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="Off" />
 
             </LinearLayout>
 
