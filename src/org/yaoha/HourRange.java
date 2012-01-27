@@ -57,13 +57,13 @@ public class HourRange implements Comparable<HourRange> {
         endTime1.set(Calendar.MINUTE, range1.getEndingMinute());
         
         if (startTime1.before(startTime0) && endTime1.before(startTime0)) {
-            return true;
+            return false;
         }
         if (endTime1.after(endTime0) && startTime1.after(endTime0)) {
-            return true;
+            return false;
         }
         
-        return false;
+        return true;
     }
     
     public boolean after(HourRange range1) {
