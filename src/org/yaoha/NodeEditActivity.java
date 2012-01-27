@@ -52,7 +52,72 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     }
     
     private void addHourRange(View v) {
+        TimePicker startTimePicker = (TimePicker) v.getRootView().findViewById(R.id.timePickerStartTime);
+        int endTimeHour = -1;
+        int endTimeMinute = -1;
+        CheckBox openEnd = (CheckBox) v.getRootView().findViewById(R.id.checkBoxOpenEnd);
+        if (!openEnd.isChecked()) {
+            TimePicker endTimePicker = (TimePicker) v.getRootView().findViewById(R.id.timePickerEndTime);
+            endTimeHour = endTimePicker.getCurrentHour();
+            endTimeMinute = endTimePicker.getCurrentMinute();
+        }
+        HourRange newHourRange = new HourRange(startTimePicker.getCurrentHour(), startTimePicker.getCurrentMinute(), endTimeHour, endTimeMinute);
         
+        for (int weekDay = OpeningHours.MONDAY; weekDay <= OpeningHours.SUNDAY; weekDay++) {
+            if (!weekDaysChecked[weekDay]) continue;
+            TreeSet<HourRange> hourRanges = openingHours.get(weekDay);
+            for (HourRange hourRange : hourRanges) {
+                if (hourRange.overlaps(newHourRange)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("This hour range overlaps with " + hourRange);
+                    builder.setCancelable(false);
+                    builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    AlertDialog overlapAlert = builder.create();
+                    overlapAlert.show();
+                    return;
+                }
+            }
+            hourRanges.add(newHourRange);
+            int textViewId = 0;
+            switch (weekDay) {
+            case OpeningHours.MONDAY:
+                textViewId = R.id.textViewMonday;
+                break;
+            case OpeningHours.TUESDAY:
+                textViewId = R.id.textViewTuesday;
+                break;
+            case OpeningHours.WEDNESDAY:
+                textViewId = R.id.textViewWednesday;
+                break;
+            case OpeningHours.THURSDAY:
+                textViewId = R.id.textViewThursday;
+                break;
+            case OpeningHours.FRIDAY:
+                textViewId = R.id.textViewFriday;
+                break;
+            case OpeningHours.SATURDAY:
+                textViewId = R.id.textViewSaturday;
+                break;
+            case OpeningHours.SUNDAY:
+                textViewId = R.id.textViewSunday;
+                break;
+            default:
+                break;
+            }
+            
+            TextView textView = (TextView) rootView.findViewById(textViewId);
+            String hoursString = "";
+            for (HourRange hourRange : hourRanges) {
+                hoursString += hourRange + " ";
+            }
+            textView.setText(hoursString);
+        }
+        removeDialog(DIALOG_HOUR_RANGE);
     }
 
     @Override
