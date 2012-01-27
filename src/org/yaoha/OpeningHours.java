@@ -90,8 +90,91 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
     }
     
     public String compileOpeningHoursString() {
-        // TODO: create this
-        return null;
+        ArrayList<Integer> toCheck = new ArrayList<Integer>();
+        for (int day = MONDAY; day <= SUNDAY; day++) {
+            toCheck.add(day);
+        }
+        ArrayList<ArrayList<Integer>> equalDayMatrix = new ArrayList<ArrayList<Integer>>();
+        ArrayList<TreeSet<HourRange>> equalDayRanges = new ArrayList<TreeSet<HourRange>>();
+        while (!toCheck.isEmpty()) {
+            int currentDay = toCheck.get(0);
+            ArrayList<Integer> equalDayRow = new ArrayList<Integer>();
+            equalDayRow.add(currentDay);
+            equalDayRanges.add(weekDays.get(currentDay)); // Caution: we add a pointer to the actual HourRanges TreeSet in the weekDays ArrayList! Don't alter any data in equalDayRows!
+            toCheck.remove(toCheck.indexOf(currentDay));
+            int otherDayIndex = 0;
+            while (otherDayIndex < toCheck.size()) {
+                int otherDay = toCheck.get(otherDayIndex);
+                TreeSet<HourRange> currentDaySet = weekDays.get(currentDay);
+                TreeSet<HourRange> otherDaySet = weekDays.get(otherDay);
+                if (currentDaySet.equals(otherDaySet)) {
+                    equalDayRow.add(otherDay);
+                    toCheck.remove(toCheck.indexOf(otherDay));
+                }
+                else {
+                    otherDayIndex++;
+                }
+            }
+            equalDayMatrix.add(equalDayRow);
+        }
+        
+        // sorted
+        String openingHoursString = "";
+        for (int currentRowIndex = 0; currentRowIndex < equalDayMatrix.size(); currentRowIndex++) {
+            if (currentRowIndex > 0) {
+                openingHoursString += "; ";
+            }
+            ArrayList<Integer> currentRow = equalDayMatrix.get(currentRowIndex);
+            openingHoursString += weekDayToString(currentRow.get(0));
+            int lastDay = currentRow.get(0);
+            for (int currentDayIndex = 1; currentDayIndex < currentRow.size(); currentDayIndex++) {
+                int currentDay = currentRow.get(currentDayIndex);
+                if (currentDay == (lastDay + 1)) {
+                    int nextDay = (currentDayIndex+1) < currentRow.size() ? currentRow.get(currentDayIndex + 1) : -1;
+                    if (nextDay != (currentDay + 1)) {
+                        openingHoursString += "-" + weekDayToString(currentDay);
+                    }
+                }
+                else {
+                    openingHoursString += "," + weekDayToString(currentDay);
+                }
+                lastDay = currentDay;
+            }
+            
+            TreeSet<HourRange> currentHourRangeRow = equalDayRanges.get(currentRowIndex);
+            if (currentHourRangeRow.isEmpty()) {
+                openingHoursString += " off";
+            }
+            else {
+                HourRange currentHourRange = currentHourRangeRow.first();
+                openingHoursString += " " + currentHourRange;
+                while ( (currentHourRange = currentHourRangeRow.higher(currentHourRange)) != null) {
+                    openingHoursString += "," + currentHourRange;
+                }
+            }
+        }
+        return openingHoursString;
+    }
+    
+    public String weekDayToString(int weekDay) {
+        switch (weekDay) {
+        case MONDAY:
+            return "Mo";
+        case TUESDAY:
+            return "Tu";
+        case WEDNESDAY:
+            return "We";
+        case THURSDAY:
+            return "Th";
+        case FRIDAY:
+            return "Fr";
+        case SATURDAY:
+            return "Sa";
+        case SUNDAY:
+            return "Su";
+        default:
+            return null;
+        }
     }
 
 }
