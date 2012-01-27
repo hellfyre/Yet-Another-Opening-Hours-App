@@ -1,27 +1,30 @@
 package org.yaoha;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.TreeSet;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TimePicker;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 
 public class NodeEditActivity extends Activity implements OnClickListener, OnTimeChangedListener, OnCheckedChangeListener {
     boolean rangeComplete = false;
     boolean insideOnTimeChangedCallback = false;
     static final int DIALOG_HOUR_RANGE = 0;
-    private HashMap<Integer, ArrayList<HourRange>> weekDayMap = new HashMap<Integer, ArrayList<HourRange>>();
-    HashMap<Integer, Boolean> weekDaysChecked = new HashMap<Integer, Boolean>();
+    private OpeningHours openingHours = new OpeningHours();
+    private boolean[] weekDaysChecked = new boolean[7];
+    View rootView;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
