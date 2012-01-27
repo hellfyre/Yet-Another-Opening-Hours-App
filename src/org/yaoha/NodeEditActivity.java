@@ -41,9 +41,29 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
 
     @Override
     public void onClick(View v) {
+        int[] boxesMoFr = {
+                R.id.checkBoxMonday,
+                R.id.checkBoxTuesday,
+                R.id.checkBoxWednesday,
+                R.id.checkBoxThursday,
+                R.id.checkBoxFriday
+        };
+        int[] boxesSaSu = {
+                R.id.checkBoxSaturday,
+                R.id.checkBoxSunday
+        };
+        int[] allBoxes = {
+                R.id.checkBoxMonday,
+                R.id.checkBoxTuesday,
+                R.id.checkBoxWednesday,
+                R.id.checkBoxThursday,
+                R.id.checkBoxFriday,
+                R.id.checkBoxSaturday,
+                R.id.checkBoxSunday
+        };
         switch (v.getId()) {
         case R.id.buttonAddDefiniton:
-            if (!saveCheckboxes(v)) {
+            if (!anyBoxChecked(allBoxes)) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("No days selected.");
                 builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
@@ -55,6 +75,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
                 builder.create().show();
                 return;
             }
+            saveCheckboxes(v);
             rootView = v.getRootView();
             showDialog(DIALOG_HOUR_RANGE);
             break;
@@ -64,11 +85,6 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             ohString.setText(openingHours.compileOpeningHoursString());
             break;
         case R.id.buttonSelectMoFr:
-            int[] boxesMoFr = {R.id.checkBoxMonday,
-                    R.id.checkBoxTuesday,
-                    R.id.checkBoxWednesday,
-                    R.id.checkBoxThursday,
-                    R.id.checkBoxFriday};
             if (anyBoxChecked(boxesMoFr)) {
                 uncheckCheckBoxes(boxesMoFr);
             }
@@ -77,8 +93,6 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             }
             break;
         case R.id.buttonSelectSaSu:
-            int[] boxesSaSu = {R.id.checkBoxSaturday,
-                    R.id.checkBoxSunday};
             if (anyBoxChecked(boxesSaSu)) {
                 uncheckCheckBoxes(boxesSaSu);
             }
@@ -243,52 +257,28 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         }
     }
     
-    private boolean saveCheckboxes(View v) {
-        boolean anyBoxChecked = false;
+    private void saveCheckboxes(View v) {
         CheckBox weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxMonday);
-        if (weekDayCheckBox.isChecked()) {
-            weekDaysChecked[OpeningHours.MONDAY] = true;
-            anyBoxChecked = true;
-        }
+        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.MONDAY] = true;
         else weekDaysChecked[OpeningHours.MONDAY] = false;
         weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxTuesday);
-        if (weekDayCheckBox.isChecked()) {
-            weekDaysChecked[OpeningHours.TUESDAY] = true;
-            anyBoxChecked = true;
-        }
+        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.TUESDAY] = true;
         else weekDaysChecked[OpeningHours.TUESDAY] = false;
         weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxWednesday);
-        if (weekDayCheckBox.isChecked()) {
-            weekDaysChecked[OpeningHours.WEDNESDAY] = true;
-            anyBoxChecked = true;
-        }
+        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.WEDNESDAY] = true;
         else weekDaysChecked[OpeningHours.WEDNESDAY] = false;
         weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxThursday);
-        if (weekDayCheckBox.isChecked()) {
-            weekDaysChecked[OpeningHours.THURSDAY] = true;
-            anyBoxChecked = true;
-        }
+        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.THURSDAY] = true;
         else weekDaysChecked[OpeningHours.THURSDAY] = false;
         weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxFriday);
-        if (weekDayCheckBox.isChecked()) {
-            weekDaysChecked[OpeningHours.FRIDAY] = true;
-            anyBoxChecked = true;
-        }
+        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.FRIDAY] = true;
         else weekDaysChecked[OpeningHours.FRIDAY] = false;
         weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxSaturday);
-        if (weekDayCheckBox.isChecked()) {
-            weekDaysChecked[OpeningHours.SATURDAY] = true;
-            anyBoxChecked = true;
-        }
+        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.SATURDAY] = true;
         else weekDaysChecked[OpeningHours.SATURDAY] = false;
         weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxSunday);
-        if (weekDayCheckBox.isChecked()) {
-            weekDaysChecked[OpeningHours.SUNDAY] = true;
-            anyBoxChecked = true;
-        }
+        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.SUNDAY] = true;
         else weekDaysChecked[OpeningHours.SUNDAY] = false;
-        
-        return anyBoxChecked;
     }
     
     private boolean anyBoxChecked(int ... checkBoxIds) {
