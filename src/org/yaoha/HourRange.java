@@ -2,7 +2,7 @@ package org.yaoha;
 
 import java.util.Calendar;
 
-public class HourRange {
+public class HourRange implements Comparable<HourRange> {
     private int startingHour;
     private int startingMinute;
     private int endingHour;
@@ -98,5 +98,23 @@ public class HourRange {
     @Override
     public String toString() {
         return String.valueOf(startingHour) + ":" + String.valueOf(startingMinute) + "-" + String.valueOf(endingHour) + ":" + String.valueOf(endingMinute);
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if ( !(o instanceof HourRange) ) return false;
+        
+        HourRange another = (HourRange) o;
+        return ( (this.startingHour == another.getStartingHour()) &&
+                (this.startingMinute == another.getStartingMinute()) &&
+                (this.endingHour == another.getEndingHour()) &&
+                (this.endingMinute == another.getEndingMinute()));
+    }
+
+    @Override
+    public int compareTo(HourRange another) {
+        if (this.equals(another)) return 0;
+        if (another.after(this)) return -1;
+        return 1;
     }
 }
