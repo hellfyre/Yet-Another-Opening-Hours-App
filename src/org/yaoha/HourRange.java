@@ -97,7 +97,8 @@ public class HourRange implements Comparable<HourRange> {
     
     @Override
     public String toString() {
-        return String.valueOf(startingHour) + ":" + String.valueOf(startingMinute) + "-" + String.valueOf(endingHour) + ":" + String.valueOf(endingMinute);
+        return String.format("%1$02d:%2$02d-%3$02d:%4$02d", startingHour, startingMinute, endingHour, endingMinute);
+    }
     
     @Override
     public boolean equals(Object o) {
