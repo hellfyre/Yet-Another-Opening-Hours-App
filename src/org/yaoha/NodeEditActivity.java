@@ -39,11 +39,25 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     public void onClick(View v) {
         switch (v.getId()) {
         case R.id.buttonAddDefiniton:
-            saveCheckboxes(v);
+            if (!saveCheckboxes(v)) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("No days selected.");
+                builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.create().show();
+                return;
+            }
+            rootView = v.getRootView();
             showDialog(DIALOG_HOUR_RANGE);
             break;
         case R.id.buttonDialogOk:
             addHourRange(v);
+            TextView ohString = (TextView) rootView.findViewById(R.id.TextViewOpeningHoursString);
+            ohString.setText(openingHours.compileOpeningHoursString());
             break;
 
         default:
@@ -142,6 +156,8 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             
             CheckBox openEnd = (CheckBox) dialog.findViewById(R.id.checkBoxOpenEnd);
             openEnd.setOnCheckedChangeListener(this);
+            Button dialogOk = (Button) dialog.findViewById(R.id.buttonDialogOk);
+            dialogOk.setOnClickListener(this);
             
             break;
 
