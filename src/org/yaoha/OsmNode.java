@@ -85,6 +85,10 @@ public class OsmNode {
         this.lastUpdated = lastUpdated;
     }
     
+    protected OpeningHours getPointerToOpeningHours() {
+        return openingHours;
+    }
+    
     public void parseOpeningHours() throws java.text.ParseException {
         openingHours.parse(getOpening_hours());
     }

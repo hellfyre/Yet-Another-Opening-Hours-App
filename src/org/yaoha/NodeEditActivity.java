@@ -12,6 +12,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -28,7 +29,6 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     boolean insideOnTimeChangedCallback = false;
     static final int DIALOG_HOUR_RANGE = 0;
     static final int DIALOG_PROGRESS = 1;
-    private OpeningHours openingHours = new OpeningHours();
     private boolean[] weekDaysChecked = new boolean[7];
     View rootView;
     
@@ -98,7 +98,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         case R.id.buttonDialogOk:
             addHourRange(v);
             TextView ohString = (TextView) rootView.findViewById(R.id.TextViewOpeningHoursString);
-            ohString.setText(openingHours.compileOpeningHoursString());
+            ohString.setText(osmNode.getPointerToOpeningHours().compileOpeningHoursString());
             break;
         case R.id.buttonSelectMoFr:
             if (anyBoxChecked(boxesMoFr)) {
@@ -136,7 +136,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         
         for (int weekDay = OpeningHours.MONDAY; weekDay <= OpeningHours.SUNDAY; weekDay++) {
             if (!weekDaysChecked[weekDay]) continue;
-            TreeSet<HourRange> hourRanges = openingHours.getDay(weekDay);
+            TreeSet<HourRange> hourRanges = osmNode.getPointerToOpeningHours().getDay(weekDay);
             for (HourRange hourRange : hourRanges) {
                 if (hourRange.overlaps(newHourRange)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -161,7 +161,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     
     private void populateUiElementesWithOpeningHours() {
         for (int weekDay = OpeningHours.MONDAY; weekDay <= OpeningHours.SUNDAY; weekDay++) {
-            TreeSet<HourRange> hourRanges = openingHours.getDay(weekDay);
+            TreeSet<HourRange> hourRanges = osmNode.getPointerToOpeningHours().getDay(weekDay);
             int textViewId = 0;
             switch (weekDay) {
             case OpeningHours.MONDAY:
@@ -189,7 +189,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
                 break;
             }
             
-            TextView textView = (TextView) rootView.findViewById(textViewId);
+            TextView textView = (TextView) findViewById(textViewId);
             String hoursString = "";
             for (HourRange hourRange : hourRanges) {
                 hoursString += hourRange + " ";
@@ -345,7 +345,13 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         ohString.post(new Runnable() {
             @Override
             public void run() {
+                try {
+                    osmNode.parseOpeningHours();
+                } catch (ParseException e) {
+                    Log.d(NodeEditActivity.class.getSimpleName(), e.getMessage());
+                }
                 ohString.setText(osmNode.getOpening_hours());
+                populateUiElementesWithOpeningHours();
             }
         });
         removeDialog(DIALOG_PROGRESS);
