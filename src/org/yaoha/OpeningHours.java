@@ -280,7 +280,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
                 while (i != secondIntWeekDay) {
                     weekDays.add(i);
                     i++;
-                    if (i>7) i=1;
+                    if (i>6) i=0;
                 }
                 weekDays.add(secondIntWeekDay);
             }
