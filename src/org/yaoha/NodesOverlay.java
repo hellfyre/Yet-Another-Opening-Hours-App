@@ -267,6 +267,7 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         for (String key : last_node2.getKeys()) {
             intent.putExtra(key, last_node2.getAttribute(key));
         }
+        intent.putExtra("id", last_node2.getID());
         act.startActivity(intent);
     }
     
