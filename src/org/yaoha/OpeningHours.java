@@ -29,16 +29,8 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
         weekDays.set(weekDay, hourRanges);
     }
     
-    public void setDay(String weekDay, TreeSet<HourRange> hourRanges) {
-        weekDays.set(stringToWeekDay(weekDay), hourRanges);
-    }
-    
     public TreeSet<HourRange> getDay(int weekDay) {
         return weekDays.get(weekDay);
-    }
-    
-    public TreeSet<HourRange> getDay(String weekDay) {
-        return weekDays.get(stringToWeekDay(weekDay));
     }
     
     public void clearDay(int weekDay) {
