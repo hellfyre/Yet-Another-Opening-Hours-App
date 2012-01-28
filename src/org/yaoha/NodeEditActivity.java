@@ -1,5 +1,7 @@
 package org.yaoha;
 
+import java.net.URI;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.TreeSet;
 
@@ -7,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,7 +21,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 
-public class NodeEditActivity extends Activity implements OnClickListener, OnTimeChangedListener, OnCheckedChangeListener {
+public class NodeEditActivity extends Activity implements OnClickListener, OnTimeChangedListener, OnCheckedChangeListener, NodeReceiverInterface<OsmNode>, OsmNodeRetrieverListener {
+    OsmNode osmNode = null;
     boolean rangeComplete = false;
     boolean insideOnTimeChangedCallback = false;
     static final int DIALOG_HOUR_RANGE = 0;
@@ -37,6 +41,15 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         checkMoFr.setOnClickListener(this);
         Button checkSaSu = (Button) findViewById(R.id.buttonSelectSaSu);
         checkSaSu.setOnClickListener(this);
+        
+        Intent intent = getIntent();
+        int nodeId = intent.getExtras().getInt("id");
+        URI requestUri = ApiConnector.getRequestUriApiGetNode(String.valueOf(nodeId));
+        if (requestUri != null) {
+            OsmNodeRetrieverTask retrieverTask = new OsmNodeRetrieverTask(requestUri);
+            retrieverTask.addListener(this);
+            retrieverTask.execute();
+        }
     }
 
     @Override
@@ -302,5 +315,22 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             CheckBox box = (CheckBox) findViewById(checkBoxId);
             box.setChecked(false);
         }
+    }
+
+    @Override
+    public void put(OsmNode value) {
+        this.osmNode = value;
+        try {
+            this.osmNode.parseOpeningHours();
+        } catch (ParseException e) {
+            // TODO let a toast pop up
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onAllRequestsProcessed() {
+        TextView ohString = (TextView) findViewById(R.id.TextViewOpeningHoursString);
+        ohString.setText(osmNode.getOpening_hours());
     }
 }
