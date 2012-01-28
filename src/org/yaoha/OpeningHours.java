@@ -25,20 +25,34 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
         return weekDays.iterator();
     }
     
-    public void set(int weekDay, TreeSet<HourRange> hourRanges) {
+    public void setDay(int weekDay, TreeSet<HourRange> hourRanges) {
         weekDays.set(weekDay, hourRanges);
     }
     
-    public void set(String weekDay, TreeSet<HourRange> hourRanges) {
+    public void setDay(String weekDay, TreeSet<HourRange> hourRanges) {
         weekDays.set(stringToWeekDay(weekDay), hourRanges);
     }
     
-    public TreeSet<HourRange> get(int weekDay) {
+    public TreeSet<HourRange> getDay(int weekDay) {
         return weekDays.get(weekDay);
     }
     
-    public TreeSet<HourRange> get(String weekDay) {
+    public TreeSet<HourRange> getDay(String weekDay) {
         return weekDays.get(stringToWeekDay(weekDay));
+    }
+    
+    public void clearDay(int weekDay) {
+        weekDays.get(weekDay).clear();
+    }
+    
+    public void addHourRangeToDay(HourRange hourRange, int weekDay) {
+        TreeSet<HourRange> currentDay = weekDays.get(weekDay);
+        if (!currentDay.isEmpty()) {
+            for (HourRange hrToCompare : currentDay) {
+                if (hrToCompare.overlaps(hourRange)) return;
+            }
+        }
+        currentDay.add(hourRange);
     }
     
     public String compileOpeningHoursString() {
