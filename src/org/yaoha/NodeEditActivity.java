@@ -136,7 +136,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         
         for (int weekDay = OpeningHours.MONDAY; weekDay <= OpeningHours.SUNDAY; weekDay++) {
             if (!weekDaysChecked[weekDay]) continue;
-            TreeSet<HourRange> hourRanges = openingHours.get(weekDay);
+            TreeSet<HourRange> hourRanges = openingHours.getDay(weekDay);
             for (HourRange hourRange : hourRanges) {
                 if (hourRange.overlaps(newHourRange)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -161,7 +161,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     
     private void populateUiElementesWithOpeningHours() {
         for (int weekDay = OpeningHours.MONDAY; weekDay <= OpeningHours.SUNDAY; weekDay++) {
-            TreeSet<HourRange> hourRanges = openingHours.get(weekDay);
+            TreeSet<HourRange> hourRanges = openingHours.getDay(weekDay);
             int textViewId = 0;
             switch (weekDay) {
             case OpeningHours.MONDAY:
