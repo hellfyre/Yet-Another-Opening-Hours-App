@@ -15,7 +15,7 @@ import android.util.Log;
 
 public class ApiConnector {
     HttpClient client;
-    private static final String apiUrl = "api06.dev.openstreetmap.org";
+    private static final String apiUrl = "api.openstreetmap.org";
     private static final String xapiUrl = "www.overpass-api.de";
     
     public ApiConnector() {
@@ -54,7 +54,14 @@ public class ApiConnector {
     }
     
     public static URI getRequestUriApiGetNode(String id) {
-        return null;
+        URI uri = null;
+        try {
+            uri = new URI("http", apiUrl, "/api/0.6/node/" + id, null);
+        } catch (URISyntaxException e) {
+            Log.d(ApiConnector.class.getSimpleName(), e.getMessage());
+        }
+        
+        return uri;
     }
     
     public static URI getRequestUriApiUpdateNode(String id) {
