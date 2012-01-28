@@ -154,6 +154,14 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
                 }
             }
             hourRanges.add(newHourRange);
+        }
+        populateUiElementesWithOpeningHours();
+        removeDialog(DIALOG_HOUR_RANGE);
+    }
+    
+    private void populateUiElementesWithOpeningHours() {
+        for (int weekDay = OpeningHours.MONDAY; weekDay <= OpeningHours.SUNDAY; weekDay++) {
+            TreeSet<HourRange> hourRanges = openingHours.get(weekDay);
             int textViewId = 0;
             switch (weekDay) {
             case OpeningHours.MONDAY:
@@ -188,7 +196,6 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             }
             textView.setText(hoursString);
         }
-        removeDialog(DIALOG_HOUR_RANGE);
     }
 
     @Override
