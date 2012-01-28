@@ -30,31 +30,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
     }
     
     public void set(String weekDay, TreeSet<HourRange> hourRanges) {
-        weekDay = weekDay.toLowerCase();
-        if (weekDay.equals("mo") || weekDay.equals("monday")) {
-            weekDays.set(MONDAY, hourRanges);
-        }
-        else if (weekDay.equals("tu") || weekDay.equals("tuesday")) {
-            weekDays.set(TUESDAY, hourRanges);
-        }
-        else if (weekDay.equals("we") || weekDay.equals("wednesday")) {
-            weekDays.set(WEDNESDAY, hourRanges);
-        }
-        else if (weekDay.equals("th") || weekDay.equals("thursday")) {
-            weekDays.set(THURSDAY, hourRanges);
-        }
-        else if (weekDay.equals("fr") || weekDay.equals("friday")) {
-            weekDays.set(FRIDAY, hourRanges);
-        }
-        else if (weekDay.equals("sa") || weekDay.equals("saturday")) {
-            weekDays.set(SATURDAY, hourRanges);
-        }
-        else if (weekDay.equals("su") || weekDay.equals("sunday")) {
-            weekDays.set(SUNDAY, hourRanges);
-        }
-        else {
-            return;
-        }
+        weekDays.set(stringToWeekDay(weekDay), hourRanges);
     }
     
     public TreeSet<HourRange> get(int weekDay) {
@@ -62,31 +38,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
     }
     
     public TreeSet<HourRange> get(String weekDay) {
-        weekDay = weekDay.toLowerCase();
-        if (weekDay.equals("mo") || weekDay.equals("monday")) {
-            return weekDays.get(MONDAY);
-        }
-        else if (weekDay.equals("tu") || weekDay.equals("tuesday")) {
-            return weekDays.get(TUESDAY);
-        }
-        else if (weekDay.equals("we") || weekDay.equals("wednesday")) {
-            return weekDays.get(WEDNESDAY);
-        }
-        else if (weekDay.equals("th") || weekDay.equals("thursday")) {
-            return weekDays.get(THURSDAY);
-        }
-        else if (weekDay.equals("fr") || weekDay.equals("friday")) {
-            return weekDays.get(FRIDAY);
-        }
-        else if (weekDay.equals("sa") || weekDay.equals("saturday")) {
-            return weekDays.get(SATURDAY);
-        }
-        else if (weekDay.equals("su") || weekDay.equals("sunday")) {
-            return weekDays.get(SUNDAY);
-        }
-        else {
-            return null;
-        }
+        return weekDays.get(stringToWeekDay(weekDay));
     }
     
     public String compileOpeningHoursString() {
@@ -174,6 +126,34 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
             return "Su";
         default:
             return null;
+        }
+    }
+    
+    public int stringToWeekDay(String weekDay) {
+        weekDay = weekDay.toLowerCase();
+        if (weekDay.equals("mo") || weekDay.equals("monday")) {
+            return MONDAY;
+        }
+        else if (weekDay.equals("tu") || weekDay.equals("tuesday")) {
+            return TUESDAY;
+        }
+        else if (weekDay.equals("we") || weekDay.equals("wednesday")) {
+            return WEDNESDAY;
+        }
+        else if (weekDay.equals("th") || weekDay.equals("thursday")) {
+            return THURSDAY;
+        }
+        else if (weekDay.equals("fr") || weekDay.equals("friday")) {
+            return FRIDAY;
+        }
+        else if (weekDay.equals("sa") || weekDay.equals("saturday")) {
+            return SATURDAY;
+        }
+        else if (weekDay.equals("su") || weekDay.equals("sunday")) {
+            return SUNDAY;
+        }
+        else {
+            return -1;
         }
     }
 
