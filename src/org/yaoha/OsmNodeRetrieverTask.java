@@ -13,9 +13,16 @@ import android.util.Log;
 public class OsmNodeRetrieverTask extends AsyncTask<Void, Void, Void> {
     private ArrayList<OsmNodeRetrieverListener> receiverList = new ArrayList<OsmNodeRetrieverListener>();
     private SimpleQueue<URI> queue = new SimpleQueue<URI>();
+    private NodeReceiverInterface<OsmNode> nodeReceiver;
     
     public OsmNodeRetrieverTask(URI uri) {
         queue.add(uri);
+        this.nodeReceiver = OsmNodeDbHelper.getInstance();
+    }
+    
+    public OsmNodeRetrieverTask(URI uri, NodeReceiverInterface<OsmNode> nodeReceiver) {
+        queue.add(uri);
+        this.nodeReceiver = nodeReceiver;
     }
 
     @Override
@@ -40,7 +47,7 @@ public class OsmNodeRetrieverTask extends AsyncTask<Void, Void, Void> {
             }
             
             OsmXmlParser parser = new OsmXmlParser();
-            parser.parse(in, OsmNodeDbHelper.getInstance());
+            parser.parse(in, this.nodeReceiver);
         }
         
         callListenersAllRequestsDone();

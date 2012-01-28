@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     boolean rangeComplete = false;
     boolean insideOnTimeChangedCallback = false;
     static final int DIALOG_HOUR_RANGE = 0;
+    static final int DIALOG_PROGRESS = 1;
     private OpeningHours openingHours = new OpeningHours();
     private boolean[] weekDaysChecked = new boolean[7];
     View rootView;
@@ -46,7 +48,8 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         int nodeId = intent.getExtras().getInt("id");
         URI requestUri = ApiConnector.getRequestUriApiGetNode(String.valueOf(nodeId));
         if (requestUri != null) {
-            OsmNodeRetrieverTask retrieverTask = new OsmNodeRetrieverTask(requestUri);
+            showDialog(DIALOG_PROGRESS);
+            OsmNodeRetrieverTask retrieverTask = new OsmNodeRetrieverTask(requestUri, this);
             retrieverTask.addListener(this);
             retrieverTask.execute();
         }
@@ -190,10 +193,9 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        Dialog dialog;
         switch (id) {
         case DIALOG_HOUR_RANGE:
-            dialog = new Dialog(this);
+            Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.node_edit_hour_range_dialog);
             dialog.setTitle("Hour range");
             
@@ -212,14 +214,16 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             openEnd.setOnCheckedChangeListener(this);
             Button dialogOk = (Button) dialog.findViewById(R.id.buttonDialogOk);
             dialogOk.setOnClickListener(this);
-            
-            break;
+            return dialog;
+        case DIALOG_PROGRESS:
+            ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Retrieving node ...");
+            progressDialog.setIndeterminate(true);
+            return progressDialog;
 
         default:
-            dialog = null;
-            break;
+            return null;
         }
-        return dialog;
     }
 
     @Override
@@ -330,7 +334,13 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
 
     @Override
     public void onAllRequestsProcessed() {
-        TextView ohString = (TextView) findViewById(R.id.TextViewOpeningHoursString);
-        ohString.setText(osmNode.getOpening_hours());
+        final TextView ohString = (TextView) findViewById(R.id.TextViewOpeningHoursString);
+        ohString.post(new Runnable() {
+            @Override
+            public void run() {
+                ohString.setText(osmNode.getOpening_hours());
+            }
+        });
+        removeDialog(DIALOG_PROGRESS);
     }
 }
