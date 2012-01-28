@@ -5,6 +5,9 @@ import java.util.Set;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -69,6 +72,27 @@ public class NodeActivity extends Activity {
       value3.setText(opening_hours);
       value3.setKeyListener(null);
       ll.addView(value3);
+      
+        // --------------------------------------------------------------------
+        // Adding button to call edit activity. Whatever you might change, this
+        // is important and not to be deleted.
+        final int nodeId = i.getExtras().getInt("id");
+        Button editButton = new Button(this);
+        if (opening_hours == "") {
+            editButton.setText("Add opening hours");
+        } else {
+            editButton.setText("Edit opening hours");
+        }
+        editButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), NodeEditActivity.class);
+                intent.putExtra("id", nodeId);
+                startActivity(intent);
+            }
+        });
+        ll.addView(editButton);
+
 //      for (String key : keySet) {
 //          TextView name4 = new TextView(getApplicationContext());
 //          name4.setText(key);
