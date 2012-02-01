@@ -26,5 +26,6 @@
     <string name="end_time">End time</string>
     <string name="open_end">Open end</string>
     <string name="dialog_ok">Ok</string>
+    <string name="emptyString"></string>
 
 </resources>
