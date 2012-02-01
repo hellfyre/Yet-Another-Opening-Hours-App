@@ -10,3 +10,4 @@ R.java
 *.snm
 *.tex.bak
 *.pdf
+*.synctex.gz
