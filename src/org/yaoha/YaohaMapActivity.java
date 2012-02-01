@@ -3,6 +3,7 @@ package org.yaoha;
 import java.util.HashMap;
 
 import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
@@ -105,8 +106,12 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         mapview.getOverlays().add(mOverlay);
         mapview.postInvalidate();
         
-        no.getNodes(mapview.getBoundingBox());
-        
+        BoundingBoxE6 bb = mapview.getBoundingBox();
+        int west = mprefs.getInt("west", bb.getLonWestE6()-1000);
+        int east = mprefs.getInt("east", bb.getLonEastE6()+1000);
+        int north = mprefs.getInt("north", bb.getLatNorthE6()+1000);
+        int south = mprefs.getInt("south", bb.getLatSouthE6()-1000);
+        no.getNodes(new BoundingBoxE6(north, east, south, west));
     }
 
     @Override
@@ -185,6 +190,12 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         editor.putInt("zoomlevel", mapview.getZoomLevel());
         editor.putInt("longitude", center.getLongitudeE6());
         editor.putInt("latitude", center.getLatitudeE6());
+        
+        BoundingBoxE6 bb = mapview.getBoundingBox();
+        editor.putInt("west", bb.getLonWestE6());
+        editor.putInt("east", bb.getLonEastE6());
+        editor.putInt("north", bb.getLatNorthE6());
+        editor.putInt("south", bb.getLatSouthE6());
         editor.commit();
     }
     
@@ -195,6 +206,12 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         outState.putInt("zoomlevel", mapview.getZoomLevel());
         outState.putInt("longitude", center.getLongitudeE6());
         outState.putInt("latitude", center.getLatitudeE6());
+        
+        BoundingBoxE6 bb = mapview.getBoundingBox();
+        outState.putInt("west", bb.getLonWestE6());
+        outState.putInt("east", bb.getLonEastE6());
+        outState.putInt("north", bb.getLatNorthE6());
+        outState.putInt("south", bb.getLatSouthE6());
     }
     
     @Override
