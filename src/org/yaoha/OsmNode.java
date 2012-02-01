@@ -1,10 +1,23 @@
 package org.yaoha;
 
+import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class OsmNode {
     public enum shopStatus {OPEN, CLOSED, UNSET, MAYBE};
@@ -27,6 +40,45 @@ public class OsmNode {
         this.latitudeE6 = latitudeE6;
         this.longitudeE6 = longitudeE6;
         this.attributes = new HashMap<String, String>();
+    }
+    
+    /**
+     * Assumes that changes in opening_hours are already saved to attributes
+     * @throws ParserConfigurationException, TransformerException 
+     */
+    public String serialize() throws ParserConfigurationException, TransformerException {
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        
+        // root elements
+        Document doc = docBuilder.newDocument();
+        Element rootElement = doc.createElement("node");
+        doc.appendChild(rootElement);
+        
+        rootElement.setAttribute("id", "" + this.ID);
+        rootElement.setAttribute("lat", "" + this.latitudeE6);
+        rootElement.setAttribute("lon", "" + this.longitudeE6);
+        
+        Set<String> ts = new TreeSet<String>(attributes.keySet());
+        for (String key : ts) {
+            String value = this.attributes.get(key);
+            Element tag_element = doc.createElement("tag");
+            tag_element.setAttribute("k", key);
+            tag_element.setAttribute("v", value);
+            rootElement.appendChild(tag_element);
+        }
+        
+        // write the content into xml file
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+        
+        StringWriter writer = new StringWriter();
+        StreamResult result = new StreamResult(writer);
+ 
+        transformer.transform(source, result);
+        
+        return writer.toString();
     }
     
     public void putAttribute(String key, String value) {

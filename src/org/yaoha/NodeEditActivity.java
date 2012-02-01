@@ -120,9 +120,15 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             }
             break;
         case R.id.buttonTransmitChanges:
-            // TODO serlialize OsmNode and transmit to OSM
             osmNode.setOpening_hours(osmNode.getPointerToOpeningHours().compileOpeningHoursString());
-            OsmNodeDbHelper.getInstance().put(osmNode, true);
+            try {
+                String xml_ouput = osmNode.serialize();
+                OsmNodeDbHelper.getInstance().put(osmNode, true);
+                // TODO transmit xml_output to OSM
+            }
+            catch (Exception e) {
+                Log.d(this.getClass().getSimpleName(), "A node could not be converted into xml and be sent to osm");
+            }
             break;
 
         default:
