@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
@@ -162,39 +163,41 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     private void populateUiElementesWithOpeningHours() {
         for (int weekDay = OpeningHours.MONDAY; weekDay <= OpeningHours.SUNDAY; weekDay++) {
             TreeSet<HourRange> hourRanges = osmNode.getPointerToOpeningHours().getDay(weekDay);
-            int textViewId = 0;
+            int linearLayoutId = 0;
             switch (weekDay) {
             case OpeningHours.MONDAY:
-                textViewId = R.id.textViewMonday;
+                linearLayoutId = R.id.linearLayoutMonday;
                 break;
             case OpeningHours.TUESDAY:
-                textViewId = R.id.textViewTuesday;
+                linearLayoutId = R.id.linearLayoutTuesday;
                 break;
             case OpeningHours.WEDNESDAY:
-                textViewId = R.id.textViewWednesday;
+                linearLayoutId = R.id.linearLayoutWednesday;
                 break;
             case OpeningHours.THURSDAY:
-                textViewId = R.id.textViewThursday;
+                linearLayoutId = R.id.linearLayoutThursday;
                 break;
             case OpeningHours.FRIDAY:
-                textViewId = R.id.textViewFriday;
+                linearLayoutId = R.id.linearLayoutFriday;
                 break;
             case OpeningHours.SATURDAY:
-                textViewId = R.id.textViewSaturday;
+                linearLayoutId = R.id.linearLayoutSaturday;
                 break;
             case OpeningHours.SUNDAY:
-                textViewId = R.id.textViewSunday;
+                linearLayoutId = R.id.linearLayoutSunday;
                 break;
             default:
                 break;
             }
             
-            TextView textView = (TextView) findViewById(textViewId);
-            String hoursString = "";
+            LinearLayout linlay = (LinearLayout) findViewById(linearLayoutId);
             for (HourRange hourRange : hourRanges) {
-                hoursString += hourRange + " ";
+                TextView opening_hour_in_layout = new TextView(getBaseContext());
+                opening_hour_in_layout.setText(hourRange.toString());
+                opening_hour_in_layout.setOnClickListener(new OpeningHoursDeleteListener(osmNode, this, hourRange));
+                linlay.addView(opening_hour_in_layout);
             }
-            textView.setText(hoursString);
+            
         }
     }
 
