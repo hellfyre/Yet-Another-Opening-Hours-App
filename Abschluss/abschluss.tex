@@ -51,22 +51,22 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Unsere Application}
+\begin{frame}{Unsere Application...}
 	\begin{itemize}
-	\item Wir nutzen OpenStreetMap
-	\item Sie zeigt offene Geschäfte auf einen Blick
+	\item ... nutzt OpenStreetMap
+	\item ... zeigt offene Geschäfte auf einen Blick
 			\begin{itemize}
 			\item Öffnungszeiten (basierend auf OSM-Daten)
 			\item Position von Nutzer und Geschäft						\end{itemize}
-	\item Sie bietet:
+	\item ... bietet außerdem:
 	\begin{itemize}
-		\item das Eintragen, Bearbeiten und aktualisieren von Öffnungszeiten
+		\item das Eintragen, Bearbeiten und Aktualisieren von Öffnungszeiten
 	\end{itemize}
 \end{itemize}
 \end{frame}
 
 
-\begin{frame}{Vor- und Nachteile}
+\begin{frame}{Vor- und Nachteile von OpenStreetMap}
 	\begin{columns}
 		\column{5.1cm}
 		Vorteile
@@ -79,7 +79,7 @@
 		Nachteile
 		\begin{itemize}
 			\item Daten (noch) unvollständig
-			\item auf Öffnungszeiten Beschränkt (d.h. keine vollständige Bearbeitung von Knoten möglich)
+			\item auf Öffnungszeiten beschränkt (d.h. keine vollständige Bearbeitung von Knoten möglich)
 		\end{itemize}
 	\end{columns}
 \end{frame}
@@ -299,8 +299,12 @@
 \begin{frame}{Technische Probleme}
 	\begin{itemize}
 		\item Lokalisation nicht im Emulator testbar (Absturz)
-		\item Funktionen der Bibliothek zum Darstellen von OpenStreetMap haben leicht abweichendes Verhalten (Overlay)
-		\item OSM-Öffnungszeiten sind extrem schwer zu parsen, da sich nicht immer an die Vorgaben gehalten wird
+        \item osmdroid MapView API weicht teilweise ab von der Google MapView API
+		\item OSM-Öffnungszeiten sind schwierig zu parsen, da
+		\begin{enumerate}
+		  \item die Syntax sehr umfangreich ist und
+		  \item die OSM-Nutzer sich nicht immer an die Syntax halten
+		\end{enumerate}
 	\end{itemize}
 \end{frame}
 
