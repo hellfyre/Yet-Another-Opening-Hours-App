@@ -160,7 +160,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         removeDialog(DIALOG_HOUR_RANGE);
     }
     
-    private void populateUiElementesWithOpeningHours() {
+    void populateUiElementesWithOpeningHours() {
         for (int weekDay = OpeningHours.MONDAY; weekDay <= OpeningHours.SUNDAY; weekDay++) {
             TreeSet<HourRange> hourRanges = osmNode.getPointerToOpeningHours().getDay(weekDay);
             int linearLayoutId = 0;
@@ -191,10 +191,13 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             }
             
             LinearLayout linlay = (LinearLayout) findViewById(linearLayoutId);
+            while (linlay.getChildCount() > 1)
+                linlay.removeViewAt(1);
             for (HourRange hourRange : hourRanges) {
                 TextView opening_hour_in_layout = new TextView(getBaseContext());
                 opening_hour_in_layout.setText(hourRange.toString());
-                opening_hour_in_layout.setOnClickListener(new OpeningHoursDeleteListener(osmNode, this, hourRange));
+                opening_hour_in_layout.setOnClickListener(new OpeningHoursDeleteListener(this, hourRange, hourRanges));
+                
                 linlay.addView(opening_hour_in_layout);
             }
             

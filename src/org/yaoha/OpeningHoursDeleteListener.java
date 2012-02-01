@@ -1,18 +1,25 @@
 package org.yaoha;
 
+import java.util.Set;
+
 import android.view.View;
 import android.view.View.OnClickListener;
 
 public class OpeningHoursDeleteListener implements OnClickListener {
+    NodeEditActivity neact;
+    HourRange range;
+    Set<HourRange> day;
     
-    public OpeningHoursDeleteListener(OsmNode node, NodeEditActivity neact, HourRange range) {
-        // TODO Auto-generated constructor stub
+    public OpeningHoursDeleteListener(NodeEditActivity neact, HourRange range, Set<HourRange> day) {
+        this.neact = neact;
+        this.range = range;
+        this.day = day;
     }
 
     @Override
     public void onClick(View v) {
-        // TODO Auto-generated method stub
-
+        day.remove(range);
+        neact.populateUiElementesWithOpeningHours();
     }
 
 }
