@@ -32,6 +32,26 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     static final int DIALOG_PROGRESS = 1;
     private boolean[] weekDaysChecked = new boolean[7];
     View rootView;
+    static final int[] boxesMoFr = {
+            R.id.checkBoxMonday,
+            R.id.checkBoxTuesday,
+            R.id.checkBoxWednesday,
+            R.id.checkBoxThursday,
+            R.id.checkBoxFriday
+    };
+    static final int[] boxesSaSu = {
+            R.id.checkBoxSaturday,
+            R.id.checkBoxSunday
+    };
+    static final int[] allBoxes = {
+            R.id.checkBoxMonday,
+            R.id.checkBoxTuesday,
+            R.id.checkBoxWednesday,
+            R.id.checkBoxThursday,
+            R.id.checkBoxFriday,
+            R.id.checkBoxSaturday,
+            R.id.checkBoxSunday
+    };
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +64,8 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         checkMoFr.setOnClickListener(this);
         Button checkSaSu = (Button) findViewById(R.id.buttonSelectSaSu);
         checkSaSu.setOnClickListener(this);
+        Button transmitChanges = (Button) findViewById(R.id.buttonTransmitChanges);
+        transmitChanges.setOnClickListener(this);
         
         Intent intent = getIntent();
         int nodeId = intent.getExtras().getInt("id");
@@ -58,26 +80,6 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
 
     @Override
     public void onClick(View v) {
-        int[] boxesMoFr = {
-                R.id.checkBoxMonday,
-                R.id.checkBoxTuesday,
-                R.id.checkBoxWednesday,
-                R.id.checkBoxThursday,
-                R.id.checkBoxFriday
-        };
-        int[] boxesSaSu = {
-                R.id.checkBoxSaturday,
-                R.id.checkBoxSunday
-        };
-        int[] allBoxes = {
-                R.id.checkBoxMonday,
-                R.id.checkBoxTuesday,
-                R.id.checkBoxWednesday,
-                R.id.checkBoxThursday,
-                R.id.checkBoxFriday,
-                R.id.checkBoxSaturday,
-                R.id.checkBoxSunday
-        };
         switch (v.getId()) {
         case R.id.buttonAddDefiniton:
             if (!anyBoxChecked(allBoxes)) {
@@ -116,6 +118,11 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             else {
                 checkCheckBoxes(boxesSaSu);
             }
+            break;
+        case R.id.buttonTransmitChanges:
+            // TODO serlialize OsmNode and transmit to OSM
+            osmNode.setOpening_hours(osmNode.getPointerToOpeningHours().compileOpeningHoursString());
+            OsmNodeDbHelper.getInstance().put(osmNode, true);
             break;
 
         default:

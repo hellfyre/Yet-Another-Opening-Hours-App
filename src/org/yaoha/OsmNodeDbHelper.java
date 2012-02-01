@@ -1,7 +1,6 @@
 package org.yaoha;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -134,6 +133,10 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     
     @Override
     public void put(OsmNode node) {
+        put(node, false);
+    }
+    
+    public void put(OsmNode node, boolean hasBeenEdited) {
         SQLiteDatabase db = getWritableDatabase();
         
         Cursor c = db.query(nodesTableName, null, nodesTablePrimaryKey + " = ?", new String[] {"" + node.getID()}, null, null, null);
@@ -165,7 +168,8 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
                 db.update(nodesAttributesTableName, cv, nodesTablePrimaryKey + " = ? AND " + nodesAttributesTableKey + " = ?", new String[] {"" + node.getID(), key});
         }
         
-        if (!isUpdate)
+        // check if the node contains updated values and is displayed
+        if (!isUpdate || hasBeenEdited)
             for (NodeReceiverInterface<OsmNode> irec : receiver)
                 irec.put(node);
         

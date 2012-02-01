@@ -27,5 +27,6 @@
     <string name="open_end">Open end</string>
     <string name="dialog_ok">Ok</string>
     <string name="emptyString"></string>
+    <string name="transmitChangesString">Transmit Changes to OpenStreetMap</string>
 
 </resources>

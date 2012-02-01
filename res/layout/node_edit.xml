@@ -189,4 +189,10 @@
         </LinearLayout>
     </ScrollView>
 
+    <Button
+        android:id="@+id/buttonTransmitChanges"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/transmitChangesString" />
+
 </LinearLayout>
