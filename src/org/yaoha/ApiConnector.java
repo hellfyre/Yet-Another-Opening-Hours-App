@@ -16,6 +16,8 @@ import android.util.Log;
 public class ApiConnector {
     HttpClient client;
     private static final String apiUrl = "api.openstreetmap.org";
+    private static final String devApiIp = "192.168.178.115";
+    private static final int devApiPort = 3000;
     private static final String xapiUrl = "www.overpass-api.de";
     
     public ApiConnector() {
@@ -57,6 +59,17 @@ public class ApiConnector {
         URI uri = null;
         try {
             uri = new URI("http", apiUrl, "/api/0.6/node/" + id, null);
+        } catch (URISyntaxException e) {
+            Log.d(ApiConnector.class.getSimpleName(), e.getMessage());
+        }
+        
+        return uri;
+    }
+    
+    public static URI getRequestUriDevApiGetNode(String id) {
+        URI uri = null;
+        try {
+            uri = new URI("http", null, devApiIp, devApiPort, "/api/0.6/node/" + id, null, null);
         } catch (URISyntaxException e) {
             Log.d(ApiConnector.class.getSimpleName(), e.getMessage());
         }
