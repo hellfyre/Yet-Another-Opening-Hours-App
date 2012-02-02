@@ -1,7 +1,7 @@
 package org.yaoha;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,7 @@ import android.view.View.OnTouchListener;
 
 public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeReceiverInterface<OsmNode> {
     HashMap<Integer, OsmNode> nodes;
-    Iterator<Integer> iter;
+    List<OsmNode> nodesAsList;
     Activity act;
     MapView mapView;
     OsmNode last_node;
@@ -74,7 +74,6 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         
         old_box = bb;
         nodes.putAll(tmp_nodes);
-        iter = nodes.keySet().iterator();
         populate();
     }
     
@@ -86,10 +85,8 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
     @Override
     protected OverlayItem createItem(int i) {
         Log.d(this.getClass().getSimpleName(), "drawing one node");
-        if (!iter.hasNext())
-            iter = nodes.keySet().iterator();
         
-        OsmNode node = nodes.get(iter.next());
+        OsmNode node = this.nodesAsList.get(i);
         return createItemFromNode(node);
     }
     
@@ -119,7 +116,8 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
     @Override
     public int size() {
         Log.d(this.getClass().getSimpleName(), "returning size of " + nodes.size() + " nodes");
-        return nodes.size();
+        this.nodesAsList = new ArrayList<OsmNode>(this.nodes.values());
+        return nodesAsList.size();
     }
     
     @Override
@@ -148,20 +146,17 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         OsmNode n = null;
         List<Integer> nodesToRemove = new LinkedList<Integer>();
         BoundingBoxE6 bb = mapView.getBoundingBox();
-        for (Integer index : nodes.keySet()) {
-            OsmNode tmp_node = nodes.get(index);
+        for (OsmNode tmp_node : nodesAsList) {
             if (rect_around_event.contains(tmp_node.getLongitudeE6(), tmp_node.getLatitudeE6())) {
                 n = tmp_node;
                 break;
             }
             if (!bb.contains(tmp_node.getLatitudeE6(), tmp_node.getLongitudeE6()))
-                nodesToRemove.add(index);
+                nodesToRemove.add(tmp_node.getID());
         }
         
         for (Integer i : nodesToRemove)
             nodes.remove(i);
-        if (nodesToRemove.size() != 0)
-            this.iter = nodes.keySet().iterator();
         
         if (n != null) {
             last_node = n;
@@ -182,10 +177,10 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
             return;
         
         // this must be a node we are interested in
-        this.nodes.put(value.getID(), value);
-        this.iter = nodes.keySet().iterator();
-        populate();
-        mapView.postInvalidate();
+        if (this.nodes.put(value.getID(), value) == null) {
+            populate();
+            mapView.postInvalidate();
+        }
     }
 
     /**
