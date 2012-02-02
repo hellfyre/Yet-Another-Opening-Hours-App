@@ -2,13 +2,17 @@ package org.yaoha;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
@@ -34,6 +38,19 @@ public class ApiConnector {
     public InputStream putNodes(URI uri) {
         InputStream in = null;
         return in;
+    }
+    
+    public void createNewChangeset(URI uri) throws ClientProtocolException, IOException {
+        HttpPut request = new HttpPut(uri);
+        String requestString = "<osm>" +
+        		"<changeset>" +
+        		"<tag k=\"created_by\" v=\"YAOHA\"/>" +
+        		"<tag k=\"comment\" v=\"Updating opening hours\"/>" +
+        		"</changeset>" +
+        		"</osm>";
+        HttpEntity entity = new StringEntity(requestString);
+        request.setEntity(entity);
+        HttpResponse response = client.execute(request);
     }
     
     public static URI getRequestUriXapi(String longitudeLow, String latitudeLow, String longitudeHigh, String latitudeHigh, String name, String amenity, String shop) {
