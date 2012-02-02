@@ -97,6 +97,9 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         GeoPoint geop = new GeoPoint(node.getLatitudeE6(), node.getLongitudeE6());
         OverlayItem oi = new OverlayItem(node.getName(), node.getOpening_hours(), geop);
         switch (node.isOpenNow()) {
+        case PARSERERROR:
+            oi.setMarker(act.getResources().getDrawable(R.drawable.lightning_bolt));
+            break;
         case CLOSED:
             oi.setMarker(act.getResources().getDrawable(R.drawable.closed));
             break;

@@ -206,7 +206,6 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
             OsmNode node = createNodeFromRow(c);
             addAttributesToNode(node);
             if (nodeMatchesSearchTerms(node, search_terms)) {
-                node.parseOpeningHours();
                 nodesMap.put(node.getID(), node);
             }
         }

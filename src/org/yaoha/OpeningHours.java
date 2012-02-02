@@ -210,7 +210,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
             } catch (ParseException e) {
                 e.printStackTrace();
                 Log.d(NodeEditActivity.class.getSimpleName(), e.getMessage());
-                clearWeek();
+//                clearWeek();
                 parsingFailed = true;
             }
         }

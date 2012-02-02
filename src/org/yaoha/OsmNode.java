@@ -20,13 +20,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class OsmNode {
-    public enum shopStatus {OPEN, CLOSED, UNSET, MAYBE};
+    public enum shopStatus {OPEN, CLOSED, UNSET, MAYBE, PARSERERROR};
     private int ID;
     private int latitudeE6;
     private int longitudeE6;
     private Date lastUpdated;
     private HashMap<String, String> attributes;
-    private OpeningHours openingHours = new OpeningHours();
+    private OpeningHours openingHours = null;
     
     public OsmNode(String ID, String latitude, String longitude) {
         this.ID = Integer.parseInt(ID);
@@ -138,6 +138,10 @@ public class OsmNode {
     }
     
     protected OpeningHours getPointerToOpeningHours() {
+        if (openingHours == null) {
+            openingHours = new OpeningHours();
+            parseOpeningHours();
+        }
         return openingHours;
     }
     
@@ -146,6 +150,9 @@ public class OsmNode {
     }
 
     public shopStatus isOpenNow() {
+        getPointerToOpeningHours();
+        if (openingHours.hasParsingFailed())
+            return shopStatus.PARSERERROR;
         if (openingHours.isEmpty())
             return shopStatus.UNSET;
         

@@ -349,7 +349,6 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     @Override
     public void put(OsmNode value) {
         this.osmNode = value;
-        this.osmNode.parseOpeningHours();
     }
 
     @Override
@@ -358,8 +357,10 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         ohString.post(new Runnable() {
             @Override
             public void run() {
-                osmNode.parseOpeningHours();
-                ohString.setText(osmNode.getOpening_hours());
+                String text = osmNode.getOpening_hours();
+                if (osmNode.getPointerToOpeningHours().hasParsingFailed())
+                    text = text + " failed to parse";
+                ohString.setText(text);
                 populateUiElementesWithOpeningHours();
             }
         });
