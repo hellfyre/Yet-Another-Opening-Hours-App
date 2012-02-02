@@ -3,6 +3,8 @@
     <item android:id="@+id/settings" android:title="Settings" android:icon="@drawable/ic_menu_preferences_48"></item>
     <item android:id="@+id/quit_app" android:title="Quit"></item>
     <item android:id="@+id/buy_pro" android:title="Buy Pro Version!"></item>
+    <item android:id="@+id/setOSM" android:title="Set OSM-Account"></item>
+    <item android:id="@+id/connectToOSM" android:title="Connect to OSM"></item>
 
     
 
