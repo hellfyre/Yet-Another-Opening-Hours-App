@@ -28,5 +28,6 @@
     <string name="dialog_ok">Ok</string>
     <string name="emptyString"></string>
     <string name="transmitChangesString">Transmit Changes to OpenStreetMap</string>
+    <string name="enableEditmode">Toggle Editmode</string>
 
 </resources>
