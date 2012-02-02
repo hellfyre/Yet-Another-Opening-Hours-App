@@ -68,6 +68,28 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     
     void removeNodesWithoutOpeningHoursSet() {
         // TODO
+        // DELETE * FROM nodesAttributesTableName WHERE nodesAttributesTableKey != 'opening_hours'
+        // DELETE * FROM nodesTableName WHERE !(nodesAttributesTableName.nodesTablePrimaryKey = nodesTablePrimaryKey)
+        SQLiteDatabase db = getWritableDatabase();
+//        db.delete(nodesAttributesTableName, nodesAttributesTableKey + " != 'opening_hours'", null);
+        
+        String query = "DELETE FROM " + nodesAttributesTableName + " WHERE " + nodesTablePrimaryKey
+                + " NOT IN ( SELECT " + nodesTablePrimaryKey + " FROM " + nodesAttributesTableName + " WHERE " + nodesAttributesTableKey + " = opening_hours " + " )";
+        // TODO continue
+        
+//        int size3 = db.delete(nodesTableName, "not ( " + nodesTablePrimaryKey + " = " + nodesAttributesTableName + "." + nodesTablePrimaryKey + " )", null);
+//        String query = "DELETE FROM " + nodesTableName + " WHERE " + nodesTablePrimaryKey 
+//                + " IN ( SELECT ntn." + nodesTablePrimaryKey + " FROM " + nodesTableName + " ntn, " + nodesAttributesTableName + " natn WHERE NOT ( ntn." + nodesTablePrimaryKey + " = natn." + nodesTablePrimaryKey + ") )";
+//        db.execSQL(query);
+        
+//        int size = db.query(nodesTableName, null, null, null, null, null, null).getCount();
+        Cursor c = db.query(nodesAttributesTableName, null, null, null, null, null, null);
+        while (c.moveToNext()) {
+            int key_index = c.getColumnIndex(nodesAttributesTableKey);
+            int value_index = c.getColumnIndex(nodesAttributesTableValue);
+            String content = c.getString(key_index) + ", " + c.getString(value_index);
+            content.toString();
+        }
     }
 
 // old query: 
