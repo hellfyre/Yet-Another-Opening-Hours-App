@@ -65,6 +65,10 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
         SQLiteDatabase db = getReadableDatabase();
         return db.query(nodesAttributesTableName, null, nodesTablePrimaryKey + " = ?", new String[] {"" + key}, null, null, null);
     }
+    
+    void removeNodesWithoutOpeningHoursSet() {
+        // TODO
+    }
 
 // old query: 
 // select * from table NODESTABLENAME
