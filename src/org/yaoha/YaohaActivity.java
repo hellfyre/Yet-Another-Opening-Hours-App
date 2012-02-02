@@ -1,7 +1,9 @@
 package org.yaoha;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -181,12 +183,34 @@ public class YaohaActivity extends Activity implements OnClickListener {
 
       Intent viewIntent = new Intent("android.intent.action.VIEW", Uri.parse(authUrl));
       startActivity(viewIntent);
+      
+      //TODO hier auf ende der registrierung warten
+      
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      String verificationCode = "";
+      try {
+          verificationCode = br.readLine();
+      } catch (Exception e) {
+          e.getMessage();
+      };
+      
+      Toast.makeText(this, "Fetching access token...", Toast.LENGTH_SHORT).show();
+      
+      try {
+          OSMprovider.retrieveAccessToken(OSMconsumer, verificationCode.trim());
+    } catch (Exception e) {
+        e.getMessage();
+    }
+      
+      this.OSM_TOKEN = OSMconsumer.getToken();
+      this.OSM_SECRET_TOKEN = OSMconsumer.getTokenSecret();
         
     }
 
     private void connectToOSM(OAuthConsumer consumer){
         URL url = null;
         HttpURLConnection request = null;
+        OSMconsumer.setTokenWithSecret(OSM_TOKEN, OSM_SECRET_TOKEN);
         try {
             url = new URL("http://openstreetmap.de/karte.html");
 
