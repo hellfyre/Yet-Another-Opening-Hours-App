@@ -2,7 +2,6 @@ package org.yaoha;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class ApiConnector {
         return in;
     }
     
-    public void createNewChangeset(URI uri) throws ClientProtocolException, IOException {
+    public InputStream createNewChangeset(URI uri) throws ClientProtocolException, IOException {
         HttpPut request = new HttpPut(uri);
         String requestString = "<osm>" +
         		"<changeset>" +
@@ -53,6 +52,7 @@ public class ApiConnector {
         HttpEntity entity = new StringEntity(requestString);
         request.setEntity(entity);
         HttpResponse response = client.execute(request);
+        return response.getEntity().getContent();
     }
     
     public static List<URI> getRequestUriXapi(String longitudeLow, String latitudeLow, String longitudeHigh, String latitudeHigh, String name, String amenity, String shop, boolean edit_mode) {
