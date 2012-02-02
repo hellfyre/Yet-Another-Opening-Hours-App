@@ -55,15 +55,15 @@ public class ApiConnector {
         HttpResponse response = client.execute(request);
     }
     
-    public static List<URI> getRequestUriXapi(String longitudeLow, String latitudeLow, String longitudeHigh, String latitudeHigh, String name, String amenity, String shop) {
+    public static List<URI> getRequestUriXapi(String longitudeLow, String latitudeLow, String longitudeHigh, String latitudeHigh, String name, String amenity, String shop, boolean edit_mode) {
         String requestString = "node[bbox=" + longitudeLow + "," + latitudeLow + "," + longitudeHigh + "," + latitudeHigh + "]";
         if (name != null)
             requestString += "[name=*" + name + "*]";
         else
             requestString += "[name=*]";
         
-        //TODO: remove this.
-        // requestString += "[opening_hours=*]";
+        if (!edit_mode)
+            requestString += "[opening_hours=*]";
         
         String requestStringAmenity = requestString;;
         if (amenity != null)

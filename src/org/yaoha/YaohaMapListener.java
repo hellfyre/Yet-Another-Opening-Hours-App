@@ -139,7 +139,7 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         String lonHighs = String.format(Locale.US, "%f", lonHigh/1e6);
 
         // TODO query for [shop=*] or [amenity=*] too
-        List<URI> requestUris = ApiConnector.getRequestUriXapi(lonLows, latLows, lonHighs, latHighs, null, null, null);
+        List<URI> requestUris = ApiConnector.getRequestUriXapi(lonLows, latLows, lonHighs, latHighs, null, null, null, this.mapActivity.editMode);
         if (requestUris.size() == 0) return;
         if (retrieverTask != null) {
             for (URI uri : requestUris)
