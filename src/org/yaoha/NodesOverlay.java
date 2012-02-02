@@ -58,20 +58,21 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         if (bbox_stats != null) {
             // moved north
             if (bbox_stats.get(YaohaMapListener.Direction.NORTH))
-                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLatNorthE6(), old_box.getLatNorthE6(), old_box.getLonWestE6(), old_box.getLonEastE6(), search_terms));
+                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(old_box.getLonWestE6(), bb.getLatNorthE6(), old_box.getLonEastE6(), old_box.getLatNorthE6(), search_terms));
             // moved south
             if (bbox_stats.get(Direction.SOUTH))
-                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(old_box.getLatSouthE6(), bb.getLatSouthE6(), old_box.getLonWestE6(), old_box.getLonEastE6(), search_terms));
+                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(old_box.getLonWestE6(), old_box.getLatSouthE6(), old_box.getLonEastE6(), bb.getLatSouthE6(), search_terms));
             // with latitude of bbox to get the entire height
             // moved east
             if (bbox_stats.get(Direction.EAST))
-                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLatNorthE6(), bb.getLatSouthE6(), bb.getLonEastE6(), old_box.getLonEastE6(), search_terms));
+                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(old_box.getLonEastE6(), bb.getLatNorthE6(), bb.getLonEastE6(), bb.getLonWestE6(), search_terms));
             // moved west
             if (bbox_stats.get(Direction.WEST))
-                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLatNorthE6(), bb.getLatSouthE6(), old_box.getLonWestE6(), bb.getLonWestE6(), search_terms));
+                tmp_nodes.putAll(iQuery.getNodesFromMapExtract(bb.getLonWestE6(), bb.getLatNorthE6(), old_box.getLonWestE6(), bb.getLatSouthE6(), search_terms));
         } else
             tmp_nodes = iQuery.getNodesFromMapExtract(bb.getLonWestE6(), bb.getLatNorthE6(), bb.getLonEastE6(), bb.getLatSouthE6(), search_terms);
         
+        old_box = bb;
         nodes.putAll(tmp_nodes);
         iter = nodes.keySet().iterator();
         populate();
