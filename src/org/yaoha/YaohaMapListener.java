@@ -2,6 +2,7 @@ package org.yaoha;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -138,18 +139,21 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         String lonHighs = String.format(Locale.US, "%f", lonHigh/1e6);
 
         // TODO query for [shop=*] or [amenity=*] too
-        URI requestUri = ApiConnector.getRequestUriXapi(lonLows, latLows, lonHighs, latHighs, null, null, null);
-        if (requestUri == null) return;
+        List<URI> requestUris = ApiConnector.getRequestUriXapi(lonLows, latLows, lonHighs, latHighs, null, null, null);
+        if (requestUris.size() == 0) return;
         if (retrieverTask != null) {
-            retrieverTask.addTask(requestUri);
+            for (URI uri : requestUris)
+                retrieverTask.addTask(uri);
         }
         else {
-            retrieverTask = new OsmNodeRetrieverTask(requestUri);
+            retrieverTask = new OsmNodeRetrieverTask();
+            for (URI uri : requestUris)
+                retrieverTask.addTask(uri);
             retrieverTask.addListener(this);
             retrieverTask.execute();
         }
         
-        Log.d(YaohaMapListener.class.getSimpleName(), "Update triggered: " + requestUri.toString());
+        Log.d(YaohaMapListener.class.getSimpleName(), "Update triggered: " + requestUris.toString());
     }
     
     @Override

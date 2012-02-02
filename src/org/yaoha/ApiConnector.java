@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -53,23 +55,43 @@ public class ApiConnector {
         HttpResponse response = client.execute(request);
     }
     
-    public static URI getRequestUriXapi(String longitudeLow, String latitudeLow, String longitudeHigh, String latitudeHigh, String name, String amenity, String shop) {
+    public static List<URI> getRequestUriXapi(String longitudeLow, String latitudeLow, String longitudeHigh, String latitudeHigh, String name, String amenity, String shop) {
         String requestString = "node[bbox=" + longitudeLow + "," + latitudeLow + "," + longitudeHigh + "," + latitudeHigh + "]";
-        if (name != null) requestString += "[name=*" + name + "*]";
-        if (amenity != null) requestString += "[amenity=*" + amenity + "*]";
-        if (shop != null) requestString += "[shop=*" + shop + "*]";
+        if (name != null)
+            requestString += "[name=*" + name + "*]";
+        else
+            requestString += "[name=*]";
         
         //TODO: remove this.
-        requestString += "[opening_hours=*]";
+        // requestString += "[opening_hours=*]";
         
-        URI uri = null;
+        String requestStringAmenity = requestString;;
+        if (amenity != null)
+            requestStringAmenity += "[amenity=*" + amenity + "*]";
+        else
+            requestStringAmenity += "[amenity=*]";
+        String requestStringShop = requestString;
+        if (shop != null)
+            requestStringShop += "[shop=*" + shop + "*]";
+        else
+            requestStringShop += "[shop=*]";
+        
+        List<URI> requestStrings = new ArrayList<URI>();
         try {
-            uri = new URI("http", xapiUrl, "/api/xapi", requestString, null);
+            URI uri = new URI("http", xapiUrl, "/api/xapi", requestStringAmenity, null);
+            requestStrings.add(uri);
+        } catch (URISyntaxException e) {
+            Log.d(ApiConnector.class.getSimpleName(), e.getMessage());
+        }
+
+        try {
+            URI uri = new URI("http", xapiUrl, "/api/xapi", requestStringShop, null);
+            requestStrings.add(uri);
         } catch (URISyntaxException e) {
             Log.d(ApiConnector.class.getSimpleName(), e.getMessage());
         }
         
-        return uri;
+        return requestStrings;
     }
     
     public static URI getRequestUriApiGetNode(String id) {
