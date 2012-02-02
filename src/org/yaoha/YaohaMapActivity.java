@@ -1,7 +1,5 @@
 package org.yaoha;
 
-import java.util.HashMap;
-
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
@@ -38,7 +36,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
     SharedPreferences mprefs = null;
     SharedPreferences default_shared_prefs = null;
     
-    HashMap<Integer, OsmNode> nodes = null;
+    boolean editMode = false;
 
     /** Called when the activity is first created. */
     @Override
@@ -170,9 +168,20 @@ public class YaohaMapActivity extends Activity implements LocationListener {
             mapController.setZoom(17);
             mapController.setCenter(braunschweig);
             Toast.makeText(this, "DEBUG Tracking me!", Toast.LENGTH_LONG).show();
-        default:
-            return false;
+            return true;
+        case R.id.edit_mode:
+            editMode = true ^ editMode;
+            String message = new String("Editmode ");
+            if (editMode)
+                message += "enabled";
+            else
+                message += "disabled";
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            if (!editMode)
+                OsmNodeDbHelper.getInstance().removeNodesWithoutOpeningHoursSet();
+            return true;
         }
+        return false;
     }
     @Override
     protected void onResume() {
