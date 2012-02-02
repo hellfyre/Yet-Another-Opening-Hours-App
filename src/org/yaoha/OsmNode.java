@@ -141,7 +141,7 @@ public class OsmNode {
         return openingHours;
     }
     
-    public void parseOpeningHours() throws java.text.ParseException {
+    public void parseOpeningHours() {
         openingHours.parse(getOpening_hours());
     }
 

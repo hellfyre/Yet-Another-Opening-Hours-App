@@ -1,10 +1,13 @@
 package org.yaoha;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import android.util.Log;
 
 public class OpeningHours implements Iterable<TreeSet<HourRange>> {
     private ArrayList<TreeSet<HourRange>> weekDays = new ArrayList<TreeSet<HourRange>>();
@@ -17,6 +20,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
     public static final int SUNDAY = 6;
     private static Pattern openingHoursPattern = Pattern.compile("[0-9]{1,2}:[0-9]{2}[-|+][0-9]{0,2}[:]{0,1}[0-9]{0,2}");
     private int parseError = 0;
+    boolean parsingFailed = false;
     
     public OpeningHours() {
         for (int i = 0; i < 7; i++) {
@@ -179,35 +183,41 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
         return isEmpty;
     }
     
-    public void parse(String openingHoursString) throws java.text.ParseException {
-        clearDay(MONDAY);
-        clearDay(TUESDAY);
-        clearDay(WEDNESDAY);
-        clearDay(THURSDAY);
-        clearDay(FRIDAY);
-        clearDay(SATURDAY);
-        clearDay(SUNDAY);
+    void clearWeek() {
+        for (int i = MONDAY; i <= SUNDAY; i++)
+            clearDay(i);
+    }
+    
+    public void parse(String openingHoursString) {
+        clearWeek();
+        parsingFailed = false;
         if (openingHoursString == null) return;
         parseError = 0;
         openingHoursString = openingHoursString.toLowerCase();
 
         if (openingHoursString.equals("24/7")) {
             HourRange hourRange = new HourRange(0, 0, 23, 59);
-            addHourRangeToDay(hourRange, MONDAY);
-            addHourRangeToDay(hourRange, TUESDAY);
-            addHourRangeToDay(hourRange, WEDNESDAY);
-            addHourRangeToDay(hourRange, THURSDAY);
-            addHourRangeToDay(hourRange, FRIDAY);
-            addHourRangeToDay(hourRange, SATURDAY);
-            addHourRangeToDay(hourRange, SUNDAY);
+            for (int i = MONDAY; i <= SUNDAY; i++)
+                addHourRangeToDay(hourRange, i);
         }
         else {
             String[] components = openingHoursString.split("[;][ ]{0,1}");
-            for (String part : components) {
-                parseComponent(part);
-                parseError += part.length();
+            try {
+                for (String part : components) {
+                    parseComponent(part);
+                    parseError += part.length();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+                Log.d(NodeEditActivity.class.getSimpleName(), e.getMessage());
+                clearWeek();
+                parsingFailed = true;
             }
         }
+    }
+    
+    boolean hasParsingFailed() {
+        return parsingFailed;
     }
     
     private void parseComponent(String part) throws java.text.ParseException {

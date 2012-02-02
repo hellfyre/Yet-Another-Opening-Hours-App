@@ -1,7 +1,6 @@
 package org.yaoha;
 
 import java.net.URI;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.TreeSet;
 
@@ -350,12 +349,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     @Override
     public void put(OsmNode value) {
         this.osmNode = value;
-        try {
-            this.osmNode.parseOpeningHours();
-        } catch (ParseException e) {
-            // TODO let a toast pop up
-            e.printStackTrace();
-        }
+        this.osmNode.parseOpeningHours();
     }
 
     @Override
@@ -364,11 +358,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         ohString.post(new Runnable() {
             @Override
             public void run() {
-                try {
-                    osmNode.parseOpeningHours();
-                } catch (ParseException e) {
-                    Log.d(NodeEditActivity.class.getSimpleName(), e.getMessage());
-                }
+                osmNode.parseOpeningHours();
                 ohString.setText(osmNode.getOpening_hours());
                 populateUiElementesWithOpeningHours();
             }
