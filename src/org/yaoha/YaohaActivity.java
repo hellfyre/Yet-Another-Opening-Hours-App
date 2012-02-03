@@ -41,21 +41,14 @@ import android.widget.Toast;
 public class YaohaActivity extends Activity implements OnClickListener {
     Button mapButton;
     Button startButton;
-    String OSM_TOKEN = "", OSM_SECRET_TOKEN = "";
-    String Test1 = "NULL";
+    static String OSM_TOKEN = "", OSM_SECRET_TOKEN = "";
     ImageButton button_favorite_1, button_favorite_2, button_favorite_3, button_favorite_4, button_favorite_5, button_favorite_6;
     ImageButton actualButton;
     final static String EDIT_FAV_STRING = "edit favorite";
     final static String EDIT_FAV_PIC = "edit picture";
     final static String REMOVE_FAV = "remove favorite";
-    TextView text_fav_1, text_fav_2, text_fav_3, text_fav_4, text_fav_5, text_fav_6;
     OAuthHelper helper = new OAuthHelper();
-//    OAuthConsumer OSMconsumer = new DefaultOAuthConsumer("LXhdgmfvvoGRmVCc0EPZajUS8458AXYZ2615f9hs", "ZTfY5iYZ8Lszgy6DtRh0b258qciz4aYm1XnMciDi");
-////  String scope = "http://www.yaoha.org";
-//    OAuthProvider OSMprovider = new DefaultOAuthProvider(
-//          "http://www.openstreetmap.org/oauth/request_token"/*+ URLEncoder.encode(scope, "utf-8")*/,
-//          "http://www.openstreetmap.org/oauth/access_token",
-//          "http://www.openstreetmap.org/oauth/authorize");
+    TextView text_fav_1, text_fav_2, text_fav_3, text_fav_4, text_fav_5, text_fav_6;
     final static int SELECT_PICTURE = 1;
     Uri selectedImageUri;
     
@@ -139,37 +132,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
     }
     
     @Override
-    protected void onResume() {
-        super.onResume();
-        
-        String[] token = getVerifier();
-        if (token != null) {
-            try {
-                String accessToken[] = helper.getAccessToken(token[1]);
-                this.OSM_TOKEN = accessToken[0];
-                this.OSM_SECRET_TOKEN = accessToken[1];
-            } catch (Exception e) {
-                String Teststring = e.getMessage();
-                String abc = Teststring;
-            }
-            
-        }
-    }
-    
-    private String[] getVerifier() {
-        // extract the token if it exists
-        Uri uri = this.getIntent().getData();
-        if (uri == null) {
-            return null;
-        }
-
-        String token = uri.getQueryParameter("oauth_token");
-        String verifier = uri.getQueryParameter("oauth_verifier");
-        return new String[] { token, verifier };
-    }
-    
-    
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
@@ -190,6 +152,8 @@ public class YaohaActivity extends Activity implements OnClickListener {
                 Toast.makeText(this, "You just payed 49,99€. Enjoy this Pro-Version!", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.setOSM:
+//                Intent intent = new Intent(this, OSMSettingsActivity.class);
+//                startActivity(intent);
                 registerToOSM();
                 return true;
             case R.id.connectToOSM:
@@ -263,6 +227,15 @@ public class YaohaActivity extends Activity implements OnClickListener {
             String bla = test4;
         }
     }
+    
+    public static void setToken(String token) {
+        OSM_TOKEN = token;
+    }
+    
+    public static void setSecretToken(String sToken){
+        OSM_SECRET_TOKEN = sToken;
+    }
+    
     
     @Override
     public void onClick(View v) {
