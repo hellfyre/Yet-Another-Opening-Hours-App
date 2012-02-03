@@ -84,7 +84,7 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         return ret_val;
     }
     
-    private void update(BoundingBoxE6 bbox) {
+    void update(BoundingBoxE6 bbox) {
         if ( (bbox.getLatNorthE6() == bbox.getLatSouthE6()) || (bbox.getLonEastE6() == bbox.getLonWestE6()) )
             return;
         
@@ -160,6 +160,13 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     public void onAllRequestsProcessed() {
         retrieverTask = null;
         Log.d(YaohaMapListener.class.getSimpleName(), "Retriever task released");
+    }
+
+    public void requeryBoundingBox() {
+        BoundingBoxE6 tmp_bb = this.boundingBox;
+        this.boundingBox = null;
+        if (tmp_bb != null)
+            this.update(tmp_bb);
     }
 
 }
