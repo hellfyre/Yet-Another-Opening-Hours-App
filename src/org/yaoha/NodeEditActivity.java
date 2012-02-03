@@ -121,7 +121,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         case R.id.buttonTransmitChanges:
             osmNode.setOpening_hours(osmNode.getPointerToOpeningHours().compileOpeningHoursString());
             try {
-                String xml_ouput = osmNode.serialize();
+                //String xml_ouput = osmNode.serialize();
                 OsmNodeDbHelper.getInstance().put(osmNode, true);
                 // TODO transmit xml_output to OSM
             }

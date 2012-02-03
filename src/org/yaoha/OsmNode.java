@@ -46,7 +46,7 @@ public class OsmNode {
      * Assumes that changes in opening_hours are already saved to attributes
      * @throws ParserConfigurationException, TransformerException 
      */
-    public String serialize() throws ParserConfigurationException, TransformerException {
+    public String serialize(String changesetId) throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         
@@ -55,6 +55,7 @@ public class OsmNode {
         Element rootElement = doc.createElement("node");
         doc.appendChild(rootElement);
         
+        rootElement.setAttribute("changeset", changesetId);
         rootElement.setAttribute("id", "" + this.ID);
         rootElement.setAttribute("lat", "" + this.latitudeE6);
         rootElement.setAttribute("lon", "" + this.longitudeE6);

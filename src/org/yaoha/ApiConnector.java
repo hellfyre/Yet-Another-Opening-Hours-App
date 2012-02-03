@@ -2,10 +2,16 @@ package org.yaoha;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
+import oauth.signpost.http.HttpRequest;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,7 +27,7 @@ import android.util.Log;
 public class ApiConnector {
     HttpClient client;
     private static final String apiUrl = "api.openstreetmap.org";
-    private static final String devApiIp = "192.168.178.115";
+    private static final String devApiIp = "134.169.35.227";
     private static final int devApiPort = 3000;
     private static final String xapiUrl = "www.overpass-api.de";
     
@@ -41,7 +47,14 @@ public class ApiConnector {
         return in;
     }
     
-    public InputStream createNewChangeset(URI uri) throws ClientProtocolException, IOException {
+    public InputStream createNewChangeset() throws ClientProtocolException, IOException {
+        URI uri = null;
+        try {
+            uri = new URI("http", null, devApiIp, devApiPort, "/api/0.6/changeset/create", null, null);
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         HttpPut request = new HttpPut(uri);
         String requestString = "<osm>" +
         		"<changeset>" +
@@ -53,6 +66,37 @@ public class ApiConnector {
         request.setEntity(entity);
         HttpResponse response = client.execute(request);
         return response.getEntity().getContent();
+    }
+    
+    public InputStream uploadNode(URI uri, String changesetId, OsmNode node) throws ClientProtocolException, IOException {
+        HttpPut request = new HttpPut(uri);
+        String requestString = "<osm>";
+        try {
+            requestString += node.serialize(changesetId);
+        } catch (ParserConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        requestString += "</osm>";
+        HttpEntity entity = new StringEntity(requestString);
+        request.setEntity(entity);
+        HttpResponse response = client.execute(request);
+        return response.getEntity().getContent();
+    }
+    
+    public void closeChangeset(String changesetId) throws ClientProtocolException, IOException {
+        URI uri = null;
+        try {
+            uri = new URI("http", null, devApiIp, devApiPort, "/api/0.6/changeset/" + changesetId + "/close", null, null);
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        HttpPut request = new HttpPut(uri);
+        client.execute(request);
     }
     
     public static List<URI> getRequestUriXapi(String longitudeLow, String latitudeLow, String longitudeHigh, String latitudeHigh, String name, String amenity, String shop, boolean edit_mode) {
@@ -116,8 +160,15 @@ public class ApiConnector {
         return uri;
     }
     
-    public static URI getRequestUriApiUpdateNode(String id) {
-        return null;
+    public static URI getRequestUriDevApiUpdateNode(String nodeId) {
+        URI uri = null;
+        try {
+            uri = new URI("http", null, devApiIp, devApiPort, "/api/0.6/node/" + nodeId, null, null);
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return uri;
     }
 
 }

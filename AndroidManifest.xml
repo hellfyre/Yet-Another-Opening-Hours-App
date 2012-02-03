@@ -35,6 +35,7 @@
                 <data android:scheme="osm-login"/>
             </intent-filter>
         </activity>
+        <activity android:name=".DebugActivity"></activity>
     </application>
 
 </manifest>
