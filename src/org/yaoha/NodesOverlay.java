@@ -75,6 +75,7 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         old_box = bb;
         nodes.putAll(tmp_nodes);
         populate();
+        mapView.postInvalidate();
     }
     
     @Override
@@ -309,5 +310,13 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
         }
         
         return isRecycled;
+    }
+
+    @Override
+    public void requeryBoundingBox() {
+        BoundingBoxE6 tmp_bb = old_box;
+        this.nodes.clear();
+        old_box = null;
+        getNodes(tmp_bb);
     }
 }
