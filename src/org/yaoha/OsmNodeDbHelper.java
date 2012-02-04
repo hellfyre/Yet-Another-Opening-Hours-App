@@ -13,11 +13,12 @@ import android.util.Log;
 
 public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInterface<OsmNode>, NodesQueryInterface<Integer, OsmNode> {
     private static final String DATABASE_NAME = "osm_node.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String nodesTableName = "nodes";
     private static final String nodesTablePrimaryKey = "node_id";
     private static final String nodesTableLatitude = "lat";
     private static final String nodesTableLongitude = "lon";
+    private static final String nodesTableVersion = "version";
     private static final String nodesAttributesTableName = "nodes_attr";
     private static final String nodesAttributesTableKey = "key";
     private static final String nodesAttributesTableValue = "value";
@@ -46,7 +47,8 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + nodesTableName + " (" + nodesTablePrimaryKey + " INTEGER PRIMARY KEY NOT NULL, "
                 + nodesTableLatitude + " INTEGER NOT NULL, "
-                + nodesTableLongitude + " INTEGER NOT NULL);");
+                + nodesTableLongitude + " INTEGER NOT NULL, "
+                + nodesTableVersion + " INTEGER NOT NULL);");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + nodesAttributesTableName + " (" + nodesTablePrimaryKey + " INTEGER NOT NULL, "
                 + nodesAttributesTableKey + " TEXT NOT NULL, "
                 + nodesAttributesTableValue + " TEXT, "
@@ -151,6 +153,7 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     }
     
     public void put(OsmNode node, boolean hasBeenEdited) {
+        // TODO only perform update if version is newer or has been edited
         SQLiteDatabase db = getWritableDatabase();
         
         Cursor c = db.query(nodesTableName, null, nodesTablePrimaryKey + " = ?", new String[] {"" + node.getID()}, null, null, null);
@@ -161,6 +164,7 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
         cv.put(nodesTablePrimaryKey, node.getID());
         cv.put(nodesTableLatitude, node.getLatitudeE6());
         cv.put(nodesTableLongitude, node.getLongitudeE6());
+        cv.put(nodesTableVersion, node.getVersion());
         if (!isUpdate)
             db.insert(nodesTableName, null, cv);
         else
@@ -194,11 +198,12 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
         int keyIndex = c.getColumnIndexOrThrow(nodesTablePrimaryKey);
         int latIndex = c.getColumnIndexOrThrow(nodesTableLatitude);
         int lonIndex = c.getColumnIndexOrThrow(nodesTableLongitude);
+        int verIndex = c.getColumnIndexOrThrow(nodesTableVersion);
         int id = c.getInt(keyIndex);
         int latitude = c.getInt(latIndex);
         int longitude = c.getInt(lonIndex);
-        // TODO: dirty hack, save version in db
-        return new OsmNode(id, latitude, longitude, 0);
+        int version = c.getInt(verIndex);
+        return new OsmNode(id, latitude, longitude, version);
     }
     
     private void addAttributesToNode(OsmNode node) {

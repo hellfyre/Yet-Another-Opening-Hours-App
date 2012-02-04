@@ -121,6 +121,10 @@ public class OsmNode {
     public int getLongitudeE6() {
         return longitudeE6;
     }
+    
+    public int getVersion() {
+        return this.version;
+    }
 
     public String getName() {
         return getAttribute("name");
