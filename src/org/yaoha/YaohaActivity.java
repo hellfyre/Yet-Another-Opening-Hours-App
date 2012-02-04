@@ -76,8 +76,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
         text_fav_6.setText(R.string.add_favorite);
 
 
-        Button debugButton = (Button) findViewById(R.id.buttonDebugView);
-        debugButton.setOnClickListener(this);
         startButton = (Button) findViewById(R.id.button_start);
         startButton.setOnClickListener(this);
         button_favorite_1 = (ImageButton) findViewById(R.id.button_fav_1);
@@ -246,10 +244,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
     
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.buttonDebugView) {
-            Intent intent = new Intent(this, DebugActivity.class);
-            startActivity(intent);
-        }
         if(v.getId() == R.id.button_start) {
             MultiAutoCompleteTextView textView = (MultiAutoCompleteTextView) findViewById(R.id.searchTextfield);
             searchMapWithKey(textView.getText());

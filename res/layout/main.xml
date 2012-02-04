@@ -24,12 +24,6 @@
             android:layout_height="wrap_content"
             android:text="@string/start" />
 
-        <Button
-            android:id="@+id/buttonDebugView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Debug View" />
-
     </LinearLayout>
 
 
