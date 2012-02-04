@@ -41,7 +41,7 @@ public class ApiConnector {
     
     public ApiConnector() {
         // This is, what makes the DefaultHttpClient choose basic auth over digest auth
-        // TODO: Remove as soon as OAuth works
+        // TODO: Remove Interceptor soon as OAuth works
         HttpRequestInterceptor preemptiveAuth = new HttpRequestInterceptor() {
             public void process(final org.apache.http.HttpRequest request, final HttpContext context) throws HttpException, IOException {
                 AuthState authState = (AuthState) context.getAttribute(ClientContext.TARGET_AUTH_STATE);
@@ -60,7 +60,7 @@ public class ApiConnector {
             }
         };
         client = new DefaultHttpClient();
-        // TODO: Remove as soon as OAuth works
+        // TODO: Remove the following two lines soon as OAuth works
         client.addRequestInterceptor(preemptiveAuth, 0);
         client.getCredentialsProvider().setCredentials(new AuthScope(apiUrl, 80), new UsernamePasswordCredentials(username, password));
     }
