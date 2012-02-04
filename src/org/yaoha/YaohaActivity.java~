@@ -46,13 +46,16 @@ public class YaohaActivity extends Activity implements OnClickListener {
     TextView text_fav_1, text_fav_2, text_fav_3, text_fav_4, text_fav_5, text_fav_6;
     final static int SELECT_PICTURE = 1;
     Uri selectedImageUri;
-
+<<<<<<< HEAD
+    
+=======
     private SharedPreferences prefs;
     private static OAuthConsumer OSMconsumer = new CommonsHttpOAuthConsumer("LXhdgmfvvoGRmVCc0EPZajUS8458AXYZ2615f9hs", "ZTfY5iYZ8Lszgy6DtRh0b258qciz4aYm1XnMciDi");
     private static OAuthProvider OSMprovider = new CommonsHttpOAuthProvider(
             "http://www.openstreetmap.org/oauth/request_token",
             "http://www.openstreetmap.org/oauth/access_token",
             "http://www.openstreetmap.org/oauth/authorize");
+>>>>>>> major OAuth remake, oauth now works
     private static final String[] SHOP_TYPES = new String[] {
         "groceries", "computer", "sport", "clothes", "gas station"
     };
@@ -111,11 +114,27 @@ public class YaohaActivity extends Activity implements OnClickListener {
             startButton.performClick();
         }
         
+//        SharedPreferences settings = getSharedPreferences("MyPrefsFile", 0);
+//        OSM_TOKEN = settings.getString("osm_token", "NULL");
+//        OSM_SECRET_TOKEN = settings.getString("osm_secret", "NULL");
+//        if (!OSM_TOKEN.equals("NULL")){
+//            Toast.makeText(this, "OSM-Tokens found", Toast.LENGTH_LONG).show();
+//        }
         
         OsmNodeDbHelper.create(getApplicationContext());
     }
     
-   
+//    @Override
+//    protected void onStop() {
+//        SharedPreferences settings = getSharedPreferences("MyPrefsFile", 0);
+//        SharedPreferences.Editor editor = settings.edit();
+//        editor.putString("osm_token", OSM_TOKEN);
+//        editor.putString("osm_secret", OSM_SECRET_TOKEN);
+//        
+//        editor.commit();
+//        super.onStop();
+//    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -123,7 +142,26 @@ public class YaohaActivity extends Activity implements OnClickListener {
         return true;
     }
     
-
+<<<<<<< HEAD
+=======
+//    public static OAuthConsumer getConsumer(){
+//        return OSMconsumer;
+//    }
+//    
+//    public static void setConsumer(OAuthConsumer consumer){
+//        OSMconsumer = consumer;
+//    }
+//    
+//    public static OAuthProvider getProvider(){
+//        return OSMprovider;
+//    }
+//    
+//    public static void setProvider(OAuthProvider provider){
+//        OSMprovider = provider;
+//    }
+    
+    
+>>>>>>> major OAuth remake, oauth now works
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -177,6 +215,14 @@ public class YaohaActivity extends Activity implements OnClickListener {
             String bla = test4;
         }
     }
+    
+//    public static void setToken(String token) {
+//        OSM_TOKEN = token;
+//    }
+//    
+//    public static void setSecretToken(String sToken){
+//        OSM_SECRET_TOKEN = sToken;
+//    }
     
     
     @Override

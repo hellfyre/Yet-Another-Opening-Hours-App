@@ -26,8 +26,20 @@ public class OSMSettingsActivity extends Activity implements android.view.View.O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.osmsettings);
-
+<<<<<<< HEAD
+        Button setOSM = (Button) findViewById(R.id.button_set_osm);
+        osmtoken = (TextView) findViewById(R.id.textView_osm_token_text);
+        osmsecrettoken = (TextView) findViewById(R.id.textView_osm_secret_token_text);
+        osmaccesstoken = (TextView) findViewById(R.id.textView_osm_access_token_text);
+        try {
+            setOSM.setOnClickListener(this);
+        } catch (Exception e) {
+            String bla = e.getMessage();
+            String bla2 = bla;
+        }
+=======
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+>>>>>>> major OAuth remake, oauth now works
         
         console = (TextView) findViewById(R.id.text_console);
         
@@ -57,13 +69,22 @@ public class OSMSettingsActivity extends Activity implements android.view.View.O
         }
     }
     
-
+<<<<<<< HEAD
+    public void registerToOSM(){
+        try {
+            String uri = helper.getRequestToken();
+            startActivity(new Intent("android.intent.action.VIEW", Uri.parse(uri)));
+        } catch (Exception e) {
+            e.getMessage();
+        }
+=======
     private void clearCredentials() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         final Editor edit = prefs.edit();
         edit.remove(OAuth.OAUTH_TOKEN);
         edit.remove(OAuth.OAUTH_TOKEN_SECRET);
         edit.commit();
+>>>>>>> major OAuth remake, oauth now works
     }
     
     private boolean isOAuthSuccessful() {

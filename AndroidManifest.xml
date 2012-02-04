@@ -27,12 +27,13 @@
         <activity android:name=".YaohaMapActivity"></activity>
         <activity android:name=".NodeActivity"></activity>
         <activity android:name=".NodeEditActivity"></activity>
-        <activity android:name=".OSMSettingsActivity">
-            <intent-filter> 
+        <activity android:name=".OSMSettingsActivity"></activity>
+        <activity android:name=".RequestTokenActivity" android:launchMode="singleTask">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="osm-login"/>
+                <data android:scheme="osm-login" android:host="yaoha.org" />
             </intent-filter>
         </activity>
     </application>
