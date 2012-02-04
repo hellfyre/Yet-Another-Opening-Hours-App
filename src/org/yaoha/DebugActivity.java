@@ -144,4 +144,10 @@ public class DebugActivity extends Activity implements OnClickListener, NodeRece
     public void put(OsmNode value) {
         this.currentNode = value;
     }
+
+    @Override
+    public void requeryBoundingBox() {
+        // TODO Auto-generated method stub
+        
+    }
 }
