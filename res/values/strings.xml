@@ -33,5 +33,6 @@
     <string name="osm_token">Your Token:</string>
     <string name="osm_secret_token">Your Secret Token:</string>
     <string name="osm_access_token">Your Access Token:</string>
+    <string name="remove_osm_account">Remove Account</string>
 
 </resources>

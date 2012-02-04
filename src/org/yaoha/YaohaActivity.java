@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
-import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
+
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,7 +37,6 @@ import android.widget.Toast;
 
 public class YaohaActivity extends Activity implements OnClickListener {
     Button startButton;
-    static String OSM_TOKEN = "", OSM_SECRET_TOKEN = "";
     ImageButton button_favorite_1, button_favorite_2, button_favorite_3, button_favorite_4, button_favorite_5, button_favorite_6;
     ImageButton actualButton;
     final static String EDIT_FAV_STRING = "edit favorite";
@@ -46,11 +45,8 @@ public class YaohaActivity extends Activity implements OnClickListener {
     TextView text_fav_1, text_fav_2, text_fav_3, text_fav_4, text_fav_5, text_fav_6;
     final static int SELECT_PICTURE = 1;
     Uri selectedImageUri;
-    private static OAuthConsumer OSMconsumer = new CommonsHttpOAuthConsumer("LXhdgmfvvoGRmVCc0EPZajUS8458AXYZ2615f9hs", "ZTfY5iYZ8Lszgy6DtRh0b258qciz4aYm1XnMciDi");
-    private static OAuthProvider OSMprovider = new CommonsHttpOAuthProvider(
-            "http://www.openstreetmap.org/oauth/request_token",
-            "http://www.openstreetmap.org/oauth/access_token",
-            "http://www.openstreetmap.org/oauth/authorize");
+
+    private SharedPreferences prefs;
     private static final String[] SHOP_TYPES = new String[] {
         "groceries", "computer", "sport", "clothes", "gas station"
     };
@@ -109,27 +105,11 @@ public class YaohaActivity extends Activity implements OnClickListener {
             startButton.performClick();
         }
         
-        SharedPreferences settings = getSharedPreferences("MyPrefsFile", 0);
-        OSM_TOKEN = settings.getString("osm_token", "NULL");
-        OSM_SECRET_TOKEN = settings.getString("osm_secret", "NULL");
-//        if (!OSM_TOKEN.equals("NULL")){
-//            Toast.makeText(this, "OSM-Tokens found", Toast.LENGTH_LONG).show();
-//        }
         
         OsmNodeDbHelper.create(getApplicationContext());
     }
     
-    @Override
-    protected void onStop() {
-        SharedPreferences settings = getSharedPreferences("MyPrefsFile", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("osm_token", OSM_TOKEN);
-        editor.putString("osm_secret", OSM_SECRET_TOKEN);
-        
-        editor.commit();
-        super.onStop();
-    }
-    
+   
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -137,23 +117,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
         return true;
     }
     
-    public static OAuthConsumer getConsumer(){
-        return OSMconsumer;
-    }
-    
-    public static void setConsumer(OAuthConsumer consumer){
-        OSMconsumer = consumer;
-    }
-    
-    public static OAuthProvider getProvider(){
-        return OSMprovider;
-    }
-    
-    public static void setProvider(OAuthProvider provider){
-        OSMprovider = provider;
-    }
-    
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -180,42 +144,17 @@ public class YaohaActivity extends Activity implements OnClickListener {
     }
     
     
-/*    private void registerOSM() {
-        Toast.makeText(this, "Fetching request token...", Toast.LENGTH_SHORT).show();
-        String authUrl = "";
-        String errorOSMToken = "";
-        try {
-            authUrl = OSMprovider.retrieveRequestToken(OSMconsumer, OAuth.OUT_OF_BAND);
-      } catch (Exception e) {
-          errorOSMToken = e.getMessage();
-      };
-
-        this.OSM_TOKEN = OSMconsumer.getToken();
-        this.OSM_SECRET_TOKEN = OSMconsumer.getTokenSecret();
-
-        Intent viewIntent = new Intent("android.intent.action.VIEW", Uri.parse(authUrl));
-        startActivity(viewIntent);
-      
-        Toast.makeText(this, "Fetching access token...", Toast.LENGTH_SHORT).show();
-        
-        try {
-            OSMprovider.retrieveAccessToken(OSMconsumer, pinCode);
-        } catch (Exception e) {
-          e.getMessage();
-        }
-        
-        this.OSM_TOKEN = OSMconsumer.getToken();
-        this.OSM_SECRET_TOKEN = OSMconsumer.getTokenSecret();
-    }*/
-    
-    
     private void connectToOSM(){
         URL url = null;
         HttpURLConnection request = null;
+        OAuthConsumer OSMconsumer = new CommonsHttpOAuthConsumer("LXhdgmfvvoGRmVCc0EPZajUS8458AXYZ2615f9hs", "ZTfY5iYZ8Lszgy6DtRh0b258qciz4aYm1XnMciDi");  ;
         
-        OSMconsumer.setTokenWithSecret(OSM_TOKEN, OSM_SECRET_TOKEN);
+        String token = prefs.getString(OAuth.OAUTH_TOKEN, null);
+        String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, null);
+        
+        OSMconsumer.setTokenWithSecret(token, secret);
         try {
-            url = new URL("http://openstreetmap.de/karte.html");
+            url = new URL("http://openstreetmap.org");
 
         
             request = (HttpURLConnection) url.openConnection();
@@ -226,19 +165,11 @@ public class YaohaActivity extends Activity implements OnClickListener {
             request.connect();
     
             
-            Toast.makeText(this, "Response: " + request.getResponseCode() + " " + request.getResponseMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Response: " + request.getResponseCode() + " " + request.getResponseMessage(), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             String test4 = e.getMessage();
-            Toast.makeText(this, test4, Toast.LENGTH_LONG).show();
+            String bla = test4;
         }
-    }
-    
-    public static void setToken(String token) {
-        OSM_TOKEN = token;
-    }
-    
-    public static void setSecretToken(String sToken){
-        OSM_SECRET_TOKEN = sToken;
     }
     
     
