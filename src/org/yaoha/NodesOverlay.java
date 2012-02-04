@@ -54,6 +54,13 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
     void getNodes(BoundingBoxE6 bb) {
         Map<Integer, OsmNode> tmp_nodes = new HashMap<Integer, OsmNode>();
         
+        // get a little more ballons than we can display by expanding bb
+        float fractional = YaohaMapListener.mapOversize;
+        bb = new BoundingBoxE6((int)(bb.getLatNorthE6() + fractional * bb.getLatitudeSpanE6()),
+                (int)(bb.getLonEastE6() + fractional * bb.getLonEastE6()),
+                (int)(bb.getLatSouthE6() - fractional * bb.getLatitudeSpanE6()),
+                (int)(bb.getLonWestE6() - fractional * bb.getLongitudeSpanE6()));
+        
         Map<Direction, Boolean> bbox_stats = YaohaMapListener.getBoundingBoxMove(old_box, bb);
         if (bbox_stats != null) {
             // moved north
