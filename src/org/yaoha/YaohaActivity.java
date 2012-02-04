@@ -1,9 +1,7 @@
 package org.yaoha;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -39,7 +37,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class YaohaActivity extends Activity implements OnClickListener {
-    Button mapButton;
     Button startButton;
     static String OSM_TOKEN = "", OSM_SECRET_TOKEN = "";
     ImageButton button_favorite_1, button_favorite_2, button_favorite_3, button_favorite_4, button_favorite_5, button_favorite_6;
@@ -47,7 +44,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
     final static String EDIT_FAV_STRING = "edit favorite";
     final static String EDIT_FAV_PIC = "edit picture";
     final static String REMOVE_FAV = "remove favorite";
-    OAuthHelper helper = new OAuthHelper();
     TextView text_fav_1, text_fav_2, text_fav_3, text_fav_4, text_fav_5, text_fav_6;
     final static int SELECT_PICTURE = 1;
     Uri selectedImageUri;
@@ -152,9 +148,8 @@ public class YaohaActivity extends Activity implements OnClickListener {
                 Toast.makeText(this, "You just payed 49,99€. Enjoy this Pro-Version!", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.setOSM:
-//                Intent intent = new Intent(this, OSMSettingsActivity.class);
-//                startActivity(intent);
-                registerToOSM();
+                Intent intent = new Intent(this, OSMSettingsActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.connectToOSM:
                 connectToOSM();
@@ -192,15 +187,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
         this.OSM_TOKEN = OSMconsumer.getToken();
         this.OSM_SECRET_TOKEN = OSMconsumer.getTokenSecret();
     }*/
-
-    public void registerToOSM(){
-        try {
-            String uri = helper.getRequestToken();
-            startActivity(new Intent("android.intent.action.VIEW", Uri.parse(uri)));
-        } catch (Exception e) {
-            e.getMessage();
-        }
-    }
     
     
     private void connectToOSM(){
