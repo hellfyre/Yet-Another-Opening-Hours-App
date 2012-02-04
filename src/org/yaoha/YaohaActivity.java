@@ -7,9 +7,8 @@ import java.net.URL;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
-import oauth.signpost.OAuthProvider;
-import oauth.signpost.basic.DefaultOAuthConsumer;
-import oauth.signpost.basic.DefaultOAuthProvider;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -48,11 +47,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
     Uri selectedImageUri;
 
     private SharedPreferences prefs;
-    private static OAuthConsumer OSMconsumer = new CommonsHttpOAuthConsumer("LXhdgmfvvoGRmVCc0EPZajUS8458AXYZ2615f9hs", "ZTfY5iYZ8Lszgy6DtRh0b258qciz4aYm1XnMciDi");
-    private static OAuthProvider OSMprovider = new CommonsHttpOAuthProvider(
-            "http://www.openstreetmap.org/oauth/request_token",
-            "http://www.openstreetmap.org/oauth/access_token",
-            "http://www.openstreetmap.org/oauth/authorize");
     private static final String[] SHOP_TYPES = new String[] {
         "groceries", "computer", "sport", "clothes", "gas station"
     };
@@ -153,7 +147,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
     private void connectToOSM(){
         URL url = null;
         HttpURLConnection request = null;
-        OAuthConsumer OSMconsumer = new DefaultOAuthConsumer("LXhdgmfvvoGRmVCc0EPZajUS8458AXYZ2615f9hs", "ZTfY5iYZ8Lszgy6DtRh0b258qciz4aYm1XnMciDi");  ;
+        OAuthConsumer OSMconsumer = new CommonsHttpOAuthConsumer("LXhdgmfvvoGRmVCc0EPZajUS8458AXYZ2615f9hs", "ZTfY5iYZ8Lszgy6DtRh0b258qciz4aYm1XnMciDi");  ;
         
         String token = prefs.getString(OAuth.OAUTH_TOKEN, null);
         String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, null);
