@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +31,7 @@ public class OSMSettingsActivity extends Activity implements OnClickListener{
             setOSM.setOnClickListener(this);
         } catch (Exception e) {
             String bla = e.getMessage();
-            Toast.makeText(this, bla, Toast.LENGTH_LONG);
+            String bla2 = bla;
         }
         
     }
@@ -66,10 +67,7 @@ public class OSMSettingsActivity extends Activity implements OnClickListener{
     public void registerToOSM(){
         try {
             String uri = helper.getRequestToken();
-            Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(uri));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY); //TODO WHY YOU NO WORK?
-            startActivity(intent);
-            this.finish();
+            startActivity(new Intent("android.intent.action.VIEW", Uri.parse(uri)));
         } catch (Exception e) {
             e.getMessage();
         }
