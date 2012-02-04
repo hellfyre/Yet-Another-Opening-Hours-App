@@ -17,6 +17,7 @@ public class OsmNodeUploadTask extends AsyncTask<OsmNode, Void, String> {
     OsmNode currentNode;
     ApiConnector connector;
     String changesetId;
+    OsmNodeUploadListener receiver;
 
     @Override
     protected String doInBackground(OsmNode... params) {
@@ -45,10 +46,9 @@ public class OsmNodeUploadTask extends AsyncTask<OsmNode, Void, String> {
             return "Something went horribly wrong! Call your doctor, pack your bags and leave town!";
         }
         
-        //HttpResponse uploadResponse = null;
+        HttpResponse uploadResponse = null;
         try {
-            //uploadResponse = connector.putNode(changesetId, currentNode);
-            connector.putNode(changesetId, currentNode);
+            uploadResponse = connector.putNode(changesetId, currentNode);
         } catch (ClientProtocolException e) {
             return "Uploading node failed";
         } catch (IOException e) {
@@ -59,6 +59,16 @@ public class OsmNodeUploadTask extends AsyncTask<OsmNode, Void, String> {
             return "Uploading node failed: Couldn't serialize node object";
         }
         
+        if (uploadResponse.getStatusLine().getStatusCode() != 200) {
+            String uploadResponseString = "";
+            try {
+                uploadResponseString = inputStreamToString(uploadResponse.getEntity().getContent());
+            } catch (Exception e) {
+                return "Exception";
+            }
+            return uploadResponseString;
+        }
+        
         try {
             connector.closeChangeset(changesetId);
         } catch (Exception e) {
@@ -67,7 +77,20 @@ public class OsmNodeUploadTask extends AsyncTask<OsmNode, Void, String> {
             return "Creation of changeset failed";
         }
         
-        return null;
+        return "Successfully uploaded node";
+    }
+    
+    public void addReceiver(OsmNodeUploadListener receiver) {
+        // There'll be only one receiver anyhow
+        if (this.receiver == null) {
+            this.receiver = receiver;
+        }
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        super.onPostExecute(result);
+        receiver.onNodeUploaded(result);
     }
 
     private String inputStreamToString(InputStream in) throws IOException {
