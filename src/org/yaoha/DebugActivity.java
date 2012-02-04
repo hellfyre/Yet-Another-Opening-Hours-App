@@ -45,7 +45,7 @@ public class DebugActivity extends Activity implements OnClickListener, NodeRece
         case R.id.debugButtonGetNode:
             InputStream response = null;
             try {
-                response = connector.getNodes(ApiConnector.getRequestUriDevApiGetNode("270066849"));
+                response = connector.getNodes(ApiConnector.getRequestUriApiGetNode("270066849"));
             } catch (ClientProtocolException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -53,6 +53,7 @@ public class DebugActivity extends Activity implements OnClickListener, NodeRece
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
+            /*
             OsmXmlParser parser = new OsmXmlParser();
             parser.parse(response, this);
             output.append("---------- get node ----------" + "\n");
@@ -65,6 +66,16 @@ public class DebugActivity extends Activity implements OnClickListener, NodeRece
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
+            */
+            output.append("----- get xml rep of node -----");
+            String fooNode = "";
+            try {
+                fooNode = inputStreamToString(response);
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            output.append(fooNode);
             break;
         case R.id.debugButtonCreateChangeset:
             try {
@@ -83,11 +94,17 @@ public class DebugActivity extends Activity implements OnClickListener, NodeRece
             String updatedNode = "";
             currentNode.setName(currentNode.getName() + " foobar");
             try {
-                updatedNode = inputStreamToString(connector.uploadNode(ApiConnector.getRequestUriDevApiUpdateNode(String.valueOf(currentNode.getID())), changesetId, currentNode));
+                updatedNode = inputStreamToString(connector.putNode(changesetId, currentNode));
             } catch (ClientProtocolException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ParserConfigurationException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (TransformerException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }

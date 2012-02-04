@@ -34,14 +34,14 @@ import android.util.Log;
 
 public class ApiConnector {
     DefaultHttpClient client;
-    private static final String apiUrl = "api.openstreetmap.org";
-    private static final String devApiIp = "192.168.20.133";
-    private static final int devApiPort = 3000;
+    private static final String apiUrl = "home.uschok.de";
     private static final String xapiUrl = "www.overpass-api.de";
     private static String username = "foobar";
-    private static String password = "baz-word";
+    private static String password = "foobarbaz";
     
     public ApiConnector() {
+        // This is, what makes the DefaultHttpClient choose basic auth over digest auth
+        // TODO: Remove as soon as OAuth works
         HttpRequestInterceptor preemptiveAuth = new HttpRequestInterceptor() {
             public void process(final org.apache.http.HttpRequest request, final HttpContext context) throws HttpException, IOException {
                 AuthState authState = (AuthState) context.getAttribute(ClientContext.TARGET_AUTH_STATE);
@@ -60,8 +60,9 @@ public class ApiConnector {
             }
         };
         client = new DefaultHttpClient();
+        // TODO: Remove as soon as OAuth works
         client.addRequestInterceptor(preemptiveAuth, 0);
-        client.getCredentialsProvider().setCredentials(new AuthScope(devApiIp, devApiPort), new UsernamePasswordCredentials(username, password));
+        client.getCredentialsProvider().setCredentials(new AuthScope(apiUrl, 80), new UsernamePasswordCredentials(username, password));
     }
     
     public InputStream getNodes(URI uri) throws ClientProtocolException, IOException {
@@ -71,43 +72,38 @@ public class ApiConnector {
         return in;
     }
     
-    public InputStream putNodes(URI uri) {
-        InputStream in = null;
-        return in;
-    }
-    
     public InputStream createNewChangeset() throws ClientProtocolException, IOException {
         URI uri = null;
         try {
-            uri = new URI("http", null, devApiIp, devApiPort, "/api/0.6/changeset/create", null, null);
+            uri = new URI("http", apiUrl, "/api/0.6/changeset/create", null, null);
         } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.e(ApiConnector.class.getSimpleName(), "Creating new changeset failed:");
+            Log.e(ApiConnector.class.getSimpleName(), e.getMessage());
         }
         HttpPut request = new HttpPut(uri);
         String requestString = "<osm>"
                 + "<changeset>"
                 + "<tag k=\"created_by\" v=\"YAOHA\"/>"
                 + "<tag k=\"comment\" v=\"Updating opening hours\"/>"
-                + "</changeset>" + "</osm>";
+                + "</changeset>"
+                + "</osm>";
         HttpEntity entity = new StringEntity(requestString);
         request.setEntity(entity);
         HttpResponse response = client.execute(request);
         return response.getEntity().getContent();
     }
     
-    public InputStream uploadNode(URI uri, String changesetId, OsmNode node) throws ClientProtocolException, IOException {
+    public InputStream putNode(String changesetId, OsmNode node) throws ClientProtocolException, IOException, ParserConfigurationException, TransformerException {
+        URI uri = null;
+        try {
+            uri = new URI("http", apiUrl, "/api/0.6/node/" + String.valueOf(node.getID()), null);
+        } catch (URISyntaxException e) {
+            Log.e(ApiConnector.class.getSimpleName(), "Uploading node " + String.valueOf(node.getID()) + " failed:");
+            Log.e(ApiConnector.class.getSimpleName(), e.getMessage());
+        } 
         HttpPut request = new HttpPut(uri);
         String requestString = "";
-        try {
-            requestString = node.serialize(changesetId);
-        } catch (ParserConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (TransformerException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        requestString = node.serialize(changesetId);
         HttpEntity entity = new StringEntity(requestString);
         request.setEntity(entity);
         HttpResponse response = client.execute(request);
@@ -117,10 +113,10 @@ public class ApiConnector {
     public InputStream closeChangeset(String changesetId) throws ClientProtocolException, IOException {
         URI uri = null;
         try {
-            uri = new URI("http", null, devApiIp, devApiPort, "/api/0.6/changeset/" + changesetId + "/close", null, null);
+            uri = new URI("http", apiUrl, "/api/0.6/changeset/" + changesetId + "/close", null, null);
         } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.e(ApiConnector.class.getSimpleName(), "Closing changeset " + changesetId + " failed:");
+            Log.e(ApiConnector.class.getSimpleName(), e.getMessage());
         }
         HttpPut request = new HttpPut(uri);
         HttpResponse response = client.execute(request);
@@ -174,28 +170,6 @@ public class ApiConnector {
             Log.d(ApiConnector.class.getSimpleName(), e.getMessage());
         }
         
-        return uri;
-    }
-    
-    public static URI getRequestUriDevApiGetNode(String id) {
-        URI uri = null;
-        try {
-            uri = new URI("http", null, devApiIp, devApiPort, "/api/0.6/node/" + id, null, null);
-        } catch (URISyntaxException e) {
-            Log.d(ApiConnector.class.getSimpleName(), e.getMessage());
-        }
-        
-        return uri;
-    }
-    
-    public static URI getRequestUriDevApiUpdateNode(String nodeId) {
-        URI uri = null;
-        try {
-            uri = new URI("http", null, devApiIp, devApiPort, "/api/0.6/node/" + nodeId, null, null);
-        } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         return uri;
     }
 
