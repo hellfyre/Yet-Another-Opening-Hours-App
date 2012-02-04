@@ -64,6 +64,7 @@ public class OsmNodeRetrieverTask extends AsyncTask<Void, Void, Void> {
     }
     
     public void addTask(URI uri) {
+        Log.d(OsmNodeRetrieverTask.class.getSimpleName(), "Added request: " + uri.toString());
         synchronized (queue) {
             queue.add(uri);
         }
