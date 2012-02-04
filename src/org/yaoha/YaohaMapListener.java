@@ -98,10 +98,9 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
             return;
         }
         
-        boundingBox = new BoundingBoxE6((int)(bbox.getLatNorthE6() + (1+mapOversize) * bbox.getLatitudeSpanE6()),
-                (int)(bbox.getLonEastE6() + (1+mapOversize) * bbox.getLongitudeSpanE6()),
-                (int)(bbox.getLatSouthE6() - (1+mapOversize) * bbox.getLatitudeSpanE6()),
-                (int)(bbox.getLonWestE6() - (1+mapOversize) * bbox.getLongitudeSpanE6()));
+        // TODO fix increaseByScale()
+//        boundingBox = bbox.increaseByScale(2 + mapOversize);
+        boundingBox = bbox;
         
         queryShopsInRectangle(boundingBox.getLatNorthE6(),
                 boundingBox.getLatSouthE6(),
