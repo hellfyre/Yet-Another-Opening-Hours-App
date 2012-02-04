@@ -29,5 +29,9 @@
     <string name="emptyString"></string>
     <string name="transmitChangesString">Transmit Changes to OpenStreetMap</string>
     <string name="enableEditmode">Toggle Editmode</string>
+    <string name="set_osm">Set OSM-Account</string>
+    <string name="osm_token">Your Token:</string>
+    <string name="osm_secret_token">Your Secret Token:</string>
+    <string name="osm_access_token">Your Access Token:</string>
 
 </resources>

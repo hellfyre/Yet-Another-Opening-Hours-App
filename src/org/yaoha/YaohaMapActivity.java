@@ -37,6 +37,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
     SharedPreferences default_shared_prefs = null;
     
     boolean editMode = false;
+    YaohaMapListener mapListener;
 
     /** Called when the activity is first created. */
     @Override
@@ -58,7 +59,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         NodesOverlay no = new NodesOverlay(getResources().getDrawable(R.drawable.dontknow), new org.osmdroid.DefaultResourceProxyImpl(mapview.getContext()), this, mapview, OsmNodeDbHelper.getInstance(), search_term);
         
         mapview.getOverlays().add(no);
-        mapview.setMapListener(new YaohaMapListener(this, no));
+        mapview.setMapListener(mapListener = new YaohaMapListener(this, no));
 
         mprefs = getPreferences(MODE_PRIVATE);
         default_shared_prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -109,7 +110,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         int east = mprefs.getInt("east", bb.getLonEastE6()+1000);
         int north = mprefs.getInt("north", bb.getLatNorthE6()+1000);
         int south = mprefs.getInt("south", bb.getLatSouthE6()-1000);
-        no.getNodes(new BoundingBoxE6(north, east, south, west));
+        mapListener.update(new BoundingBoxE6(north, east, south, west));
     }
 
     @Override
@@ -177,7 +178,9 @@ public class YaohaMapActivity extends Activity implements LocationListener {
             else
                 message += "disabled";
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-            if (!editMode)
+            if (editMode)
+                mapListener.requeryBoundingBox();
+            else
                 OsmNodeDbHelper.getInstance().removeNodesWithoutOpeningHoursSet();
             return true;
         }

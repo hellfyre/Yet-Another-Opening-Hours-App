@@ -366,4 +366,8 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         });
         removeDialog(DIALOG_PROGRESS);
     }
+
+    @Override
+    public void requeryBoundingBox() {
+    }
 }
