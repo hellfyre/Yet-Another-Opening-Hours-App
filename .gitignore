@@ -1,6 +1,7 @@
 bin/
 Thumbs.db
 R.java
+.settings
 
 *.aux
 *.toc
