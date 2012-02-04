@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="org/yaoha/OAuth.java|org/yaoha/OAuthOSM.java" kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="lib" path="libs/osmdroid-android-3.0.5.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/yaoha/docs/osmdroid-android-docs-3.0.5.zip!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libs/slf4j-android-1.5.8.jar"/>
+<<<<<<< Updated upstream
+	<classpathentry kind="lib" path="libs/commons-codec-1.6/commons-codec-1.6.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/yaoha/libs/commons-codec-1.6/commons-codec-1.6-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+=======
+>>>>>>> Stashed changes
+	<classpathentry kind="lib" path="libs/signpost-core-1.2.1.1.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>
