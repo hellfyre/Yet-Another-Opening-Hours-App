@@ -98,9 +98,9 @@ public class ApiConnector {
     
     public InputStream uploadNode(URI uri, String changesetId, OsmNode node) throws ClientProtocolException, IOException {
         HttpPut request = new HttpPut(uri);
-        String requestString = "<osm>";
+        String requestString = "";
         try {
-            requestString += node.serialize(changesetId);
+            requestString = node.serialize(changesetId);
         } catch (ParserConfigurationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -108,14 +108,13 @@ public class ApiConnector {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        requestString += "</osm>";
         HttpEntity entity = new StringEntity(requestString);
         request.setEntity(entity);
         HttpResponse response = client.execute(request);
         return response.getEntity().getContent();
     }
     
-    public void closeChangeset(String changesetId) throws ClientProtocolException, IOException {
+    public InputStream closeChangeset(String changesetId) throws ClientProtocolException, IOException {
         URI uri = null;
         try {
             uri = new URI("http", null, devApiIp, devApiPort, "/api/0.6/changeset/" + changesetId + "/close", null, null);
@@ -124,7 +123,8 @@ public class ApiConnector {
             e.printStackTrace();
         }
         HttpPut request = new HttpPut(uri);
-        client.execute(request);
+        HttpResponse response = client.execute(request);
+        return response.getEntity().getContent();
     }
     
     public static List<URI> getRequestUriXapi(String longitudeLow, String latitudeLow, String longitudeHigh, String latitudeHigh, String name, String amenity, String shop, boolean edit_mode) {
