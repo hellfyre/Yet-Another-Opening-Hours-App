@@ -22,13 +22,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
+import android.widget.Toast;
 
-public class NodeEditActivity extends Activity implements OnClickListener, OnTimeChangedListener, OnCheckedChangeListener, NodeReceiverInterface<OsmNode>, OsmNodeRetrieverListener {
+public class NodeEditActivity extends Activity implements OnClickListener, OnTimeChangedListener, OnCheckedChangeListener, NodeReceiverInterface<OsmNode>, OsmNodeRetrieverListener, OsmNodeUploadListener {
     OsmNode osmNode = null;
     boolean rangeComplete = false;
     boolean insideOnTimeChangedCallback = false;
     static final int DIALOG_HOUR_RANGE = 0;
-    static final int DIALOG_PROGRESS = 1;
+    static final int DIALOG_DOWNLOAD_PROGRESS = 1;
+    static final int DIALOG_UPLOAD_PROGRESS = 2;
     private boolean[] weekDaysChecked = new boolean[7];
     View rootView;
     static final int[] boxesMoFr = {
@@ -70,7 +72,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         int nodeId = intent.getExtras().getInt("id");
         URI requestUri = ApiConnector.getRequestUriApiGetNode(String.valueOf(nodeId));
         if (requestUri != null) {
-            showDialog(DIALOG_PROGRESS);
+            showDialog(DIALOG_DOWNLOAD_PROGRESS);
             OsmNodeRetrieverTask retrieverTask = new OsmNodeRetrieverTask(requestUri, this);
             retrieverTask.addListener(this);
             retrieverTask.execute();
@@ -119,15 +121,19 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             }
             break;
         case R.id.buttonTransmitChanges:
+            showDialog(DIALOG_UPLOAD_PROGRESS);
             osmNode.setOpening_hours(osmNode.getPointerToOpeningHours().compileOpeningHoursString());
             try {
-                String xml_ouput = osmNode.serialize();
+                //String xml_ouput = osmNode.serialize();
                 OsmNodeDbHelper.getInstance().put(osmNode, true);
                 // TODO transmit xml_output to OSM
             }
             catch (Exception e) {
                 Log.d(this.getClass().getSimpleName(), "A node could not be converted into xml and be sent to osm");
             }
+            OsmNodeUploadTask uploadTask = new OsmNodeUploadTask();
+            uploadTask.addReceiver(this);
+            uploadTask.execute(osmNode);
             break;
 
         default:
@@ -240,11 +246,16 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             Button dialogOk = (Button) dialog.findViewById(R.id.buttonDialogOk);
             dialogOk.setOnClickListener(this);
             return dialog;
-        case DIALOG_PROGRESS:
+        case DIALOG_DOWNLOAD_PROGRESS:
             ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Retrieving node ...");
             progressDialog.setIndeterminate(true);
             return progressDialog;
+        case DIALOG_UPLOAD_PROGRESS:
+            ProgressDialog uploadDialog = new ProgressDialog(this);
+            uploadDialog.setMessage("Uploading node ...");
+            uploadDialog.setIndeterminate(true);
+            return uploadDialog;
 
         default:
             return null;
@@ -364,10 +375,17 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
                 populateUiElementesWithOpeningHours();
             }
         });
-        removeDialog(DIALOG_PROGRESS);
+        removeDialog(DIALOG_DOWNLOAD_PROGRESS);
     }
 
     @Override
     public void requeryBoundingBox() {
+    }
+
+    @Override
+    public void onNodeUploaded(String result) {
+        removeDialog(DIALOG_UPLOAD_PROGRESS);
+        Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+        Log.e("UPLOADRESULT", result);
     }
 }

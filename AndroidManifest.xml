@@ -36,6 +36,7 @@
                 <data android:scheme="osm-login" android:host="yaoha.org" />
             </intent-filter>
         </activity>
+        <activity android:name=".DebugActivity"></activity>
     </application>
 
 </manifest>

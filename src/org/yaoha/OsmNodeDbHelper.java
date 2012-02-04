@@ -197,7 +197,8 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
         int id = c.getInt(keyIndex);
         int latitude = c.getInt(latIndex);
         int longitude = c.getInt(lonIndex);
-        return new OsmNode(id, latitude, longitude);
+        // TODO: dirty hack, save version in db
+        return new OsmNode(id, latitude, longitude, 0);
     }
     
     private void addAttributesToNode(OsmNode node) {

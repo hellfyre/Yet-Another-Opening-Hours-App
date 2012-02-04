@@ -35,12 +35,14 @@ public class OsmXmlHandler extends DefaultHandler {
                 String id = "";
                 String latitude = "";
                 String longitude = "";
+                String version = "";
                 for (int i=0; i < attributes.getLength(); i++) {
                     if (attributes.getQName(i).equals("id")) id = attributes.getValue(i);
                     else if (attributes.getQName(i).equals("lat")) latitude = attributes.getValue(i);
                     else if (attributes.getQName(i).equals("lon")) longitude = attributes.getValue(i);
+                    else if (attributes.getQName(i).equals("version")) version = attributes.getValue(i);
                 }
-                currentNode = new OsmNode(id, latitude, longitude);
+                currentNode = new OsmNode(id, latitude, longitude, version);
                 if (timestamp != null) {
                     while (timestamp.contains("\\")) {
                         timestamp = timestamp.replace("\\", "");
