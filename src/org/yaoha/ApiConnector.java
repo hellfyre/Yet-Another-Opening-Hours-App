@@ -65,14 +65,12 @@ public class ApiConnector {
         client.getCredentialsProvider().setCredentials(new AuthScope(apiUrl, 80), new UsernamePasswordCredentials(username, password));
     }
     
-    public InputStream getNodes(URI uri) throws ClientProtocolException, IOException {
+    public HttpResponse getNodes(URI uri) throws ClientProtocolException, IOException {
         HttpGet request = new HttpGet(uri);
-        HttpResponse response = client.execute(request);
-        InputStream in = response.getEntity().getContent();
-        return in;
+        return client.execute(request);
     }
     
-    public InputStream createNewChangeset() throws ClientProtocolException, IOException {
+    public HttpResponse createNewChangeset() throws ClientProtocolException, IOException {
         URI uri = null;
         try {
             uri = new URI("http", apiUrl, "/api/0.6/changeset/create", null, null);
@@ -89,11 +87,10 @@ public class ApiConnector {
                 + "</osm>";
         HttpEntity entity = new StringEntity(requestString);
         request.setEntity(entity);
-        HttpResponse response = client.execute(request);
-        return response.getEntity().getContent();
+        return client.execute(request);
     }
     
-    public InputStream putNode(String changesetId, OsmNode node) throws ClientProtocolException, IOException, ParserConfigurationException, TransformerException {
+    public HttpResponse putNode(String changesetId, OsmNode node) throws ClientProtocolException, IOException, ParserConfigurationException, TransformerException {
         URI uri = null;
         try {
             uri = new URI("http", apiUrl, "/api/0.6/node/" + String.valueOf(node.getID()), null);
@@ -106,11 +103,10 @@ public class ApiConnector {
         requestString = node.serialize(changesetId);
         HttpEntity entity = new StringEntity(requestString);
         request.setEntity(entity);
-        HttpResponse response = client.execute(request);
-        return response.getEntity().getContent();
+        return client.execute(request);
     }
     
-    public InputStream closeChangeset(String changesetId) throws ClientProtocolException, IOException {
+    public HttpResponse closeChangeset(String changesetId) throws ClientProtocolException, IOException {
         URI uri = null;
         try {
             uri = new URI("http", apiUrl, "/api/0.6/changeset/" + changesetId + "/close", null, null);
@@ -119,8 +115,7 @@ public class ApiConnector {
             Log.e(ApiConnector.class.getSimpleName(), e.getMessage());
         }
         HttpPut request = new HttpPut(uri);
-        HttpResponse response = client.execute(request);
-        return response.getEntity().getContent();
+        return client.execute(request);
     }
     
     public static List<URI> getRequestUriXapi(String longitudeLow, String latitudeLow, String longitudeHigh, String latitudeHigh, String name, String amenity, String shop, boolean edit_mode) {

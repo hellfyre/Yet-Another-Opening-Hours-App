@@ -45,7 +45,7 @@ public class OsmNodeRetrieverTask extends AsyncTask<Void, Void, Void> {
             ApiConnector connector = new ApiConnector();
             InputStream in;
             try {
-                in = connector.getNodes(uri);
+                in = connector.getNodes(uri).getEntity().getContent();
             } catch (ClientProtocolException e) {
                 Log.d(OsmNodeRetrieverTask.class.getSimpleName(), e.getMessage());
                 continue;

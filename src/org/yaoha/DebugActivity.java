@@ -45,7 +45,7 @@ public class DebugActivity extends Activity implements OnClickListener, NodeRece
         case R.id.debugButtonGetNode:
             InputStream response = null;
             try {
-                response = connector.getNodes(ApiConnector.getRequestUriApiGetNode("270066849"));
+                response = connector.getNodes(ApiConnector.getRequestUriApiGetNode("270066849")).getEntity().getContent();
             } catch (ClientProtocolException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -79,7 +79,7 @@ public class DebugActivity extends Activity implements OnClickListener, NodeRece
             break;
         case R.id.debugButtonCreateChangeset:
             try {
-                changesetId = inputStreamToString(connector.createNewChangeset());
+                changesetId = inputStreamToString(connector.createNewChangeset().getEntity().getContent());
             } catch (ClientProtocolException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -94,7 +94,7 @@ public class DebugActivity extends Activity implements OnClickListener, NodeRece
             String updatedNode = "";
             currentNode.setName(currentNode.getName() + " foobar");
             try {
-                updatedNode = inputStreamToString(connector.putNode(changesetId, currentNode));
+                updatedNode = inputStreamToString(connector.putNode(changesetId, currentNode).getEntity().getContent());
             } catch (ClientProtocolException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -114,7 +114,7 @@ public class DebugActivity extends Activity implements OnClickListener, NodeRece
         case R.id.debugButtonCloseChangeset:
             String closeResponse = "";
             try {
-                closeResponse = inputStreamToString(connector.closeChangeset(changesetId));
+                closeResponse = inputStreamToString(connector.closeChangeset(changesetId).getEntity().getContent());
             } catch (ClientProtocolException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
