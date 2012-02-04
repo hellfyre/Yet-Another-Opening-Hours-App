@@ -95,8 +95,9 @@ public class DebugActivity extends Activity implements OnClickListener, NodeRece
             output.append(updatedNode + "\n");
             break;
         case R.id.debugButtonCloseChangeset:
+            String closeResponse = "";
             try {
-                connector.closeChangeset(changesetId);
+                closeResponse = inputStreamToString(connector.closeChangeset(changesetId));
             } catch (ClientProtocolException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -104,6 +105,8 @@ public class DebugActivity extends Activity implements OnClickListener, NodeRece
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+            output.append("---------- close changeset ----------" + "\n");
+            output.append(closeResponse + "\n");
             break;
         default:
             return;
