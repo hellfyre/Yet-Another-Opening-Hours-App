@@ -5,11 +5,10 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
-import oauth.signpost.basic.DefaultOAuthConsumer;
-import oauth.signpost.basic.DefaultOAuthProvider;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -47,7 +46,11 @@ public class YaohaActivity extends Activity implements OnClickListener {
     TextView text_fav_1, text_fav_2, text_fav_3, text_fav_4, text_fav_5, text_fav_6;
     final static int SELECT_PICTURE = 1;
     Uri selectedImageUri;
-    
+    private static OAuthConsumer OSMconsumer = new CommonsHttpOAuthConsumer("LXhdgmfvvoGRmVCc0EPZajUS8458AXYZ2615f9hs", "ZTfY5iYZ8Lszgy6DtRh0b258qciz4aYm1XnMciDi");
+    private static OAuthProvider OSMprovider = new CommonsHttpOAuthProvider(
+            "http://www.openstreetmap.org/oauth/request_token",
+            "http://www.openstreetmap.org/oauth/access_token",
+            "http://www.openstreetmap.org/oauth/authorize");
     private static final String[] SHOP_TYPES = new String[] {
         "groceries", "computer", "sport", "clothes", "gas station"
     };
@@ -134,6 +137,23 @@ public class YaohaActivity extends Activity implements OnClickListener {
         return true;
     }
     
+    public static OAuthConsumer getConsumer(){
+        return OSMconsumer;
+    }
+    
+    public static void setConsumer(OAuthConsumer consumer){
+        OSMconsumer = consumer;
+    }
+    
+    public static OAuthProvider getProvider(){
+        return OSMprovider;
+    }
+    
+    public static void setProvider(OAuthProvider provider){
+        OSMprovider = provider;
+    }
+    
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -192,7 +212,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
     private void connectToOSM(){
         URL url = null;
         HttpURLConnection request = null;
-        OAuthConsumer OSMconsumer = new DefaultOAuthConsumer("LXhdgmfvvoGRmVCc0EPZajUS8458AXYZ2615f9hs", "ZTfY5iYZ8Lszgy6DtRh0b258qciz4aYm1XnMciDi");  ;
         
         OSMconsumer.setTokenWithSecret(OSM_TOKEN, OSM_SECRET_TOKEN);
         try {
@@ -207,10 +226,10 @@ public class YaohaActivity extends Activity implements OnClickListener {
             request.connect();
     
             
-            Toast.makeText(this, "Response: " + request.getResponseCode() + " " + request.getResponseMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Response: " + request.getResponseCode() + " " + request.getResponseMessage(), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             String test4 = e.getMessage();
-            String bla = test4;
+            Toast.makeText(this, test4, Toast.LENGTH_LONG).show();
         }
     }
     
