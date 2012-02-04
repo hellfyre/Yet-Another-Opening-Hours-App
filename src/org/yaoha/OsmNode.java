@@ -24,21 +24,24 @@ public class OsmNode {
     private int ID;
     private int latitudeE6;
     private int longitudeE6;
+    private int version;
     private Date lastUpdated;
     private HashMap<String, String> attributes;
     private OpeningHours openingHours = null;
     
-    public OsmNode(String ID, String latitude, String longitude) {
+    public OsmNode(String ID, String latitude, String longitude, String version) {
         this.ID = Integer.parseInt(ID);
         this.latitudeE6 = new Double(Double.parseDouble(latitude)*1e6).intValue();
         this.longitudeE6 = new Double(Double.parseDouble(longitude)*1e6).intValue();
+        this.version = Integer.parseInt(version);
         this.attributes = new HashMap<String, String>();
     }
     
-    public OsmNode(int ID, int latitudeE6, int longitudeE6) {
+    public OsmNode(int ID, int latitudeE6, int longitudeE6, int version) {
         this.ID = ID;
         this.latitudeE6 = latitudeE6;
         this.longitudeE6 = longitudeE6;
+        this.version = version;
         this.attributes = new HashMap<String, String>();
     }
     
@@ -65,6 +68,7 @@ public class OsmNode {
         
         nodeElement.setAttribute("lat", latitudeString);
         nodeElement.setAttribute("lon", longitudeString);
+        nodeElement.setAttribute("version", String.valueOf(this.version));
         
         Set<String> ts = new TreeSet<String>(attributes.keySet());
         for (String key : ts) {
