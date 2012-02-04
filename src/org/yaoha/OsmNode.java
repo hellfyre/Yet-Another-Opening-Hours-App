@@ -33,7 +33,12 @@ public class OsmNode {
         this.ID = Integer.parseInt(ID);
         this.latitudeE6 = new Double(Double.parseDouble(latitude)*1e6).intValue();
         this.longitudeE6 = new Double(Double.parseDouble(longitude)*1e6).intValue();
-        this.version = Integer.parseInt(version);
+        if (version.equals("")) {
+            this.version = 0;
+        }
+        else {
+            this.version = Integer.parseInt(version);
+        }
         this.attributes = new HashMap<String, String>();
     }
     
