@@ -85,12 +85,11 @@ public class ApiConnector {
             e.printStackTrace();
         }
         HttpPut request = new HttpPut(uri);
-        String requestString = "<osm>" +
-        		"<changeset>" +
-        		"<tag k=\"created_by\" v=\"YAOHA\"/>" +
-        		"<tag k=\"comment\" v=\"Updating opening hours\"/>" +
-        		"</changeset>" +
-        		"</osm>";
+        String requestString = "<osm>"
+                + "<changeset>"
+                + "<tag k=\"created_by\" v=\"YAOHA\"/>"
+                + "<tag k=\"comment\" v=\"Updating opening hours\"/>"
+                + "</changeset>" + "</osm>";
         HttpEntity entity = new StringEntity(requestString);
         request.setEntity(entity);
         HttpResponse response = client.execute(request);
