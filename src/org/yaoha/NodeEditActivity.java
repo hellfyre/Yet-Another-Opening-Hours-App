@@ -122,7 +122,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             break;
         case R.id.buttonTransmitChanges:
             showDialog(DIALOG_UPLOAD_PROGRESS);
-            osmNode.setOpening_hours(osmNode.getPointerToOpeningHours().compileOpeningHoursString());
+            osmNode.commitOpeningHours();
             OsmNodeDbHelper.getInstance().put(osmNode, true);
             OsmNodeUploadTask uploadTask = new OsmNodeUploadTask();
             uploadTask.addReceiver(this);

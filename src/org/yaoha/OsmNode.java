@@ -162,6 +162,10 @@ public class OsmNode {
         return openingHours;
     }
     
+    void commitOpeningHours() {
+        setOpening_hours(getPointerToOpeningHours().compileOpeningHoursString());
+    }
+    
     public void parseOpeningHours() {
         openingHours.parse(getOpening_hours());
     }
