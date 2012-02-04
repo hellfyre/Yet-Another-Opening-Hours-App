@@ -52,13 +52,19 @@ public class OsmNode {
         
         // root elements
         Document doc = docBuilder.newDocument();
-        Element rootElement = doc.createElement("node");
+        Element rootElement = doc.createElement("osm");
+        Element nodeElement = doc.createElement("node");
+        rootElement.appendChild(nodeElement);
         doc.appendChild(rootElement);
         
-        rootElement.setAttribute("changeset", changesetId);
-        rootElement.setAttribute("id", "" + this.ID);
-        rootElement.setAttribute("lat", "" + this.latitudeE6);
-        rootElement.setAttribute("lon", "" + this.longitudeE6);
+        nodeElement.setAttribute("changeset", changesetId);
+        nodeElement.setAttribute("id", "" + this.ID);
+        
+        String latitudeString = String.valueOf(this.latitudeE6/1000000.0);
+        String longitudeString = String.valueOf(this.longitudeE6/1000000.0);
+        
+        nodeElement.setAttribute("lat", latitudeString);
+        nodeElement.setAttribute("lon", longitudeString);
         
         Set<String> ts = new TreeSet<String>(attributes.keySet());
         for (String key : ts) {
@@ -66,7 +72,7 @@ public class OsmNode {
             Element tag_element = doc.createElement("tag");
             tag_element.setAttribute("k", key);
             tag_element.setAttribute("v", value);
-            rootElement.appendChild(tag_element);
+            nodeElement.appendChild(tag_element);
         }
         
         // write the content into xml file
