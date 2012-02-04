@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -68,12 +69,12 @@ public class OsmNode {
         nodeElement.setAttribute("changeset", changesetId);
         nodeElement.setAttribute("id", "" + this.ID);
         
-        String latitudeString = String.valueOf(this.latitudeE6/1000000.0);
-        String longitudeString = String.valueOf(this.longitudeE6/1000000.0);
+        String latitudeString = String.format(Locale.US, "%f", this.latitudeE6/1e6);
+        String longitudeString = String.format(Locale.US, "%f", this.longitudeE6/1e6);
         
         nodeElement.setAttribute("lat", latitudeString);
         nodeElement.setAttribute("lon", longitudeString);
-        nodeElement.setAttribute("version", String.valueOf(this.version));
+        nodeElement.setAttribute("version", String.format(Locale.US, "%f", this.version/1e6));
         
         Set<String> ts = new TreeSet<String>(attributes.keySet());
         for (String key : ts) {
