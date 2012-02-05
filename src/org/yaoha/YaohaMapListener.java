@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
@@ -23,6 +24,7 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
     OsmNodeRetrieverTask retrieverTask = null;
     NodesOverlay no;
     enum Direction {NORTH, SOUTH, WEST, EAST};
+    static final float mapOversize = 0.1f;
     
     public YaohaMapListener(YaohaMapActivity mapContext, NodesOverlay no) {
         this.mapActivity = mapContext;
@@ -88,35 +90,23 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         if ( (bbox.getLatNorthE6() == bbox.getLatSouthE6()) || (bbox.getLonEastE6() == bbox.getLonWestE6()) )
             return;
         
-        Map<Direction, Boolean> bbox_stats = getBoundingBoxMove(this.boundingBox, bbox);
-        
-        if (bbox_stats == null) {
-            queryShopsInRectangle(bbox.getLatNorthE6(), bbox.getLatSouthE6(), bbox.getLonEastE6(), bbox.getLonWestE6());
-        } else {
-            // bounding box moved
-            // assumes zooming out, too
-            
-            // moved north
-            if (bbox_stats.get(Direction.NORTH)) {
-                queryShopsInRectangle(bbox.getLatNorthE6(), this.boundingBox.getLatNorthE6(), this.boundingBox.getLonWestE6(), this.boundingBox.getLonEastE6());
-            }
-            // moved south
-            if (bbox_stats.get(Direction.SOUTH)) {
-                queryShopsInRectangle(this.boundingBox.getLatSouthE6(), bbox.getLatSouthE6(), this.boundingBox.getLonWestE6(), this.boundingBox.getLonEastE6());
-            }
-            // with latitude of bbox to get the entire height
-            // moved east
-            if (bbox_stats.get(Direction.EAST)) {
-                queryShopsInRectangle(bbox.getLatNorthE6(), bbox.getLatSouthE6(), bbox.getLonEastE6(), this.boundingBox.getLonEastE6());
-            }
-            // moved west
-            if (bbox_stats.get(Direction.WEST)) {
-                queryShopsInRectangle(bbox.getLatNorthE6(), bbox.getLatSouthE6(), this.boundingBox.getLonWestE6(), bbox.getLonWestE6());
-            }
-
+        // check if bbox is inside boundingBox
+        if (boundingBox != null && !(boundingBox.contains(bbox.getLatNorthE6(), bbox.getLonWestE6())
+                && boundingBox.contains(bbox.getLatNorthE6(), bbox.getLonEastE6())
+                && boundingBox.contains(bbox.getLatSouthE6(), bbox.getLonWestE6())
+                && boundingBox.contains(bbox.getLatSouthE6(), bbox.getLonEastE6()))) {
+            return;
         }
         
-        this.boundingBox = bbox;
+        // TODO fix increaseByScale()
+//        boundingBox = bbox.increaseByScale(2 + mapOversize);
+        boundingBox = bbox;
+        
+        queryShopsInRectangle(boundingBox.getLatNorthE6(),
+                boundingBox.getLatSouthE6(),
+                boundingBox.getLonEastE6(),
+                boundingBox.getLonWestE6());
+        
         no.getNodes(bbox);
     }
     
