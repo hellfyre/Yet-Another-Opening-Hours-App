@@ -9,6 +9,7 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
@@ -26,13 +27,16 @@ import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 
 import android.util.Log;
 
 public class ApiConnector {
     DefaultHttpClient client;
+    private static final Header userAgentHeader = new BasicHeader("User-Agent", "YAOHA/0.1 (Android)");
     private static final String apiUrl = "home.uschok.de";
     private static final String xapiUrl = "www.overpass-api.de";
     private static String username = "foobar";
@@ -66,6 +70,7 @@ public class ApiConnector {
     
     public HttpResponse getNodes(URI uri) throws ClientProtocolException, IOException {
         HttpGet request = new HttpGet(uri);
+        request.setHeader(userAgentHeader);
         return client.execute(request);
     }
     
@@ -78,13 +83,15 @@ public class ApiConnector {
             Log.e(ApiConnector.class.getSimpleName(), e.getMessage());
         }
         HttpPut request = new HttpPut(uri);
-        String requestString = "<osm>"
+        request.setHeader(userAgentHeader);
+        String requestString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<osm>"
                 + "<changeset>"
                 + "<tag k=\"created_by\" v=\"YAOHA\"/>"
                 + "<tag k=\"comment\" v=\"Updating opening hours\"/>"
                 + "</changeset>"
                 + "</osm>";
-        HttpEntity entity = new StringEntity(requestString);
+        HttpEntity entity = new StringEntity(requestString, HTTP.UTF_8);
         request.setEntity(entity);
         return client.execute(request);
     }
@@ -98,9 +105,10 @@ public class ApiConnector {
             Log.e(ApiConnector.class.getSimpleName(), e.getMessage());
         } 
         HttpPut request = new HttpPut(uri);
+        request.setHeader(userAgentHeader);
         String requestString = "";
         requestString = node.serialize(changesetId);
-        HttpEntity entity = new StringEntity(requestString);
+        HttpEntity entity = new StringEntity(requestString, HTTP.UTF_8);
         request.setEntity(entity);
         return client.execute(request);
     }
@@ -114,6 +122,7 @@ public class ApiConnector {
             Log.e(ApiConnector.class.getSimpleName(), e.getMessage());
         }
         HttpPut request = new HttpPut(uri);
+        request.setHeader(userAgentHeader);
         return client.execute(request);
     }
     
