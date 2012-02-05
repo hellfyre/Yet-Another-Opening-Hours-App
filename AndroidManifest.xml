@@ -26,7 +26,7 @@
         <activity android:name=".SettingsActivity"></activity>
         <activity android:name=".YaohaMapActivity"></activity>
         <activity android:name=".NodeActivity"></activity>
-        <activity android:name=".NodeEditActivity"></activity>
+        <activity android:name=".NodeEditActivity" android:configChanges="orientation"></activity>
         <activity android:name=".OSMSettingsActivity"></activity>
         <activity android:name=".RequestTokenActivity" android:launchMode="singleTask">
             <intent-filter>
@@ -36,7 +36,6 @@
                 <data android:scheme="osm-login" android:host="yaoha.org" />
             </intent-filter>
         </activity>
-        <activity android:name=".DebugActivity"></activity>
     </application>
 
 </manifest>
