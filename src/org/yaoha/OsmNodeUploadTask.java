@@ -66,7 +66,7 @@ public class OsmNodeUploadTask extends AsyncTask<OsmNode, Void, String> {
             } catch (Exception e) {
                 return "Exception";
             }
-            return uploadResponseString;
+            return "Uploading node failed: " + uploadResponseString;
         }
         
         try {

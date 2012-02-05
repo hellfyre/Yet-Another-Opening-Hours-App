@@ -379,6 +379,5 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     public void onNodeUploaded(String result) {
         removeDialog(DIALOG_UPLOAD_PROGRESS);
         Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
-        Log.e("UPLOADRESULT", result);
     }
 }
