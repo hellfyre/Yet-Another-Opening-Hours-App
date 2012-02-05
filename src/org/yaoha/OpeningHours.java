@@ -87,31 +87,30 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
         // sorted
         String openingHoursString = "";
         for (int currentRowIndex = 0; currentRowIndex < equalDayMatrix.size(); currentRowIndex++) {
-            if (currentRowIndex > 0) {
+            if (currentRowIndex > 0 && !(equalDayRanges.get(currentRowIndex).isEmpty())) {
                 openingHoursString += "; ";
             }
             ArrayList<Integer> currentRow = equalDayMatrix.get(currentRowIndex);
-            openingHoursString += weekDayToString(currentRow.get(0));
+            String currentWeekDayRangeString = "";
+            currentWeekDayRangeString += weekDayToString(currentRow.get(0));
             int lastDay = currentRow.get(0);
             for (int currentDayIndex = 1; currentDayIndex < currentRow.size(); currentDayIndex++) {
                 int currentDay = currentRow.get(currentDayIndex);
                 if (currentDay == (lastDay + 1)) {
                     int nextDay = (currentDayIndex+1) < currentRow.size() ? currentRow.get(currentDayIndex + 1) : -1;
                     if (nextDay != (currentDay + 1)) {
-                        openingHoursString += "-" + weekDayToString(currentDay);
+                        currentWeekDayRangeString += "-" + weekDayToString(currentDay);
                     }
                 }
                 else {
-                    openingHoursString += "," + weekDayToString(currentDay);
+                    currentWeekDayRangeString += "," + weekDayToString(currentDay);
                 }
                 lastDay = currentDay;
             }
             
             TreeSet<HourRange> currentHourRangeRow = equalDayRanges.get(currentRowIndex);
-            if (currentHourRangeRow.isEmpty()) {
-                openingHoursString += " off";
-            }
-            else {
+            if (!currentHourRangeRow.isEmpty()) {
+                openingHoursString += currentWeekDayRangeString;
                 HourRange currentHourRange = currentHourRangeRow.first();
                 openingHoursString += " " + currentHourRange;
                 while ( (currentHourRange = currentHourRangeRow.higher(currentHourRange)) != null) {
