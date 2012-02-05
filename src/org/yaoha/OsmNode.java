@@ -74,7 +74,7 @@ public class OsmNode {
         
         nodeElement.setAttribute("lat", latitudeString);
         nodeElement.setAttribute("lon", longitudeString);
-        nodeElement.setAttribute("version", String.format(Locale.US, "%f", this.version/1e6));
+        nodeElement.setAttribute("version", String.valueOf(this.version));
         
         Set<String> ts = new TreeSet<String>(attributes.keySet());
         for (String key : ts) {
