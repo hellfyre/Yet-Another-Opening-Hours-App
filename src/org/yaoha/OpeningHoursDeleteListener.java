@@ -4,6 +4,7 @@ import java.util.Set;
 
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 public class OpeningHoursDeleteListener implements OnClickListener {
     NodeEditActivity neact;
@@ -20,6 +21,8 @@ public class OpeningHoursDeleteListener implements OnClickListener {
     public void onClick(View v) {
         day.remove(range);
         neact.populateUiElementesWithOpeningHours();
+        TextView ohString = (TextView) neact.findViewById(R.id.TextViewOpeningHoursString);
+        ohString.setText(neact.osmNode.getPointerToOpeningHours().compileOpeningHoursString());
     }
 
 }
