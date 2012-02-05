@@ -85,28 +85,30 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
         return ret_val;
     }
     
+    static boolean contains(BoundingBoxE6 bigger, BoundingBoxE6 smaller) {
+        return bigger.contains(smaller.getLatNorthE6(), smaller.getLonWestE6())
+        && bigger.contains(smaller.getLatNorthE6(), smaller.getLonEastE6())
+        && bigger.contains(smaller.getLatSouthE6(), smaller.getLonWestE6())
+        && bigger.contains(smaller.getLatSouthE6(), smaller.getLonEastE6());
+    }
+    
     void update(BoundingBoxE6 bbox) {
         if ( (bbox.getLatNorthE6() == bbox.getLatSouthE6()) || (bbox.getLonEastE6() == bbox.getLonWestE6()) )
             return;
         
+        no.getNodes(bbox);
+        
         // check if bbox is inside boundingBox
-        if (boundingBox != null && !(boundingBox.contains(bbox.getLatNorthE6(), bbox.getLonWestE6())
-                && boundingBox.contains(bbox.getLatNorthE6(), bbox.getLonEastE6())
-                && boundingBox.contains(bbox.getLatSouthE6(), bbox.getLonWestE6())
-                && boundingBox.contains(bbox.getLatSouthE6(), bbox.getLonEastE6()))) {
+        if (boundingBox != null && contains(boundingBox, bbox)) {
             return;
         }
         
-        // TODO fix increaseByScale()
-//        boundingBox = bbox.increaseByScale(2 + mapOversize);
-        boundingBox = bbox;
+        boundingBox = bbox.increaseByScale(2 + mapOversize);
         
         queryShopsInRectangle(boundingBox.getLatNorthE6(),
                 boundingBox.getLatSouthE6(),
                 boundingBox.getLonEastE6(),
                 boundingBox.getLonWestE6());
-        
-        no.getNodes(bbox);
     }
     
     void queryShopsInRectangle(double latHigh, double latLow, double lonHigh, double lonLow) {
