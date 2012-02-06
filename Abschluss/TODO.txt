@@ -1,3 +1,2 @@
 - Website folie mit QR code
-- Beispiel gute und schlechte OSM grammatik
-
+- Bilder austauschen (Matthias)

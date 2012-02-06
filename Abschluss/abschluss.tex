@@ -120,15 +120,19 @@
 
 \begin{frame}
   \frametitle{Features}
-  \begin{itemize}
-  	\item Karten-view
-    \item Darstellen von Geschäften
-    \item Settings
-    \item View für Suche
-    \item Favoriten
-    \item Fehlende Öffnungszeiten nachtragen
-    \item Daten an OSM übertragen
-  \end{itemize}
+  \begin{columns}
+  \column{5.1cm}
+  	\begin{itemize}
+  	  \item Karten-view
+      \item Darstellen von Geschäften
+      \item Settings
+      \item View für Suche
+      \item Favoriten
+      \item Fehlende Öffnungszeiten nachtragen
+      \item Daten an OSM übertragen
+    \end{itemize}
+  \column{5cm}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
@@ -304,8 +308,12 @@
 		\item OSM-Öffnungszeiten sind schwierig zu parsen, da
 		\begin{enumerate}
 		  \item die Syntax sehr umfangreich ist und
-		  \item die OSM-Nutzer sich nicht immer an die Syntax halten
+		  \item die OSM-Nutzer sich nicht immer an die Syntax halten\\
+		  \vspace*{0.1cm}
+		  \mbox{z.B. ``Mo 08:00-12:00, 14:00-18:00'' statt ``Mo 08:00-12:00,14:00-18:00''}\\
+		  \mbox{z.B. ``Sa 06:00'' statt ``Sa 06:00-11:00'' oder ``Sa 06:00+''}
 		\end{enumerate}
+
 	\end{itemize}
 \end{frame}
 
