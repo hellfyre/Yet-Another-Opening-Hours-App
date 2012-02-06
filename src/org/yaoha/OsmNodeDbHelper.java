@@ -1,5 +1,6 @@
 package org.yaoha;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -246,19 +247,44 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
         // check if there was no search or a search term matches
         if (search_terms == null || search_terms.length == 0)
             return true;
-        boolean search_matches = false;
-        for (String key : node.getKeys()) {
-            String tag_value = node.getAttribute(key);
-            search_matches |= checkSearchStringForTagAndValue(key.toLowerCase(), tag_value.toLowerCase(), search_terms);
+        List<List<String>> must_can = splitSearchTermsIntoMustAndCan(search_terms);
+        List<String> search_terms_must = must_can.get(0);
+        List<String> search_terms_can = must_can.get(1);
+        boolean search_matches_must = true;
+        for (String must : search_terms_must) {
+            search_matches_must &= checkNodeForSearchTerm(node, must);
         }
-        return search_matches;
+        boolean search_matches_can = search_terms_can.size() == 0;
+        for (String can : search_terms_can) {
+            search_matches_can |= checkNodeForSearchTerm(node, can);
+        }
+        
+        return search_matches_can && search_matches_must;
+    }
+    
+    static List<List<String>> splitSearchTermsIntoMustAndCan(String[] search_terms) {
+        List<String> must = new LinkedList<String>();
+        List<String> can = new LinkedList<String>();
+        
+        for (String item : search_terms) {
+            if (item.length() == 0)
+                continue;
+            if (item.charAt(0) == '.' || item.charAt(0) == '&')
+                must.add(item.substring(1).toLowerCase());
+            else
+                can.add(item.toLowerCase());
+        }
+        
+        List<List<String>> items = new ArrayList<List<String>>();
+        items.add(must);
+        items.add(can);
+        return items;
     }
 
-    static boolean checkSearchStringForTagAndValue(String tag, String value, String[] search_terms) {
-        if (search_terms == null)
-            return true;
-        for (String seach_term : search_terms) {
-            if (tag.contains(seach_term) || value.contains(seach_term))
+    static boolean checkNodeForSearchTerm(OsmNode node, String search_term) {
+        for (String key : node.getKeys()) {
+            String value = node.getAttribute(key);
+            if (key.toLowerCase().contains(search_term) || value.toLowerCase().contains(search_term))
                 return true;
         }
         return false;
