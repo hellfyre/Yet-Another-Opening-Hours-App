@@ -1,9 +1,14 @@
 package org.yaoha;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
@@ -20,6 +25,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -57,6 +63,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         //TODO Evil Set of workarounds, change this to make favorites persistent
         text_fav_1 = new TextView(this);
         text_fav_1.setText(R.string.add_favorite);
@@ -100,7 +107,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
         registerForContextMenu(button_favorite_5);
         registerForContextMenu(button_favorite_6);
         
-        SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getBaseContext()); 
+//        SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getBaseContext()); 
         if (prefs.getBoolean("start_with_map",false) == true) {
             startButton.performClick();
         }
@@ -138,33 +145,54 @@ public class YaohaActivity extends Activity implements OnClickListener {
     
     
     private void connectToOSM(){
-        URL url = null;
-        HttpURLConnection request = null;
-        OAuthConsumer OSMconsumer = new CommonsHttpOAuthConsumer("LXhdgmfvvoGRmVCc0EPZajUS8458AXYZ2615f9hs", "ZTfY5iYZ8Lszgy6DtRh0b258qciz4aYm1XnMciDi");  ;
-        
+        String url = "http://openstreetmap.org";
+        //HttpURLConnection request = null;
+        SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(this);
         String token = prefs.getString(OAuth.OAUTH_TOKEN, null);
         String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, null);
         
+        OAuthConsumer OSMconsumer = new CommonsHttpOAuthConsumer(token, secret);
         OSMconsumer.setTokenWithSecret(token, secret);
         try {
-            url = new URL("http://openstreetmap.org");
-
-        
-            request = (HttpURLConnection) url.openConnection();
-    
-            OSMconsumer.sign(request);
-    
-            //System.out.println("Sending request...");
-            request.connect();
-    
             
-            Toast.makeText(this, "Response: " + request.getResponseCode() + " " + request.getResponseMessage(), Toast.LENGTH_SHORT).show();
+//            DefaultHttpClient httpclient = new DefaultHttpClient();
+//            HttpGet request = new HttpGet(url);
+//            OSMconsumer.sign(request);
+//            HttpResponse response = httpclient.execute(request);
+            
+//            request = (HttpURLConnection) url.openConnection();
+    
+//            OSMconsumer.sign(request);
+//    
+//            //System.out.println("Sending request...");
+//            request.connect();
+    
+            Toast.makeText(this, makeSecuredReq(url, OSMconsumer), Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Response: " + response.getStatusLine(), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            String test4 = e.getMessage();
-            String bla = test4;
+            String err = e.getMessage();
+            Toast.makeText(this, err, Toast.LENGTH_LONG);
         }
     }
     
+    
+	private String makeSecuredReq(String url,OAuthConsumer consumer) throws Exception {
+		DefaultHttpClient httpclient = new DefaultHttpClient();
+    	HttpGet request = new HttpGet(url);
+    	Log.d(C.TAG,"Requesting URL : " + url);
+    	consumer.sign(request);
+    	HttpResponse response = httpclient.execute(request);
+    	Log.d(C.TAG,"Statusline : " + response.getStatusLine());
+    	InputStream data = response.getEntity().getContent();
+    	BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(data));
+        String responeLine;
+        StringBuilder responseBuilder = new StringBuilder();
+        while ((responeLine = bufferedReader.readLine()) != null) {
+        	responseBuilder.append(responeLine);
+        }
+        Log.d(C.TAG,"Response : " + responseBuilder.toString());
+        return responseBuilder.toString();
+	}	
     
     @Override
     public void onClick(View v) {
