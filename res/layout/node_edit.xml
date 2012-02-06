@@ -9,11 +9,25 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/buttonAddDefiniton"
-        android:layout_width="wrap_content"
+    <LinearLayout 
+        android:id="@+id/layoutButtons"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_definition" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonAddDefiniton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_definition" />
+
+        <Button
+            android:id="@+id/buttonTransmitChanges"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/transmitChangesString" />
+
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -23,7 +37,7 @@
         <LinearLayout
             android:id="@+id/linearLayoutOuter"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical" >
 
             <LinearLayout
@@ -188,11 +202,5 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
-    <Button
-        android:id="@+id/buttonTransmitChanges"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/transmitChangesString" />
 
 </LinearLayout>
