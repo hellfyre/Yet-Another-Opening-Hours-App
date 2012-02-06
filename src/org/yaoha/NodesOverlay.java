@@ -22,7 +22,6 @@ package org.yaoha;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -165,19 +164,20 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
                 event_on_map_minus_offset.getLatitudeE6());
          
         OsmNode n = null;
-        List<Integer> nodesToRemove = new LinkedList<Integer>();
-        BoundingBoxE6 bb = mapView.getBoundingBox();
+//        List<Integer> nodesToRemove = new LinkedList<Integer>();
+//        BoundingBoxE6 bb = mapView.getBoundingBox();
         for (OsmNode tmp_node : nodesAsList) {
             if (rect_around_event.contains(tmp_node.getLongitudeE6(), tmp_node.getLatitudeE6())) {
                 n = tmp_node;
                 break;
             }
-            if (!bb.contains(tmp_node.getLatitudeE6(), tmp_node.getLongitudeE6()))
-                nodesToRemove.add(tmp_node.getID());
+        // TODO we need to reintegrate this
+//            if (!bb.contains(tmp_node.getLatitudeE6(), tmp_node.getLongitudeE6()))
+//                nodesToRemove.add(tmp_node.getID());
         }
         
-        for (Integer i : nodesToRemove)
-            nodes.remove(i);
+//        for (Integer i : nodesToRemove)
+//            nodes.remove(i);
         
         if (n != null) {
             last_node = n;
