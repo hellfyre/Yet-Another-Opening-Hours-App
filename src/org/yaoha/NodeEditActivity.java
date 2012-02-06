@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -57,15 +58,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.node_edit);
-        
-        Button addDefinition = (Button) findViewById(R.id.buttonAddDefiniton);
-        addDefinition.setOnClickListener(this);
-        Button checkMoFr = (Button) findViewById(R.id.buttonSelectMoFr);
-        checkMoFr.setOnClickListener(this);
-        Button checkSaSu = (Button) findViewById(R.id.buttonSelectSaSu);
-        checkSaSu.setOnClickListener(this);
-        Button transmitChanges = (Button) findViewById(R.id.buttonTransmitChanges);
-        transmitChanges.setOnClickListener(this);
+        initializeUi();
         
         Intent intent = getIntent();
         int nodeId = intent.getExtras().getInt("id");
@@ -76,6 +69,27 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             retrieverTask.addListener(this);
             retrieverTask.execute();
         }
+    }
+    
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setContentView(R.layout.node_edit);
+        initializeUi();
+        if (osmNode != null) {
+            populateUiElementesWithOpeningHours();
+        }
+    }
+    
+    private void initializeUi() {
+        Button addDefinition = (Button) findViewById(R.id.buttonAddDefiniton);
+        addDefinition.setOnClickListener(this);
+        Button checkMoFr = (Button) findViewById(R.id.buttonSelectMoFr);
+        checkMoFr.setOnClickListener(this);
+        Button checkSaSu = (Button) findViewById(R.id.buttonSelectSaSu);
+        checkSaSu.setOnClickListener(this);
+        Button transmitChanges = (Button) findViewById(R.id.buttonTransmitChanges);
+        transmitChanges.setOnClickListener(this);
     }
 
     @Override
@@ -171,6 +185,12 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     }
     
     void populateUiElementesWithOpeningHours() {
+        TextView ohString = (TextView) findViewById(R.id.TextViewOpeningHoursString);
+        String openingHoursString = osmNode.getOpening_hours();
+        if (osmNode.getPointerToOpeningHours().hasParsingFailed())
+            openingHoursString = "Failed to parse: " + openingHoursString;
+        ohString.setText(openingHoursString);
+        
         for (int weekDay = OpeningHours.MONDAY; weekDay <= OpeningHours.SUNDAY; weekDay++) {
             TreeSet<HourRange> hourRanges = osmNode.getPointerToOpeningHours().getDay(weekDay);
             int linearLayoutId = 0;
@@ -360,10 +380,6 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         ohString.post(new Runnable() {
             @Override
             public void run() {
-                String text = osmNode.getOpening_hours();
-                if (osmNode.getPointerToOpeningHours().hasParsingFailed())
-                    text = text + " failed to parse";
-                ohString.setText(text);
                 populateUiElementesWithOpeningHours();
             }
         });

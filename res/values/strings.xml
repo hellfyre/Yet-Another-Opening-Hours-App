@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, YaohaActivity!</string>
     <string name="app_name">Yaoha</string>
     <string name="start">Start</string>
     <string name="osm_username">Username</string>
@@ -25,7 +24,7 @@
     <string name="start_time">Start time</string>
     <string name="end_time">End time</string>
     <string name="open_end">Open end</string>
-    <string name="dialog_ok">Ok</string>
+    <string name="dialog_ok">Add</string>
     <string name="emptyString"></string>
     <string name="transmitChangesString">Transmit Changes to OpenStreetMap</string>
     <string name="enableEditmode">Toggle Editmode</string>
