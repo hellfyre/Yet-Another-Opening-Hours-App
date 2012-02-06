@@ -55,6 +55,9 @@ public class NodeActivity extends Activity {
       EditText value2 = new EditText(getApplicationContext());
       TextView name3 = new TextView(getApplicationContext());
       EditText value3 = new EditText(getApplicationContext());
+      value.setFocusable(false);
+      value2.setFocusable(false);
+      value3.setFocusable(false);
       name.setText("Name");
       ll.addView(name);
       value.setText(shop_name);
