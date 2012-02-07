@@ -156,16 +156,18 @@ public class ApiConnector {
         if (!edit_mode)
             requestString += "[opening_hours=*]";
         
-        String requestStringAmenity = requestString;;
-        if (amenity != null)
-            requestStringAmenity += "[amenity=*" + amenity + "*]";
-        else
-            requestStringAmenity += "[amenity=*]";
+        String requestStringAmenity = requestString;
         String requestStringShop = requestString;
-        if (shop != null)
-            requestStringShop += "[shop=*" + shop + "*]";
-        else
-            requestStringShop += "[shop=*]";
+        if (edit_mode) {
+            if (amenity != null)
+                requestStringAmenity += "[amenity=*" + amenity + "*]";
+            else
+                requestStringAmenity += "[amenity=*]";
+            if (shop != null)
+                requestStringShop += "[shop=*" + shop + "*]";
+            else
+                requestStringShop += "[shop=*]";
+        }
         
         List<URI> requestStrings = new ArrayList<URI>();
         try {
@@ -175,11 +177,13 @@ public class ApiConnector {
             Log.d(ApiConnector.class.getSimpleName(), e.getMessage());
         }
 
-        try {
-            URI uri = new URI("http", xapiUrl, "/api/xapi", requestStringShop, null);
-            requestStrings.add(uri);
-        } catch (URISyntaxException e) {
-            Log.d(ApiConnector.class.getSimpleName(), e.getMessage());
+        if (!requestStringAmenity.contentEquals(requestStringShop)) {
+            try {
+                URI uri = new URI("http", xapiUrl, "/api/xapi", requestStringShop, null);
+                requestStrings.add(uri);
+            } catch (URISyntaxException e) {
+                Log.d(ApiConnector.class.getSimpleName(), e.getMessage());
+            }
         }
         
         return requestStrings;
