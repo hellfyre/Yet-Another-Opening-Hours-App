@@ -1,7 +1,10 @@
 bin/
 Thumbs.db
 R.java
+R.java.d
 .settings/
+local.properties
+build.xml
 
 *.aux
 *.toc
