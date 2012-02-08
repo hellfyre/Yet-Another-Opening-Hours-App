@@ -1,3 +1,0 @@
-- Website folie mit QR code
-- Die erste Feature-Folie (mit ohne Bild) loswerden?
-- Die Feature-Folien sortieren?
