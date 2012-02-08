@@ -108,7 +108,9 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
         String openingHoursString = "";
         for (int currentRowIndex = 0; currentRowIndex < equalDayMatrix.size(); currentRowIndex++) {
             if (currentRowIndex > 0 && !(equalDayRanges.get(currentRowIndex).isEmpty())) {
-                openingHoursString += "; ";
+                if (openingHoursString.length() > 0) {
+                    openingHoursString += "; ";
+                }
             }
             ArrayList<Integer> currentRow = equalDayMatrix.get(currentRowIndex);
             String currentWeekDayRangeString = "";
