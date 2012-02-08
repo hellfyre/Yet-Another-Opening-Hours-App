@@ -242,6 +242,9 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
     }
     
     private void parseComponent(String part) throws java.text.ParseException {
+        if (part.equals("")) {
+            return;
+        }
         if (part.substring(0, 1).matches("[mtwfs]")) {
             parseWeekDayRange(part);
         }
