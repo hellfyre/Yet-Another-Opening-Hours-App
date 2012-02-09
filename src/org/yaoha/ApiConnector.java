@@ -52,17 +52,28 @@ import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 
+import android.content.Context;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
 public class ApiConnector {
     DefaultHttpClient client;
-    private static final Header userAgentHeader = new BasicHeader("User-Agent", "YAOHA/0.1 (Android)");
-    private static final String apiUrl = "home.uschok.de";
+    private static Header userAgentHeader;
+    private static final String apiUrl = "api.openstreetmap.org";
     private static final String xapiUrl = "www.overpass-api.de";
-    private static String username = "foobar";
-    private static String password = "foobarbaz";
+    private static String username = "/*SETME*/";
+    private static String password = "/*SETME*/";
     
     public ApiConnector() {
+        String applicationVersion = "";
+        Context ctx = YaohaActivity.getStaticApplicationContext();
+        try {
+            applicationVersion = ctx.getApplicationContext().getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionName;
+        } catch (NameNotFoundException e) {
+            applicationVersion = "version_unset";
+        }
+        userAgentHeader = new BasicHeader("User-Agent", "YAOHA/" + applicationVersion + " (Android)");
+        
         // This is, what makes the DefaultHttpClient choose basic auth over digest auth
         // TODO: Remove Interceptor soon as OAuth works
         HttpRequestInterceptor preemptiveAuth = new HttpRequestInterceptor() {

@@ -37,6 +37,7 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -62,6 +63,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class YaohaActivity extends Activity implements OnClickListener {
+    static Context staticApplicationContext;
     Button startButton;
     ImageButton button_favorite_1, button_favorite_2, button_favorite_3, button_favorite_4, button_favorite_5, button_favorite_6;
     ImageButton actualButton;
@@ -83,6 +85,8 @@ public class YaohaActivity extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        if (staticApplicationContext == null) staticApplicationContext = getApplicationContext();
+        
         this.prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         //TODO Evil Set of workarounds, change this to make favorites persistent
         text_fav_1 = new TextView(this);
@@ -369,5 +373,9 @@ public class YaohaActivity extends Activity implements OnClickListener {
                     actualButton.setImageBitmap(Bitmap.createScaledBitmap(fav_bitmap, actualButton.getWidth()-20, actualButton.getHeight()-20, false));
                 }
             }
+    }
+    
+    public static final Context getStaticApplicationContext() {
+        return staticApplicationContext;
     }
 }
