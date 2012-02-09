@@ -205,6 +205,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     }
     
     void populateUiElementesWithOpeningHours() {
+        if (osmNode == null) return;
         TextView ohString = (TextView) findViewById(R.id.TextViewOpeningHoursString);
         String openingHoursString = osmNode.getOpening_hours();
         if (osmNode.getPointerToOpeningHours().hasParsingFailed())
