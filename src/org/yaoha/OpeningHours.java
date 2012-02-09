@@ -132,11 +132,12 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
             
             TreeSet<HourRange> currentHourRangeRow = equalDayRanges.get(currentRowIndex);
             if (!currentHourRangeRow.isEmpty()) {
-                openingHoursString += currentWeekDayRangeString;
-                HourRange currentHourRange = currentHourRangeRow.first();
-                openingHoursString += " " + currentHourRange;
-                while ( (currentHourRange = currentHourRangeRow.higher(currentHourRange)) != null) {
-                    openingHoursString += "," + currentHourRange;
+                openingHoursString += currentWeekDayRangeString + " ";
+                for (HourRange currentHourRange : currentHourRangeRow) {
+                    openingHoursString += currentHourRange;
+                    if (currentHourRange != currentHourRangeRow.last()) {
+                        openingHoursString += ",";
+                    }
                 }
             }
         }
