@@ -28,10 +28,15 @@ import java.io.InputStreamReader;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class OsmNodeUploadTask extends AsyncTask<OsmNode, Void, String> {
     OsmNode currentNode;
@@ -48,11 +53,26 @@ public class OsmNodeUploadTask extends AsyncTask<OsmNode, Void, String> {
         HttpResponse createResponse = null;
         try {
             createResponse = connector.createNewChangeset();
-        } catch (Exception e) {
+        } catch (ClientProtocolException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (OAuthMessageSignerException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (OAuthExpectationFailedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (OAuthCommunicationException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } /*catch (Exception e) {
             // ClientProtocolException
             // IOException
             return "Creation of changeset failed";
-        }
+        }*/
         if (createResponse.getStatusLine().getStatusCode() != 200) {
             if (createResponse.getStatusLine().getStatusCode() == 401) {
                 return "Authentication failed";
@@ -77,6 +97,15 @@ public class OsmNodeUploadTask extends AsyncTask<OsmNode, Void, String> {
             return "Uploading node failed: Couldn't serialize node object";
         } catch (TransformerException e) {
             return "Uploading node failed: Couldn't serialize node object";
+        } catch (OAuthMessageSignerException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (OAuthExpectationFailedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (OAuthCommunicationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         
         if (uploadResponse.getStatusLine().getStatusCode() != 200) {
@@ -84,18 +113,33 @@ public class OsmNodeUploadTask extends AsyncTask<OsmNode, Void, String> {
             try {
                 uploadResponseString = inputStreamToString(uploadResponse.getEntity().getContent());
             } catch (Exception e) {
-                return "Exception";
+                return "Couldn't read upload response";
             }
             return "Uploading node failed: " + uploadResponseString;
         }
         
         try {
             connector.closeChangeset(changesetId);
-        } catch (Exception e) {
+        } catch (ClientProtocolException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (OAuthMessageSignerException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (OAuthExpectationFailedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (OAuthCommunicationException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } /*catch (Exception e) {
             // ClientProtocolException
             // IOException
             return "Creation of changeset failed";
-        }
+        }*/
         
         return "Successfully uploaded node";
     }

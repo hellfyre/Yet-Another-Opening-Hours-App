@@ -154,6 +154,12 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             }
             break;
         case R.id.buttonTransmitChanges:
+            if (!ApiConnector.isAuthenticated()) {
+                Toast.makeText(this, "Not authenticated. Aborting upload. Please authenticate first.", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, OSMSettingsActivity.class);
+                startActivity(intent);
+                return;
+            }
             showDialog(DIALOG_UPLOAD_PROGRESS);
             osmNode.commitOpeningHours();
             OsmNodeDbHelper.getInstance().put(osmNode, true);

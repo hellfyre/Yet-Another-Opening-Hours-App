@@ -29,31 +29,28 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import oauth.signpost.OAuth;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.AuthState;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HTTP;
-import org.apache.http.protocol.HttpContext;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class ApiConnector {
@@ -61,8 +58,9 @@ public class ApiConnector {
     private static Header userAgentHeader;
     private static final String apiUrl = "api.openstreetmap.org";
     private static final String xapiUrl = "www.overpass-api.de";
-    private static String username = "/*SETME*/";
-    private static String password = "/*SETME*/";
+    private static String oauthToken;
+    private static String oauthTokenSecret;
+    private static OAuthConsumer consumer;
     
     public ApiConnector() {
         String applicationVersion = "";
@@ -73,30 +71,9 @@ public class ApiConnector {
             applicationVersion = "version_unset";
         }
         userAgentHeader = new BasicHeader("User-Agent", "YAOHA/" + applicationVersion + " (Android)");
-        
-        // This is, what makes the DefaultHttpClient choose basic auth over digest auth
-        // TODO: Remove Interceptor soon as OAuth works
-        HttpRequestInterceptor preemptiveAuth = new HttpRequestInterceptor() {
-            public void process(final org.apache.http.HttpRequest request, final HttpContext context) throws HttpException, IOException {
-                AuthState authState = (AuthState) context.getAttribute(ClientContext.TARGET_AUTH_STATE);
-                CredentialsProvider credsProvider = (CredentialsProvider) context.getAttribute(
-                        ClientContext.CREDS_PROVIDER);
-                HttpHost targetHost = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
-                
-                if (authState.getAuthScheme() == null) {
-                    AuthScope authScope = new AuthScope(targetHost.getHostName(), targetHost.getPort());
-                    Credentials creds = credsProvider.getCredentials(authScope);
-                    if (creds != null) {
-                        authState.setAuthScheme(new BasicScheme());
-                        authState.setCredentials(creds);
-                    }
-                }
-            }
-        };
+        setConsumer();
+
         client = new DefaultHttpClient();
-        // TODO: Remove the following two lines soon as OAuth works
-        client.addRequestInterceptor(preemptiveAuth, 0);
-        client.getCredentialsProvider().setCredentials(new AuthScope(apiUrl, 80), new UsernamePasswordCredentials(username, password));
     }
     
     public HttpResponse getNodes(URI uri) throws ClientProtocolException, IOException {
@@ -105,7 +82,7 @@ public class ApiConnector {
         return client.execute(request);
     }
     
-    public HttpResponse createNewChangeset() throws ClientProtocolException, IOException {
+    public HttpResponse createNewChangeset() throws ClientProtocolException, IOException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException {
         URI uri = null;
         try {
             uri = new URI("http", apiUrl, "/api/0.6/changeset/create", null, null);
@@ -124,10 +101,11 @@ public class ApiConnector {
                 + "</osm>";
         HttpEntity entity = new StringEntity(requestString, HTTP.UTF_8);
         request.setEntity(entity);
+        consumer.sign(request);
         return client.execute(request);
     }
     
-    public HttpResponse putNode(String changesetId, OsmNode node) throws ClientProtocolException, IOException, ParserConfigurationException, TransformerException {
+    public HttpResponse putNode(String changesetId, OsmNode node) throws ClientProtocolException, IOException, ParserConfigurationException, TransformerException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException {
         URI uri = null;
         try {
             uri = new URI("http", apiUrl, "/api/0.6/node/" + String.valueOf(node.getID()), null);
@@ -141,10 +119,11 @@ public class ApiConnector {
         requestString = node.serialize(changesetId);
         HttpEntity entity = new StringEntity(requestString, HTTP.UTF_8);
         request.setEntity(entity);
+        consumer.sign(request);
         return client.execute(request);
     }
     
-    public HttpResponse closeChangeset(String changesetId) throws ClientProtocolException, IOException {
+    public HttpResponse closeChangeset(String changesetId) throws ClientProtocolException, IOException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException {
         URI uri = null;
         try {
             uri = new URI("http", apiUrl, "/api/0.6/changeset/" + changesetId + "/close", null, null);
@@ -154,6 +133,7 @@ public class ApiConnector {
         }
         HttpPut request = new HttpPut(uri);
         request.setHeader(userAgentHeader);
+        consumer.sign(request);
         return client.execute(request);
     }
     
@@ -209,6 +189,24 @@ public class ApiConnector {
         }
         
         return uri;
+    }
+    
+    public static boolean isAuthenticated() {
+        if (consumer == null) setConsumer();
+        return (consumer != null);
+    }
+    
+    private static void setConsumer() {
+        Context ctx = YaohaActivity.getStaticApplicationContext();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ctx);
+        oauthToken = oauthTokenSecret = null;
+        consumer = null;
+        oauthToken = preferences.getString(OAuth.OAUTH_TOKEN, null);
+        oauthTokenSecret = preferences.getString(OAuth.OAUTH_TOKEN_SECRET, null);
+        if (oauthToken != null && oauthTokenSecret != null) {
+            consumer = new CommonsHttpOAuthConsumer(C.CONSUMER_KEY, C.CONSUMER_SECRET);
+            consumer.setTokenWithSecret(oauthToken, oauthTokenSecret);
+        }
     }
 
 }

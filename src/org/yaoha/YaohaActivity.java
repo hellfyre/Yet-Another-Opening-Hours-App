@@ -63,7 +63,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class YaohaActivity extends Activity implements OnClickListener {
-    static Context staticApplicationContext;
+    private static Context staticApplicationContext;
     Button startButton;
     ImageButton button_favorite_1, button_favorite_2, button_favorite_3, button_favorite_4, button_favorite_5, button_favorite_6;
     ImageButton actualButton;
