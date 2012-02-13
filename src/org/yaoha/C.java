@@ -24,22 +24,22 @@ public class C {
 
     public static final String TAG = "Yaoha";
 
-    public static final String CONSUMER_KEY = "LXhdgmfvvoGRmVCc0EPZajUS8458AXYZ2615f9hs";
+    /*public static final String CONSUMER_KEY = "LXhdgmfvvoGRmVCc0EPZajUS8458AXYZ2615f9hs";
     public static final String CONSUMER_SECRET = "ZTfY5iYZ8Lszgy6DtRh0b258qciz4aYm1XnMciDi";
 
     public static final String SCOPE = "http://http://www.openstreetmap.org/";
     public static final String REQUEST_URL = "http://www.openstreetmap.org/oauth/request_token";
     public static final String ACCESS_URL = "http://www.openstreetmap.org/oauth/access_token";
-    public static final String AUTHORIZE_URL = "http://www.openstreetmap.org/oauth/authorize";
+    public static final String AUTHORIZE_URL = "http://www.openstreetmap.org/oauth/authorize";*/
 
     // These values are for the test server 'home.uschok.de'
     // Set apiUrl to 'home.uschok.de' in ApiConnector.java
-    /*public static final String CONSUMER_KEY = "eTo8FYMbySBrWTJunF677q9IEp01PENOCdCKP9N9";
+    public static final String CONSUMER_KEY = "eTo8FYMbySBrWTJunF677q9IEp01PENOCdCKP9N9";
     public static final String CONSUMER_SECRET = "xV7rHlHMreT1vEoSpAfIe3Z2PG2pGXsK04bdvK4f";
     public static final String SCOPE = "http://home.uschok.de/";
     public static final String REQUEST_URL = "http://home.uschok.de/oauth/request_token";
     public static final String ACCESS_URL = "http://home.uschok.de/oauth/access_token";
-    public static final String AUTHORIZE_URL = "http://home.uschok.de/oauth/authorize";*/
+    public static final String AUTHORIZE_URL = "http://home.uschok.de/oauth/authorize";
 
     // public static final String GET_CONTACTS_FROM_GOOGLE_REQUEST =
     // "https://www.google.com/m8/feeds/contacts/default/full?alt=json";
