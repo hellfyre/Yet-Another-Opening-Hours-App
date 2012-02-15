@@ -5,15 +5,224 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/TextViewOpeningHoursString"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout 
-        android:id="@+id/layoutButtons"
+        android:id="@+id/nodeEditTextViewOpeningHoursString"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:padding="3dip" />
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1" >
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:padding="3dip"
+                android:text="@string/monday_short"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/nodeEditTextViewHoursMonday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dip" />
+
+            <ImageView
+                android:id="@+id/nodeEditButtonDeleteMonday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_gravity="right"
+                android:contentDescription="Delete"
+                android:gravity="right"
+                android:src="@android:drawable/ic_delete" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:padding="3dip"
+                android:text="@string/tuesday_short"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/nodeEditTextViewHoursTuesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dip" />
+            
+            <ImageView
+                android:id="@+id/nodeEditButtonDeleteTuesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_gravity="right"
+                android:contentDescription="Delete"
+                android:gravity="right"
+                android:src="@android:drawable/ic_delete" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:padding="3dip"
+                android:text="@string/wednesday_short"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/nodeEditTextViewHoursWednesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dip" />
+            
+            <ImageView
+                android:id="@+id/nodeEditButtonDeleteWednesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_gravity="right"
+                android:contentDescription="Delete"
+                android:gravity="right"
+                android:src="@android:drawable/ic_delete" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:padding="3dip"
+                android:text="@string/thursday_short"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/nodeEditTextViewHoursThursday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dip" />
+            
+            <ImageView
+                android:id="@+id/nodeEditButtonDeleteThursday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_gravity="right"
+                android:contentDescription="Delete"
+                android:gravity="right"
+                android:src="@android:drawable/ic_delete" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:padding="3dip"
+                android:text="@string/friday_short"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/nodeEditTextViewHoursFriday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dip" />
+            
+            <ImageView
+                android:id="@+id/nodeEditButtonDeleteFriday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_gravity="right"
+                android:contentDescription="Delete"
+                android:gravity="right"
+                android:src="@android:drawable/ic_delete" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:padding="3dip"
+                android:text="@string/saturday_short"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/nodeEditTextViewHoursSaturday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dip" />
+            
+            <ImageView
+                android:id="@+id/nodeEditButtonDeleteSaturday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_gravity="right"
+                android:contentDescription="Delete"
+                android:gravity="right"
+                android:src="@android:drawable/ic_delete" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:padding="3dip"
+                android:text="@string/sunday_short"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/nodeEditTextViewHoursSunday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dip" />
+            
+            <ImageView
+                android:id="@+id/nodeEditButtonDeleteSunday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_gravity="right"
+                android:contentDescription="Delete"
+                android:gravity="right"
+                android:src="@android:drawable/ic_delete" />
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/buttonAddDefiniton"
@@ -26,181 +235,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/transmitChangesString" />
-
     </LinearLayout>
-
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <LinearLayout
-            android:id="@+id/linearLayoutOuter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <LinearLayout
-                android:id="@+id/linearLayoutWeek"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal" >
-
-<Button
-    android:id="@+id/buttonSelectMoFr"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:text="" />
-
-                <TableLayout
-                    android:id="@+id/tableLayoutWeek"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-
-                    <TableRow
-                        android:id="@+id/tableRowMonday"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
-
-                        <LinearLayout
-                            android:id="@+id/linearLayoutMonday"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1" >
-
-                            <CheckBox
-                                android:id="@+id/checkBoxMonday"
-                                android:layout_width="70dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/monday_short" />
-                        </LinearLayout>
-                    </TableRow>
-
-                    <TableRow
-                        android:id="@+id/tableRowTuesday"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
-
-                        <LinearLayout
-                            android:id="@+id/linearLayoutTuesday"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" >
-
-                            <CheckBox
-                                android:id="@+id/checkBoxTuesday"
-                                android:layout_width="70dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/tuesday_short" />
-                        </LinearLayout>
-                    </TableRow>
-
-                    <TableRow
-                        android:id="@+id/tableRowWednesday"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
-
-                        <LinearLayout
-                            android:id="@+id/linearLayoutWednesday"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" >
-
-                            <CheckBox
-                                android:id="@+id/checkBoxWednesday"
-                                android:layout_width="70dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/wednesday_short" />
-                        </LinearLayout>
-                    </TableRow>
-
-                    <TableRow
-                        android:id="@+id/tableRowThursday"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
-
-                        <LinearLayout
-                            android:id="@+id/linearLayoutThursday"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" >
-
-                            <CheckBox
-                                android:id="@+id/checkBoxThursday"
-                                android:layout_width="70dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/thursday_short" />
-                        </LinearLayout>
-                    </TableRow>
-
-                    <TableRow
-                        android:id="@+id/tableRowFriday"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
-
-                        <LinearLayout
-                            android:id="@+id/linearLayoutFriday"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" >
-
-                            <CheckBox
-                                android:id="@+id/checkBoxFriday"
-                                android:layout_width="70dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/friday_short" />
-                        </LinearLayout>
-                    </TableRow>
-                </TableLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayoutWeekend"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal" >
-
-                <Button android:id="@+id/buttonSelectSaSu" android:layout_width="wrap_content" android:layout_height="match_parent" android:text=""/>
-                
-                <TableLayout
-                    android:id="@+id/tableLayoutWeekend"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-
-                    <TableRow
-                        android:id="@+id/tableRowSaturday"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
-
-                        <LinearLayout
-                            android:id="@+id/linearLayoutSaturday"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" >
-
-                            <CheckBox
-                                android:id="@+id/checkBoxSaturday"
-                                android:layout_width="70dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/saturday_short" />
-                        </LinearLayout>
-                    </TableRow>
-
-                    <TableRow
-                        android:id="@+id/tableRowSunday"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
-
-                        <LinearLayout
-                            android:id="@+id/linearLayoutSunday"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" >
-
-                            <CheckBox
-                                android:id="@+id/checkBoxSunday"
-                                android:layout_width="70dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/sunday_short" />
-                        </LinearLayout>
-                    </TableRow>
-                </TableLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
 
 </LinearLayout>
