@@ -39,6 +39,12 @@ public class HourRange implements Comparable<HourRange> {
         this.endingMinute = endingMinute;
     }
     
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        HourRange newObject = new HourRange(startingHour, startingMinute, endingHour, endingMinute);
+        return newObject;
+    }
+    
     private void parseRange(String range) {
         String start = "";
         if (!range.contains("+")) {
