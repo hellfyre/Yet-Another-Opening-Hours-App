@@ -48,7 +48,7 @@ public class OsmNode {
     private int version;
     private Date lastUpdated;
     private HashMap<String, String> attributes;
-    private OpeningHours openingHours = null;
+    protected OpeningHours openingHours;
     
     public OsmNode(String ID, String latitude, String longitude, String version) {
         this.ID = Integer.parseInt(ID);
@@ -61,6 +61,7 @@ public class OsmNode {
             this.version = Integer.parseInt(version);
         }
         this.attributes = new HashMap<String, String>();
+        openingHours = new OpeningHours();
     }
     
     public OsmNode(int ID, int latitudeE6, int longitudeE6, int version) {
@@ -69,6 +70,7 @@ public class OsmNode {
         this.longitudeE6 = longitudeE6;
         this.version = version;
         this.attributes = new HashMap<String, String>();
+        openingHours = new OpeningHours();
     }
     
     /**
