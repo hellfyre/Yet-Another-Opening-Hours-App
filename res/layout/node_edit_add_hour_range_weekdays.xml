@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="10dip"
+             >
+
+            <CheckBox
+                android:id="@+id/nodeEditCheckBoxMonday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mo" />
+
+            <CheckBox
+                android:id="@+id/nodeEditCheckBoxTuesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tu" />
+
+            <CheckBox
+                android:id="@+id/nodeEditCheckBoxWednesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="We" />
+
+            <CheckBox
+                android:id="@+id/nodeEditCheckBoxThursday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Th" />
+
+            <CheckBox
+                android:id="@+id/nodeEditCheckBoxFriday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fr" />
+
+            </LinearLayout>
+            
+            <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="10dip"
+             >
+            
+                
+            <CheckBox
+                android:id="@+id/nodeEditCheckBoxSaturday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sa" />
+
+            <CheckBox
+                android:id="@+id/nodeEditCheckBoxSunday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Su" />
+        </LinearLayout>
+
+        <RelativeLayout 
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/nodeEditButtonCheckMoFr"
+                android:layout_width="150dip"
+                android:layout_height="wrap_content"
+                android:text="(Un)Check Mo-Fr" />
+
+            <Button
+                android:id="@+id/nodeEditButtonCheckSaSu"
+                android:layout_width="150dip"
+                android:layout_height="wrap_content"
+                android:text="(Un)Check Sa-Su" />
+        </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:scaleType="fitXY"
+        android:src="@android:drawable/divider_horizontal_dark" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+            
+        
+
+        <Button
+            android:id="@+id/nodeEditButtonCancelWeek"
+            android:layout_width="100dip"
+            android:layout_height="wrap_content"
+            android:text="Cancel" />
+        <Button
+            android:id="@+id/nodeEditButtonNextWeek"
+            android:layout_width="100dip"
+            android:layout_height="wrap_content"
+            android:text="Next" />
+        
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>
