@@ -27,7 +27,7 @@
         <activity android:name=".YaohaMapActivity"></activity>
         <activity android:name=".NodeActivity"></activity>
         <activity android:name=".NodeEditActivity" android:configChanges="orientation"></activity>
-        <activity android:name=".NodeEditAddHourRangeActivity"></activity>
+        <activity android:name=".NodeEditAddHourRangeActivity" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".OSMSettingsActivity"></activity>
         <activity android:name=".RequestTokenActivity" android:launchMode="singleTask">
             <intent-filter>
