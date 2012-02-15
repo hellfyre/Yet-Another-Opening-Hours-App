@@ -40,7 +40,7 @@ public class HourRange implements Comparable<HourRange> {
     }
     
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    protected Object clone() {
         HourRange newObject = new HourRange(startingHour, startingMinute, endingHour, endingMinute);
         return newObject;
     }
