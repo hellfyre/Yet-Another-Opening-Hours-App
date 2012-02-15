@@ -13,8 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="10dip"
-             >
+            android:paddingLeft="10dip" >
 
             <CheckBox
                 android:id="@+id/nodeEditCheckBoxMonday"
@@ -45,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Fr" />
-
+            <!--
             </LinearLayout>
             
             <LinearLayout
@@ -54,8 +53,8 @@
             android:orientation="vertical"
             android:paddingLeft="10dip"
              >
-            
-                
+            -->
+
             <CheckBox
                 android:id="@+id/nodeEditCheckBoxSaturday"
                 android:layout_width="wrap_content"
@@ -69,29 +68,29 @@
                 android:text="Su" />
         </LinearLayout>
 
-        <RelativeLayout 
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_centerInParent="true"
-            android:orientation="vertical" >
+            android:layout_height="match_parent" >
 
-            <Button
-                android:id="@+id/nodeEditButtonCheckMoFr"
-                android:layout_width="150dip"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="(Un)Check Mo-Fr" />
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:orientation="vertical" >
 
-            <Button
-                android:id="@+id/nodeEditButtonCheckSaSu"
-                android:layout_width="150dip"
-                android:layout_height="wrap_content"
-                android:text="(Un)Check Sa-Su" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/nodeEditButtonCheckMoFr"
+                    android:layout_width="150dip"
+                    android:layout_height="wrap_content"
+                    android:text="(Un)Check Mo-Fr" />
+
+                <Button
+                    android:id="@+id/nodeEditButtonCheckSaSu"
+                    android:layout_width="150dip"
+                    android:layout_height="wrap_content"
+                    android:text="(Un)Check Sa-Su" />
+            </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
 
@@ -105,24 +104,23 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-        <LinearLayout 
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true">
-            
-        
+            android:layout_centerHorizontal="true" >
 
-        <Button
-            android:id="@+id/nodeEditButtonCancelWeek"
-            android:layout_width="100dip"
-            android:layout_height="wrap_content"
-            android:text="Cancel" />
-        <Button
-            android:id="@+id/nodeEditButtonNextWeek"
-            android:layout_width="100dip"
-            android:layout_height="wrap_content"
-            android:text="Next" />
-        
+            <Button
+                android:id="@+id/nodeEditButtonCancelWeek"
+                android:layout_width="100dip"
+                android:layout_height="wrap_content"
+                android:text="Cancel" />
+
+            <Button
+                android:id="@+id/nodeEditButtonNextWeek"
+                android:layout_width="100dip"
+                android:layout_height="wrap_content"
+                android:text="Next" />
         </LinearLayout>
     </RelativeLayout>
 
