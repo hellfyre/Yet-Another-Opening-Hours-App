@@ -40,7 +40,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
     public static final int SUNDAY = 6;
     private static Pattern openingHoursPattern = Pattern.compile("[0-9]{1,2}:[0-9]{2}[-|+][0-9]{0,2}[:]{0,1}[0-9]{0,2}");
     private int parseError = 0;
-    boolean parsingFailed = false;
+    private boolean unparsable = false;
     
     public OpeningHours() {
         for (int i = 0; i < 7; i++) {
@@ -53,15 +53,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
         return weekDays.iterator();
     }
     
-    public void setDay(int weekDay, TreeSet<HourRange> hourRanges) {
-        weekDays.set(weekDay, hourRanges);
-    }
-    
-    public TreeSet<HourRange> getDay(int weekDay) {
-        return weekDays.get(weekDay);
-    }
-    
-    public void clearDay(int weekDay) {
+    private void clearDay(int weekDay) {
         weekDays.get(weekDay).clear();
     }
     
@@ -73,6 +65,15 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
             }
         }
         currentDay.add(hourRange);
+    }
+    
+    public TreeSet<HourRange> getWeekDay(int weekDay) {
+        TreeSet<HourRange> weekDayTreeSet = new TreeSet<HourRange>();
+        for (HourRange hourRange : weekDays.get(weekDay)) {
+            HourRange clone = (HourRange) hourRange.clone();
+            weekDayTreeSet.add(clone);
+        }
+        return weekDayTreeSet;
     }
     
     public String compileOpeningHoursString() {
@@ -195,13 +196,13 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
 
     public boolean isEmpty() {
         boolean isEmpty = true;
-        if (!getDay(MONDAY).isEmpty()) isEmpty = false;
-        if (!getDay(TUESDAY).isEmpty()) isEmpty = false;
-        if (!getDay(WEDNESDAY).isEmpty()) isEmpty = false;
-        if (!getDay(THURSDAY).isEmpty()) isEmpty = false;
-        if (!getDay(FRIDAY).isEmpty()) isEmpty = false;
-        if (!getDay(SATURDAY).isEmpty()) isEmpty = false;
-        if (!getDay(SUNDAY).isEmpty()) isEmpty = false;
+        if (!weekDays.get(MONDAY).isEmpty()) isEmpty = false;
+        if (!weekDays.get(TUESDAY).isEmpty()) isEmpty = false;
+        if (!weekDays.get(WEDNESDAY).isEmpty()) isEmpty = false;
+        if (!weekDays.get(THURSDAY).isEmpty()) isEmpty = false;
+        if (!weekDays.get(FRIDAY).isEmpty()) isEmpty = false;
+        if (!weekDays.get(SATURDAY).isEmpty()) isEmpty = false;
+        if (!weekDays.get(SUNDAY).isEmpty()) isEmpty = false;
         return isEmpty;
     }
     
@@ -212,7 +213,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
     
     public void parse(String openingHoursString) {
         clearWeek();
-        parsingFailed = false;
+        unparsable = false;
         if (openingHoursString == null) return;
         parseError = 0;
         openingHoursString = openingHoursString.toLowerCase();
@@ -233,13 +234,13 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
                 e.printStackTrace();
                 Log.d(NodeEditActivity.class.getSimpleName(), e.getMessage());
 //                clearWeek();
-                parsingFailed = true;
+                unparsable = true;
             }
         }
     }
     
-    boolean hasParsingFailed() {
-        return parsingFailed;
+    boolean unparsable() {
+        return unparsable;
     }
     
     private void parseComponent(String part) throws java.text.ParseException {

@@ -164,11 +164,11 @@ public class OsmNode {
         putAttribute("amenity", amenity);
     }
 
-    public String getOpening_hours() {
+    public String getOpeningHoursString() {
         return getAttribute("opening_hours");
     }
 
-    public void setOpening_hours(String opening_hours) {
+    public void setOpeningHoursString(String opening_hours) {
         putAttribute("opening_hours", opening_hours);
     }
 
@@ -180,28 +180,20 @@ public class OsmNode {
         this.lastUpdated = lastUpdated;
     }
     
-    protected OpeningHours getPointerToOpeningHours() {
-        if (openingHours == null) {
-            openingHours = new OpeningHours();
-            parseOpeningHours();
-        }
-        return openingHours;
-    }
-    
-    void commitOpeningHours() {
-        setOpening_hours(getPointerToOpeningHours().compileOpeningHoursString());
+    public void commitOpeningHours() {
+        if (openingHours == null) return;
+        setOpeningHoursString(openingHours.compileOpeningHoursString());
     }
     
     public void parseOpeningHours() {
-        openingHours.parse(getOpening_hours());
+        openingHours.parse(getOpeningHoursString());
     }
 
     public shopStatus isOpenNow() {
-        getPointerToOpeningHours();
-        if (openingHours.hasParsingFailed())
-            return shopStatus.PARSERERROR;
         if (openingHours.isEmpty())
             return shopStatus.UNSET;
+        if (openingHours.unparsable())
+            return shopStatus.PARSERERROR;
         
         shopStatus result = shopStatus.CLOSED;
         Calendar now = Calendar.getInstance();
@@ -234,7 +226,7 @@ public class OsmNode {
             break;
         }
         
-        TreeSet<HourRange> today = openingHours.getDay(todayIndex);
+        TreeSet<HourRange> today = openingHours.getWeekDay(todayIndex);
 
         if (today.isEmpty())
             return shopStatus.CLOSED;
