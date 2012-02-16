@@ -90,7 +90,6 @@ public class OsmXmlHandler extends DefaultHandler {
                 String value = attributes.getValue(valueIndex);
                 
                 currentNode.putAttribute(key, value);
-                if (key.equals("opening_hours")) currentNode.parseOpeningHours();
             }
         }
         super.startElement(uri, localName, qName, attributes);

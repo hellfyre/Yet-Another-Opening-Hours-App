@@ -122,6 +122,7 @@ public class OsmNode {
     
     public void putAttribute(String key, String value) {
         attributes.put(key, value);
+        if (key.equals("opening_hours")) parseOpeningHours();
     }
     
     public String getAttribute(String key) {
