@@ -143,14 +143,39 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             startActivityForResult(intentEnd, REQUEST_NODE_EDIT);
             break;
         case DIRECTION_TO_PARENT:
+            int startingHour = data.getIntExtra("startTimeHour", 0);
+            int startingMinute = data.getIntExtra("startTimeMinute", 0);
+            int endingHour = data.getIntExtra("endTimeHour", 0);
+            int endingMinute = data.getIntExtra("endTimeMinute", 0);
+            HourRange newRange = new HourRange(startingHour, startingMinute, endingHour, endingMinute);
+            // check for overlapping hour ranges before adding ANY new ranges
             for (int day = OpeningHours.MONDAY; day <= OpeningHours.SUNDAY; day++) {
-                Log.d("EDITRESULT", OpeningHours.weekDayToString(day) + " " + data.getBooleanExtra(OpeningHours.weekDayToString(day), false));
+                if (data.getBooleanExtra(OpeningHours.weekDayToString(day), false)) {
+                    TreeSet<HourRange> hours = osmNode.openingHours.getWeekDay(day);
+                    for (HourRange hourRange : hours) {
+                        if (newRange.overlaps(hourRange)) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                            builder.setMessage("This hour range overlaps with " + hourRange);
+                            builder.setCancelable(false);
+                            builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                            AlertDialog overlapAlert = builder.create();
+                            overlapAlert.show();
+                            return;
+                        }
+                    }
+                }
             }
-            int startTimeHour = data.getIntExtra("startTimeHour", 0);
-            int startTimeMinute = data.getIntExtra("startTimeMinute", 0);
-            int endTimeHour = data.getIntExtra("endTimeHour", 0);
-            int endTimeMinute = data.getIntExtra("endTimeMinute", 0);
-            Log.d("EDITRESULT", String.format("Start: %1$02d:%2$02d End: %3$02d:%4$02d", startTimeHour, startTimeMinute, endTimeHour, endTimeMinute));
+            for (int day = OpeningHours.MONDAY; day <= OpeningHours.SUNDAY; day++) {
+                if (data.getBooleanExtra(OpeningHours.weekDayToString(day), false)) {
+                    osmNode.openingHours.addHourRangeToDay(newRange, day);
+                }
+            }
+            populateUiElementesWithOpeningHours();
             break;
         default:
             break;
