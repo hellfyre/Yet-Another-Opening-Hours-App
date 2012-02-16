@@ -145,7 +145,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
         return openingHoursString;
     }
     
-    public String weekDayToString(int weekDay) {
+    public static String weekDayToString(int weekDay) {
         switch (weekDay) {
         case MONDAY:
             return "Mo";
