@@ -26,8 +26,10 @@
         <activity android:name=".SettingsActivity"></activity>
         <activity android:name=".YaohaMapActivity"></activity>
         <activity android:name=".NodeActivity"></activity>
-        <activity android:name=".NodeEditActivity" android:configChanges="orientation"></activity>
+        <activity android:name=".NodeEditActivity" android:configChanges="orientation|keyboardHidden"></activity>
         <activity android:name=".NodeEditAddHourRangeWeekActivity" android:theme="@android:style/Theme.Dialog"></activity>
+        <activity android:name=".NodeEditAddHourRangeStarttimeActivity" android:theme="@android:style/Theme.Dialog"></activity>
+        <activity android:name=".NodeEditAddHourRangeEndtimeActivity" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".OSMSettingsActivity"></activity>
         <activity android:name=".RequestTokenActivity" android:launchMode="singleTask">
             <intent-filter>
