@@ -67,6 +67,11 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
         currentDay.add(hourRange);
     }
     
+    public boolean removeHourRangeFromDay(HourRange hourRange, int weekDay) {
+        TreeSet<HourRange> currentDay = weekDays.get(weekDay);
+        return currentDay.remove(hourRange);
+    }
+    
     public TreeSet<HourRange> getWeekDay(int weekDay) {
         TreeSet<HourRange> weekDayTreeSet = new TreeSet<HourRange>();
         for (HourRange hourRange : weekDays.get(weekDay)) {
