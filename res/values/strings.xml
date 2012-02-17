@@ -19,6 +19,7 @@
     <string name="node_edit_saturday_short">Sa</string>
     <string name="node_edit_sunday_short">Su</string>
     <string name="node_edit_add_hours">Add hours</string>
+    <string name="node_edit_choose_days">Choose days</string>
     <string name="node_edit_start_time">Start time</string>
     <string name="node_edit_end_time">End time</string>
     <string name="node_edit_open_end">Open end</string>
