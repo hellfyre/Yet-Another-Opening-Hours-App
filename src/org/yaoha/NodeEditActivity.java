@@ -21,7 +21,6 @@
 package org.yaoha;
 
 import java.net.URI;
-import java.util.Calendar;
 import java.util.TreeSet;
 
 import android.app.Activity;
@@ -35,21 +34,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.Toast;
 
-public class NodeEditActivity extends Activity implements OnClickListener, OnTimeChangedListener, OnCheckedChangeListener, NodeReceiverInterface<OsmNode>, OsmNodeRetrieverListener, OsmNodeUploadListener {
+public class NodeEditActivity extends Activity implements OnClickListener, NodeReceiverInterface<OsmNode>, OsmNodeRetrieverListener, OsmNodeUploadListener {
     private OsmNode osmNode = null;
-    private boolean insideOnTimeChangedCallback = false;
-    private static final int DIALOG_HOUR_RANGE = 0;
-    private static final int DIALOG_DOWNLOAD_PROGRESS = 1;
-    private static final int DIALOG_UPLOAD_PROGRESS = 2;
+    private static final int DIALOG_DOWNLOAD_PROGRESS = 0;
+    private static final int DIALOG_UPLOAD_PROGRESS = 1;
     private static final int REQUEST_NODE_EDIT = 0;
     
     public static final int DIRECTION_TO_WEEK = 0;
@@ -227,27 +219,6 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
-        case DIALOG_HOUR_RANGE:
-            Dialog dialog = new Dialog(this);
-            dialog.setContentView(R.layout.node_edit_hour_range_dialog);
-            dialog.setTitle("Hour range");
-            
-            TimePicker startTime = (TimePicker) dialog.findViewById(R.id.timePickerStartTime);
-            TimePicker endTime = (TimePicker) dialog.findViewById(R.id.timePickerEndTime);
-            startTime.setIs24HourView(true);
-            endTime.setIs24HourView(true);
-            startTime.setCurrentHour(8);
-            startTime.setCurrentMinute(0);
-            endTime.setCurrentHour(8);
-            endTime.setCurrentMinute(0);
-            startTime.setOnTimeChangedListener(this);
-            endTime.setOnTimeChangedListener(this);
-            
-            CheckBox openEnd = (CheckBox) dialog.findViewById(R.id.checkBoxOpenEnd);
-            openEnd.setOnCheckedChangeListener(this);
-            Button dialogOk = (Button) dialog.findViewById(R.id.buttonDialogOk);
-            dialogOk.setOnClickListener(this);
-            return dialog;
         case DIALOG_DOWNLOAD_PROGRESS:
             ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Retrieving node ...");
@@ -261,101 +232,6 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
 
         default:
             return null;
-        }
-    }
-
-    @Override
-    public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-        if (insideOnTimeChangedCallback) return;
-        insideOnTimeChangedCallback = true;
-        TimePicker startTimePicker = (TimePicker) view.getRootView().findViewById(R.id.timePickerStartTime);
-        TimePicker endTimePicker = (TimePicker) view.getRootView().findViewById(R.id.timePickerEndTime);
-        Calendar startTime = Calendar.getInstance();
-        Calendar endTime = Calendar.getInstance();
-        
-        startTime.set(Calendar.HOUR_OF_DAY, startTimePicker.getCurrentHour());
-        startTime.set(Calendar.MINUTE, startTimePicker.getCurrentMinute());
-        endTime.set(Calendar.HOUR_OF_DAY, endTimePicker.getCurrentHour());
-        endTime.set(Calendar.MINUTE, endTimePicker.getCurrentMinute());
-        
-        if (startTime.after(endTime)) {
-            switch (view.getId()) {
-            case R.id.timePickerStartTime:
-                endTimePicker.setCurrentHour(startTimePicker.getCurrentHour());
-                endTimePicker.setCurrentMinute(startTimePicker.getCurrentMinute());
-                break;
-            case R.id.timePickerEndTime:
-                startTimePicker.setCurrentHour(endTimePicker.getCurrentHour());
-                startTimePicker.setCurrentMinute(endTimePicker.getCurrentMinute());
-                break;
-
-            default:
-                break;
-            }
-        }
-        insideOnTimeChangedCallback = false;
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
-        if (arg0.getId() == R.id.checkBoxOpenEnd) {
-            TimePicker endTimePicker = (TimePicker) arg0.getRootView().findViewById(R.id.timePickerEndTime);
-            if (arg0.isChecked()) {
-                TimePicker startTimePicker = (TimePicker) arg0.getRootView().findViewById(R.id.timePickerStartTime);
-                endTimePicker.setEnabled(false);
-                endTimePicker.setCurrentHour(startTimePicker.getCurrentHour());
-                endTimePicker.setCurrentMinute(startTimePicker.getCurrentMinute());
-            }
-            else {
-                endTimePicker.setEnabled(true);
-            }
-        }
-    }
-    
-    /*private void saveCheckboxes(View v) {
-        CheckBox weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxMonday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.MONDAY] = true;
-        else weekDaysChecked[OpeningHours.MONDAY] = false;
-        weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxTuesday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.TUESDAY] = true;
-        else weekDaysChecked[OpeningHours.TUESDAY] = false;
-        weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxWednesday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.WEDNESDAY] = true;
-        else weekDaysChecked[OpeningHours.WEDNESDAY] = false;
-        weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxThursday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.THURSDAY] = true;
-        else weekDaysChecked[OpeningHours.THURSDAY] = false;
-        weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxFriday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.FRIDAY] = true;
-        else weekDaysChecked[OpeningHours.FRIDAY] = false;
-        weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxSaturday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.SATURDAY] = true;
-        else weekDaysChecked[OpeningHours.SATURDAY] = false;
-        weekDayCheckBox = (CheckBox) v.getRootView().findViewById(R.id.checkBoxSunday);
-        if (weekDayCheckBox.isChecked()) weekDaysChecked[OpeningHours.SUNDAY] = true;
-        else weekDaysChecked[OpeningHours.SUNDAY] = false;
-    }*/
-    
-    private boolean anyBoxChecked(int ... checkBoxIds) {
-        boolean anyBoxChecked = false;
-        for (int checkBoxId : checkBoxIds) {
-            CheckBox box = (CheckBox) findViewById(checkBoxId);
-            if (box.isChecked()) anyBoxChecked = true;
-        }
-        return anyBoxChecked;
-    }
-    
-    private void checkCheckBoxes(int ... checkBoxIds) {
-        for (int checkBoxId : checkBoxIds) {
-            CheckBox box = (CheckBox) findViewById(checkBoxId);
-            box.setChecked(true);
-        }
-    }
-    
-    private void uncheckCheckBoxes(int ... checkBoxIds) {
-        for (int checkBoxId : checkBoxIds) {
-            CheckBox box = (CheckBox) findViewById(checkBoxId);
-            box.setChecked(false);
         }
     }
 
