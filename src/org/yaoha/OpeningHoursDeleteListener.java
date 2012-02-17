@@ -40,7 +40,7 @@ public class OpeningHoursDeleteListener implements OnClickListener {
     @Override
     public void onClick(View v) {
         day.remove(range);
-        neact.populateUiElementesWithOpeningHours();
+        //neact.populateUiElementes();
         TextView ohString = (TextView) neact.findViewById(R.id.nodeEditTextViewOpeningHoursString);
         //ohString.setText(neact.osmNode.openingHours.compileOpeningHoursString());
     }

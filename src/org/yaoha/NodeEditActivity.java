@@ -21,6 +21,7 @@
 package org.yaoha;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 import android.app.Activity;
@@ -33,13 +34,16 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class NodeEditActivity extends Activity implements OnClickListener, NodeReceiverInterface<OsmNode>, OsmNodeRetrieverListener, OsmNodeUploadListener {
-    private OsmNode osmNode = null;
+public class NodeEditActivity extends Activity implements OnClickListener, NodeReceiverInterface<OsmNode>, OsmNodeRetrieverListener, OsmNodeUploadListener, OnItemClickListener {
+    private OsmNode osmNode;
+    private ArrayList<GridView> gridViews;
     private static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     private static final int DIALOG_UPLOAD_PROGRESS = 1;
     private static final int REQUEST_NODE_EDIT = 0;
@@ -48,6 +52,11 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
     public static final int DIRECTION_TO_START = 1;
     public static final int DIRECTION_TO_END = 2;
     public static final int DIRECTION_TO_PARENT = 3;
+    
+    public NodeEditActivity() {
+        osmNode = null;
+        gridViews = new ArrayList<GridView>();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +75,27 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
         if (osmNode == null) {
             getNode(getIntent());
         }
-        populateUiElementesWithOpeningHours();
+        else {
+            populateUiElementes();
+        }
     }
     
     private void initializeUi() {
-        Button addDefinition = (Button) findViewById(R.id.nodeEditButtonAddHourRanges);
-        addDefinition.setOnClickListener(this);
-        Button transmitChanges = (Button) findViewById(R.id.nodeEditButtonUploadChanges);
-        transmitChanges.setOnClickListener(this);
+        Button addHours = (Button) findViewById(R.id.nodeEditButtonAddHourRanges);
+        addHours.setOnClickListener(this);
+        Button uploadChanges = (Button) findViewById(R.id.nodeEditButtonUploadChanges);
+        uploadChanges.setOnClickListener(this);
+        
+        gridViews.add((GridView) findViewById(R.id.nodeEditGridViewMonday));
+        gridViews.add((GridView) findViewById(R.id.nodeEditGridViewTuesday));
+        gridViews.add((GridView) findViewById(R.id.nodeEditGridViewWednesday));
+        gridViews.add((GridView) findViewById(R.id.nodeEditGridViewThursday));
+        gridViews.add((GridView) findViewById(R.id.nodeEditGridViewFriday));
+        gridViews.add((GridView) findViewById(R.id.nodeEditGridViewSaturday));
+        gridViews.add((GridView) findViewById(R.id.nodeEditGridViewSunday));
+        for (GridView gridView : gridViews) {
+            gridView.setOnItemClickListener(this);
+        }
     }
     
     private void getNode(Intent intent) {
@@ -167,9 +189,12 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
             for (int day = OpeningHours.MONDAY; day <= OpeningHours.SUNDAY; day++) {
                 if (data.getBooleanExtra(OpeningHours.weekDayToString(day), false)) {
                     osmNode.openingHours.addHourRangeToDay(newRange, day);
+                    TextAdapter currentAdapter = (TextAdapter) gridViews.get(day).getAdapter();
+                    currentAdapter.update(osmNode.openingHours.getWeekDay(day));
+                    currentAdapter.notifyDataSetChanged();
                 }
             }
-            populateUiElementesWithOpeningHours();
+            populateUiElementes();
             break;
         default:
             break;
@@ -192,28 +217,18 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
         }
     }
     
-    void populateUiElementesWithOpeningHours() {
+    private void populateUiElementes() {
         if (osmNode == null) return;
         TextView openingHoursTextView = (TextView) findViewById(R.id.nodeEditTextViewOpeningHoursString);
         String openingHoursString = osmNode.getOpeningHoursString();
         if (osmNode.openingHours.unparsable()) openingHoursString = "Failed to parse: " + openingHoursString;
         openingHoursTextView.setText(openingHoursString);
-        
-        GridView gridViewMonday = (GridView) findViewById(R.id.nodeEditGridViewMonday);
-        gridViewMonday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.MONDAY)));
-        GridView gridViewTuesday = (GridView) findViewById(R.id.nodeEditGridViewTuesday);
-        gridViewTuesday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.TUESDAY)));
-        GridView gridViewWednesday = (GridView) findViewById(R.id.nodeEditGridViewWednesday);
-        gridViewWednesday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.WEDNESDAY)));
-        GridView gridViewThursday = (GridView) findViewById(R.id.nodeEditGridViewThursday);
-        gridViewThursday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.THURSDAY)));
-        GridView gridViewFriday = (GridView) findViewById(R.id.nodeEditGridViewFriday);
-        gridViewFriday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.FRIDAY)));
-        GridView gridViewSaturday = (GridView) findViewById(R.id.nodeEditGridViewSaturday);
-        gridViewSaturday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.SATURDAY)));
-        GridView gridViewSunday = (GridView) findViewById(R.id.nodeEditGridViewSunday);
-        gridViewSunday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.SUNDAY)));
-        
+    }
+    
+    private void populateGridViews() {
+        for (int day = OpeningHours.MONDAY; day <= OpeningHours.SUNDAY; day++) {
+            gridViews.get(day).setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(day)));
+        }
     }
 
     @Override
@@ -246,7 +261,8 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
         ohString.post(new Runnable() {
             @Override
             public void run() {
-                populateUiElementesWithOpeningHours();
+                populateGridViews();
+                populateUiElementes();
             }
         });
         removeDialog(DIALOG_DOWNLOAD_PROGRESS);
@@ -260,5 +276,40 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
     public void onNodeUploaded(String result) {
         removeDialog(DIALOG_UPLOAD_PROGRESS);
         Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+        GridView currentGridView = (GridView) arg0;
+        int day;
+        switch (arg0.getId()) {
+        case R.id.nodeEditGridViewMonday:
+            day = OpeningHours.MONDAY;
+            break;
+        case R.id.nodeEditGridViewTuesday:
+            day = OpeningHours.TUESDAY;
+            break;
+        case R.id.nodeEditGridViewWednesday:
+            day = OpeningHours.WEDNESDAY;
+            break;
+        case R.id.nodeEditGridViewThursday:
+            day = OpeningHours.THURSDAY;
+            break;
+        case R.id.nodeEditGridViewFriday:
+            day = OpeningHours.FRIDAY;
+            break;
+        case R.id.nodeEditGridViewSaturday:
+            day = OpeningHours.SATURDAY;
+            break;
+        case R.id.nodeEditGridViewSunday:
+            day = OpeningHours.SUNDAY;
+            break;
+        default:
+            day = -1;
+            break;
+        }
+        //RelativeLayout currentRelativeLayout = (RelativeLayout) arg1;
+        HourRange selectedHourRange = (HourRange) currentGridView.getAdapter().getItem(arg2);
+        Toast.makeText(this, "Selected: " + OpeningHours.weekDayToString(day) + " " + selectedHourRange, Toast.LENGTH_SHORT).show();
     }
 }

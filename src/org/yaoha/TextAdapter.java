@@ -38,6 +38,13 @@ public class TextAdapter extends BaseAdapter {
         // TODO Auto-generated method stub
         return 0;
     }
+    
+    public void update(TreeSet<HourRange> newHourRanges) {
+        this.hourRanges.clear();
+        for (HourRange hourRange : newHourRanges) {
+            this.hourRanges.add(hourRange);
+        }
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
