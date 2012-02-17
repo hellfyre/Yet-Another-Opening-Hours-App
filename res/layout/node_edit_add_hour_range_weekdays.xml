@@ -10,88 +10,60 @@
         android:orientation="horizontal" >
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="10dip" >
+            android:layout_weight="1"
+            android:orientation="vertical" >
 
             <CheckBox
                 android:id="@+id/nodeEditCheckBoxMonday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mo" />
+                android:text="@string/node_edit_monday_short" />
 
             <CheckBox
                 android:id="@+id/nodeEditCheckBoxTuesday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tu" />
+                android:text="@string/node_edit_tuesday_short" />
 
             <CheckBox
                 android:id="@+id/nodeEditCheckBoxWednesday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="We" />
+                android:text="@string/node_edit_wednesday_short" />
 
             <CheckBox
                 android:id="@+id/nodeEditCheckBoxThursday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Th" />
+                android:text="@string/node_edit_thursday_short" />
 
             <CheckBox
                 android:id="@+id/nodeEditCheckBoxFriday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fr" />
-            <!--
-            </LinearLayout>
-            
-            <LinearLayout
-            android:layout_width="wrap_content"
+                android:text="@string/node_edit_friday_short" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="10dip"
-             >
-            -->
+            android:layout_weight="1"
+            android:orientation="vertical" >
 
             <CheckBox
                 android:id="@+id/nodeEditCheckBoxSaturday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sa" />
+                android:text="@string/node_edit_saturday_short" />
 
             <CheckBox
                 android:id="@+id/nodeEditCheckBoxSunday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Su" />
+                android:text="@string/node_edit_sunday_short" />
         </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_centerVertical="true"
-                android:orientation="vertical" >
-
-                <Button
-                    android:id="@+id/nodeEditButtonCheckMoFr"
-                    android:layout_width="150dip"
-                    android:layout_height="wrap_content"
-                    android:text="(Un)Check Mo-Fr" />
-
-                <Button
-                    android:id="@+id/nodeEditButtonCheckSaSu"
-                    android:layout_width="150dip"
-                    android:layout_height="wrap_content"
-                    android:text="(Un)Check Sa-Su" />
-            </LinearLayout>
-        </RelativeLayout>
     </LinearLayout>
 
     <ImageView
@@ -101,27 +73,24 @@
         android:scaleType="fitXY"
         android:src="@android:drawable/divider_horizontal_dark" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" >
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/nodeEditButtonCancelWeek"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true" >
+            android:layout_weight="1"
+            android:text="@string/node_edit_cancel" />
 
-            <Button
-                android:id="@+id/nodeEditButtonCancelWeek"
-                android:layout_width="100dip"
-                android:layout_height="wrap_content"
-                android:text="Cancel" />
-
-            <Button
-                android:id="@+id/nodeEditButtonNextWeek"
-                android:layout_width="100dip"
-                android:layout_height="wrap_content"
-                android:text="Next" />
-        </LinearLayout>
-    </RelativeLayout>
+        <Button
+            android:id="@+id/nodeEditButtonNextWeek"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/node_edit_next" />
+    </LinearLayout>
 
 </LinearLayout>

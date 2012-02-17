@@ -23,6 +23,9 @@
     <string name="node_edit_end_time">End time</string>
     <string name="node_edit_open_end">Open end</string>
     <string name="node_edit_upload_node">Upload changes</string>
+    <string name="node_edit_back">Back</string>
+    <string name="node_edit_cancel">Cancel</string>
+    <string name="node_edit_next">Next</string>
     <string name="emptyString"></string>
     <string name="enableEditmode">Toggle Editmode</string>
     <string name="set_osm">Set OSM-Account</string>
