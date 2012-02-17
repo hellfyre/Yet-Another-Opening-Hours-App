@@ -18,7 +18,14 @@ public class NodeEditAddHourRangeStarttimeActivity extends Activity implements O
         
         timePicker = (TimePicker) findViewById(R.id.nodeEditTimePickerStartTime);
         timePicker.setIs24HourView(true);
-        if (getIntent().hasExtra("startTimeHour") && getIntent().hasExtra("startTimeMinute")) {
+        if (getIntent().hasExtra("endTimeHour") && (getIntent().getIntExtra("endTimeHour", -1) > -1)) {
+            int endTimeHour = getIntent().getIntExtra("endTimeHour", 0) - 1;
+            if (endTimeHour < 0) endTimeHour = 0;
+            int endTimeMinute = getIntent().getIntExtra("endTimeMinute", 0);
+            timePicker.setCurrentHour(endTimeHour);
+            timePicker.setCurrentMinute(endTimeMinute);
+        }
+        if (getIntent().hasExtra("startTimeHour")) {
             timePicker.setCurrentHour(getIntent().getIntExtra("startTimeHour", 0));
             timePicker.setCurrentMinute(getIntent().getIntExtra("startTimeMinute", 0));
         }
@@ -77,7 +84,7 @@ public class NodeEditAddHourRangeStarttimeActivity extends Activity implements O
                 intent.putExtra(OpeningHours.weekDayToString(day), getIntent().getBooleanExtra(OpeningHours.weekDayToString(day), false));
             }
         }
-        if (getIntent().hasExtra("endTimeHour") && getIntent().hasExtra("endTimeMinute")) {
+        if (getIntent().hasExtra("endTimeHour")) {
             intent.putExtra("endTimeHour", getIntent().getIntExtra("endTimeHour", -2));
             intent.putExtra("endTimeMinute", getIntent().getIntExtra("endTimeMinute", -2));
         }

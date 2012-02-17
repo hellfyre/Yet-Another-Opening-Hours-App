@@ -3,6 +3,9 @@ package org.yaoha;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,7 +14,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 public class NodeEditAddHourRangeWeekActivity extends Activity implements OnClickListener {
-    ArrayList<CheckBox> checkBoxes;
+    private ArrayList<CheckBox> checkBoxes;
+    private static final int DIALOG_NO_BOXES_CHECKED = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,17 @@ public class NodeEditAddHourRangeWeekActivity extends Activity implements OnClic
             finish();
             break;
         case R.id.nodeEditButtonNextWeek:
+            boolean anyBoxChecked = false;
+            for (CheckBox box : checkBoxes) {
+                if (box.isChecked()) {
+                    anyBoxChecked = true;
+                    break;
+                }
+            }
+            if (!anyBoxChecked) {
+                showDialog(DIALOG_NO_BOXES_CHECKED);
+                return;
+            }
             Intent intentStart = new Intent();
             intentStart.putExtra("direction", NodeEditActivity.DIRECTION_TO_START);
             putCheckboxesIntoIntent(intentStart);
@@ -68,14 +83,37 @@ public class NodeEditAddHourRangeWeekActivity extends Activity implements OnClic
     }
     
     private void copyIntentContents(Intent intent) {
-        if (getIntent().hasExtra("startTimeHour") && getIntent().hasExtra("startTimeMinute")) {
+        if (getIntent().hasExtra("startTimeHour")) {
             intent.putExtra("startTimeHour", getIntent().getIntExtra("startTimeHour", -2));
             intent.putExtra("startTimeMinute", getIntent().getIntExtra("startTimeMinute", -2));
         }
-        if (getIntent().hasExtra("endTimeHour") && getIntent().hasExtra("endTimeMinute")) {
+        if (getIntent().hasExtra("endTimeHour")) {
             intent.putExtra("endTimeHour", getIntent().getIntExtra("endTimeHour", -2));
             intent.putExtra("endTimeMinute", getIntent().getIntExtra("endTimeMinute", -2));
         }
+    }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        Dialog dialog;
+        switch (id) {
+        case DIALOG_NO_BOXES_CHECKED:
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Please select one or more days to which you wish to add new hours.");
+            builder.setCancelable(false);
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            dialog = builder.create();
+            break;
+        default:
+            dialog = null;
+            break;
+        }
+        return dialog;
     }
 
 }

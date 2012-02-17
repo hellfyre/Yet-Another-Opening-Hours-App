@@ -24,7 +24,7 @@ public class NodeEditAddHourRangeEndtimeActivity extends Activity implements OnC
         timePicker.setIs24HourView(true);
         openEnd = (CheckBox) findViewById(R.id.nodeEditCheckBoxOpenEnd);
         openEnd.setOnCheckedChangeListener(this);
-        if (getIntent().hasExtra("endTimeHour") && getIntent().hasExtra("endTimeMinute")) {
+        if (getIntent().hasExtra("endTimeHour")) {
             int endTimeHour = getIntent().getIntExtra("endTimeHour", 0);
             int endTimeMinute = getIntent().getIntExtra("endTimeMinute", 0);
             if (endTimeHour == -1 && endTimeMinute == -1) {
@@ -37,9 +37,10 @@ public class NodeEditAddHourRangeEndtimeActivity extends Activity implements OnC
             }
         }
         else {
-            int startTimeHour = getIntent().getIntExtra("startTimeHour", 0);
+            int startTimeHour = getIntent().getIntExtra("startTimeHour", 0) + 1;
+            if (startTimeHour > 23) startTimeHour -= 24;
             int startTimeMinute = getIntent().getIntExtra("startTimeMinute", 0);
-            timePicker.setCurrentHour(startTimeHour + 1);
+            timePicker.setCurrentHour(startTimeHour);
             timePicker.setCurrentMinute(startTimeMinute);
         }
         initializeUi();
@@ -99,7 +100,7 @@ public class NodeEditAddHourRangeEndtimeActivity extends Activity implements OnC
                 intent.putExtra(OpeningHours.weekDayToString(day), getIntent().getBooleanExtra(OpeningHours.weekDayToString(day), false));
             }
         }
-        if (getIntent().hasExtra("startTimeHour") && getIntent().hasExtra("startTimeMinute")) {
+        if (getIntent().hasExtra("startTimeHour")) {
             intent.putExtra("startTimeHour", getIntent().getIntExtra("startTimeHour", -2));
             intent.putExtra("startTimeMinute", getIntent().getIntExtra("startTimeMinute", -2));
         }
