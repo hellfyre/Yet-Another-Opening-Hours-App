@@ -63,7 +63,28 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         setContentView(R.layout.node_edit);
         initializeUi();
         
-        Intent intent = getIntent();
+        getNode(getIntent());
+    }
+    
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setContentView(R.layout.node_edit);
+        initializeUi();
+        if (osmNode == null) {
+            getNode(getIntent());
+        }
+        populateUiElementesWithOpeningHours();
+    }
+    
+    private void initializeUi() {
+        Button addDefinition = (Button) findViewById(R.id.buttonAddDefiniton);
+        addDefinition.setOnClickListener(this);
+        Button transmitChanges = (Button) findViewById(R.id.buttonTransmitChanges);
+        transmitChanges.setOnClickListener(this);
+    }
+    
+    private void getNode(Intent intent) {
         int nodeId = intent.getExtras().getInt("id");
         URI requestUri = ApiConnector.getRequestUriApiGetNode(String.valueOf(nodeId));
         if (requestUri != null) {
@@ -72,23 +93,6 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
             retrieverTask.addListener(this);
             retrieverTask.execute();
         }
-    }
-    
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setContentView(R.layout.node_edit);
-        initializeUi();
-        if (osmNode != null) {
-            populateUiElementesWithOpeningHours();
-        }
-    }
-    
-    private void initializeUi() {
-        Button addDefinition = (Button) findViewById(R.id.buttonAddDefiniton);
-        addDefinition.setOnClickListener(this);
-        Button transmitChanges = (Button) findViewById(R.id.buttonTransmitChanges);
-        transmitChanges.setOnClickListener(this);
     }
 
     @Override
