@@ -30,6 +30,7 @@
         <activity android:name=".NodeEditAddHourRangeWeekActivity" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".NodeEditAddHourRangeStarttimeActivity" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".NodeEditAddHourRangeEndtimeActivity" android:theme="@android:style/Theme.Dialog"></activity>
+        <activity android:name=".NodeEditRemoveHourRangeActivity" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".OSMSettingsActivity"></activity>
         <activity android:name=".RequestTokenActivity" android:launchMode="singleTask">
             <intent-filter>

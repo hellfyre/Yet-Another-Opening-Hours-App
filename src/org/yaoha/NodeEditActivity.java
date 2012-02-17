@@ -46,7 +46,8 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
     private ArrayList<GridView> gridViews;
     private static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     private static final int DIALOG_UPLOAD_PROGRESS = 1;
-    private static final int REQUEST_NODE_EDIT = 0;
+    private static final int REQUEST_NODE_ADD = 0;
+    private static final int REQUEST_NODE_REMOVE = 1;
     
     public static final int DIRECTION_TO_WEEK = 0;
     public static final int DIRECTION_TO_START = 1;
@@ -114,7 +115,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
         switch (v.getId()) {
         case R.id.nodeEditButtonAddHourRanges:
             Intent nodeEditIntent = new Intent(this, NodeEditAddHourRangeWeekActivity.class);
-            startActivityForResult(nodeEditIntent, REQUEST_NODE_EDIT);
+            startActivityForResult(nodeEditIntent, REQUEST_NODE_ADD);
             break;
         case R.id.nodeEditButtonUploadChanges:
             if (!ApiConnector.isAuthenticated()) {
@@ -138,64 +139,83 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_OK || requestCode != REQUEST_NODE_EDIT) return;
-        switch (data.getIntExtra("direction", -1)) {
-        case DIRECTION_TO_WEEK:
-            Intent intentWeek = new Intent();
-            copyIntentContents(data, intentWeek);
-            intentWeek.setClass(this, NodeEditAddHourRangeWeekActivity.class);
-            startActivityForResult(intentWeek, REQUEST_NODE_EDIT);
-            break;
-        case DIRECTION_TO_START:
-            Intent intentStart = new Intent();
-            copyIntentContents(data, intentStart);
-            intentStart.setClass(this, NodeEditAddHourRangeStarttimeActivity.class);
-            startActivityForResult(intentStart, REQUEST_NODE_EDIT);
-            break;
-        case DIRECTION_TO_END:
-            Intent intentEnd = new Intent();
-            copyIntentContents(data, intentEnd);
-            intentEnd.setClass(this, NodeEditAddHourRangeEndtimeActivity.class);
-            startActivityForResult(intentEnd, REQUEST_NODE_EDIT);
-            break;
-        case DIRECTION_TO_PARENT:
-            int startingHour = data.getIntExtra("startTimeHour", 0);
-            int startingMinute = data.getIntExtra("startTimeMinute", 0);
-            int endingHour = data.getIntExtra("endTimeHour", 0);
-            int endingMinute = data.getIntExtra("endTimeMinute", 0);
-            HourRange newRange = new HourRange(startingHour, startingMinute, endingHour, endingMinute);
-            // check for overlapping hour ranges before adding ANY new ranges
-            for (int day = OpeningHours.MONDAY; day <= OpeningHours.SUNDAY; day++) {
-                if (data.getBooleanExtra(OpeningHours.weekDayToString(day), false)) {
-                    TreeSet<HourRange> hours = osmNode.openingHours.getWeekDay(day);
-                    for (HourRange hourRange : hours) {
-                        if (newRange.overlaps(hourRange)) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                            builder.setMessage("This hour range overlaps with " + hourRange);
-                            builder.setCancelable(false);
-                            builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            });
-                            AlertDialog overlapAlert = builder.create();
-                            overlapAlert.show();
-                            return;
-                        }
+        if (resultCode != RESULT_OK) return;
+        if (requestCode == REQUEST_NODE_REMOVE) {
+            int day = data.getIntExtra("day", -1);
+            HourRange selectedHourRange = new HourRange(data.getStringExtra("hourrange"));
+            if (data.getBooleanExtra("removeall", false)) {
+                for (int weekDay = OpeningHours.MONDAY; weekDay <= OpeningHours.SUNDAY; weekDay++) {
+                    if (osmNode.openingHours.getWeekDay(weekDay).contains(selectedHourRange)) {
+                        osmNode.openingHours.removeHourRangeFromDay(selectedHourRange, weekDay);
+                        updateAdapter(weekDay);
                     }
                 }
             }
-            for (int day = OpeningHours.MONDAY; day <= OpeningHours.SUNDAY; day++) {
-                if (data.getBooleanExtra(OpeningHours.weekDayToString(day), false)) {
-                    osmNode.openingHours.addHourRangeToDay(newRange, day);
-                    updateAdapter(day);
-                }
+            else {
+                osmNode.openingHours.removeHourRangeFromDay(selectedHourRange, day);
+                updateAdapter(day);
             }
             populateUiElementes();
-            break;
-        default:
-            break;
+        }
+        else if (requestCode != REQUEST_NODE_ADD) {
+            switch (data.getIntExtra("direction", -1)) {
+            case DIRECTION_TO_WEEK:
+                Intent intentWeek = new Intent();
+                copyIntentContents(data, intentWeek);
+                intentWeek.setClass(this, NodeEditAddHourRangeWeekActivity.class);
+                startActivityForResult(intentWeek, REQUEST_NODE_ADD);
+                break;
+            case DIRECTION_TO_START:
+                Intent intentStart = new Intent();
+                copyIntentContents(data, intentStart);
+                intentStart.setClass(this, NodeEditAddHourRangeStarttimeActivity.class);
+                startActivityForResult(intentStart, REQUEST_NODE_ADD);
+                break;
+            case DIRECTION_TO_END:
+                Intent intentEnd = new Intent();
+                copyIntentContents(data, intentEnd);
+                intentEnd.setClass(this, NodeEditAddHourRangeEndtimeActivity.class);
+                startActivityForResult(intentEnd, REQUEST_NODE_ADD);
+                break;
+            case DIRECTION_TO_PARENT:
+                int startingHour = data.getIntExtra("startTimeHour", 0);
+                int startingMinute = data.getIntExtra("startTimeMinute", 0);
+                int endingHour = data.getIntExtra("endTimeHour", 0);
+                int endingMinute = data.getIntExtra("endTimeMinute", 0);
+                HourRange newRange = new HourRange(startingHour, startingMinute, endingHour, endingMinute);
+                // check for overlapping hour ranges before adding ANY new ranges
+                for (int day = OpeningHours.MONDAY; day <= OpeningHours.SUNDAY; day++) {
+                    if (data.getBooleanExtra(OpeningHours.weekDayToString(day), false)) {
+                        TreeSet<HourRange> hours = osmNode.openingHours.getWeekDay(day);
+                        for (HourRange hourRange : hours) {
+                            if (newRange.overlaps(hourRange)) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                                builder.setMessage("This hour range overlaps with " + hourRange);
+                                builder.setCancelable(false);
+                                builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                                AlertDialog overlapAlert = builder.create();
+                                overlapAlert.show();
+                                return;
+                            }
+                        }
+                    }
+                }
+                for (int day = OpeningHours.MONDAY; day <= OpeningHours.SUNDAY; day++) {
+                    if (data.getBooleanExtra(OpeningHours.weekDayToString(day), false)) {
+                        osmNode.openingHours.addHourRangeToDay(newRange, day);
+                        updateAdapter(day);
+                    }
+                }
+                populateUiElementes();
+                break;
+            default:
+                break;
+            }
         }
     }
     
@@ -290,8 +310,12 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
         GridView currentGridView = (GridView) arg0;
         int day = gridViews.indexOf(arg0);
         HourRange selectedHourRange = (HourRange) currentGridView.getAdapter().getItem(arg2);
-        osmNode.openingHours.removeHourRangeFromDay(selectedHourRange, day);
-        updateAdapter(day);
-        populateUiElementes();
+        
+        Intent removeIntent = new Intent(this, NodeEditRemoveHourRangeActivity.class);
+        removeIntent.putExtra("hourrange", selectedHourRange.toString());
+        removeIntent.putExtra("day", day);
+        startActivityForResult(removeIntent, REQUEST_NODE_REMOVE);
+        
+        
     }
 }

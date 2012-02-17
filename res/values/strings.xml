@@ -28,6 +28,8 @@
     <string name="node_edit_cancel">Cancel</string>
     <string name="node_edit_next">Next</string>
     <string name="node_edit_finish">Finish</string>
+    <string name="node_edit_remove_this">Remove this</string>
+    <string name="node_edit_remove_all">Remove all</string>
     <string name="emptyString"></string>
     <string name="enableEditmode">Toggle Editmode</string>
     <string name="set_osm">Set OSM-Account</string>
