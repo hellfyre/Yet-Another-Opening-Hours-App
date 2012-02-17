@@ -78,9 +78,9 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     }
     
     private void initializeUi() {
-        Button addDefinition = (Button) findViewById(R.id.buttonAddDefiniton);
+        Button addDefinition = (Button) findViewById(R.id.nodeEditButtonAddHourRanges);
         addDefinition.setOnClickListener(this);
-        Button transmitChanges = (Button) findViewById(R.id.buttonTransmitChanges);
+        Button transmitChanges = (Button) findViewById(R.id.nodeEditButtonUploadChanges);
         transmitChanges.setOnClickListener(this);
     }
     
@@ -98,11 +98,11 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-        case R.id.buttonAddDefiniton:
+        case R.id.nodeEditButtonAddHourRanges:
             Intent nodeEditIntent = new Intent(this, NodeEditAddHourRangeWeekActivity.class);
             startActivityForResult(nodeEditIntent, REQUEST_NODE_EDIT);
             break;
-        case R.id.buttonTransmitChanges:
+        case R.id.nodeEditButtonUploadChanges:
             if (!ApiConnector.isAuthenticated()) {
                 // TODO: replace by dialog
                 Toast.makeText(this, "Not authenticated. Aborting upload. Please authenticate first.", Toast.LENGTH_LONG).show();
