@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_column="0"
                 android:padding="3dip"
-                android:text="@string/monday_short"
+                android:text="@string/node_edit_monday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <GridView
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_column="0"
                 android:padding="3dip"
-                android:text="@string/tuesday_short"
+                android:text="@string/node_edit_tuesday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <GridView
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_column="0"
                 android:padding="3dip"
-                android:text="@string/wednesday_short"
+                android:text="@string/node_edit_wednesday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <GridView
@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_column="0"
                 android:padding="3dip"
-                android:text="@string/thursday_short"
+                android:text="@string/node_edit_thursday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <GridView
@@ -123,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_column="0"
                 android:padding="3dip"
-                android:text="@string/friday_short"
+                android:text="@string/node_edit_friday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <GridView
@@ -147,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_column="0"
                 android:padding="3dip"
-                android:text="@string/saturday_short"
+                android:text="@string/node_edit_saturday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <GridView
@@ -171,7 +171,7 @@
                 android:layout_height="wrap_content"
                 android:layout_column="0"
                 android:padding="3dip"
-                android:text="@string/sunday_short"
+                android:text="@string/node_edit_sunday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <GridView
@@ -196,13 +196,13 @@
             android:id="@+id/nodeEditButtonAddHourRanges"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add_definition" />
+            android:text="@string/node_edit_add_hours" />
 
         <Button
             android:id="@+id/nodeEditButtonUploadChanges"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/transmitChangesString" />
+            android:text="@string/node_edit_upload_node" />
     </LinearLayout>
 
 </LinearLayout>

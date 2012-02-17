@@ -11,22 +11,19 @@
     <string name="osm_settings">OSM Settings</string>
     <string name="gasStation">gas</string>
     <string name="add_favorite">+</string>
-    
-    <!-- Strings for node edit activity -->
-    <string name="monday_short">Mo</string>
-    <string name="tuesday_short">Tu</string>
-    <string name="wednesday_short">We</string>
-    <string name="friday_short">Fr</string>
-    <string name="saturday_short">Sa</string>
-    <string name="sunday_short">Su</string>
-    <string name="thursday_short">Th</string>
-    <string name="add_definition">Add hours</string>
-    <string name="start_time">Start time</string>
-    <string name="end_time">End time</string>
-    <string name="open_end">Open end</string>
-    <string name="dialog_ok">Add</string>
+    <string name="node_edit_monday_short">Mo</string>
+    <string name="node_edit_tuesday_short">Tu</string>
+    <string name="node_edit_wednesday_short">We</string>
+    <string name="node_edit_thursday_short">Th</string>
+    <string name="node_edit_friday_short">Fr</string>
+    <string name="node_edit_saturday_short">Sa</string>
+    <string name="node_edit_sunday_short">Su</string>
+    <string name="node_edit_add_hours">Add hours</string>
+    <string name="node_edit_start_time">Start time</string>
+    <string name="node_edit_end_time">End time</string>
+    <string name="node_edit_open_end">Open end</string>
+    <string name="node_edit_upload_node">Upload changes</string>
     <string name="emptyString"></string>
-    <string name="transmitChangesString">Upload changes</string>
     <string name="enableEditmode">Toggle Editmode</string>
     <string name="set_osm">Set OSM-Account</string>
     <string name="osm_token">Your Token:</string>
