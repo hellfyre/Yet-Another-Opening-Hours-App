@@ -17,7 +17,7 @@
         android:padding="5dp"
         android:scaleType="fitXY"
         android:src="@android:drawable/divider_horizontal_dark" />
-    
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
@@ -39,28 +39,29 @@
         android:src="@android:drawable/divider_horizontal_dark" />
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-            <Button
-                android:id="@+id/nodeEditButtonBackStarttime"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/node_edit_back" />
+        <Button
+            android:id="@+id/nodeEditButtonBackStarttime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/node_edit_back" />
 
-            <Button
-                android:id="@+id/nodeEditButtonCancelStarttime"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/node_edit_cancel" />
+        <Button
+            android:id="@+id/nodeEditButtonCancelStarttime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/node_edit_cancel" />
 
-            <Button
-                android:id="@+id/nodeEditButtonNextStarttime"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/node_edit_next" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/nodeEditButtonNextStarttime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/node_edit_next" />
+    </LinearLayout>
+
 </LinearLayout>

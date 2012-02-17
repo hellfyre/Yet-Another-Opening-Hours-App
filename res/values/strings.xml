@@ -27,6 +27,7 @@
     <string name="node_edit_back">Back</string>
     <string name="node_edit_cancel">Cancel</string>
     <string name="node_edit_next">Next</string>
+    <string name="node_edit_finish">Finish</string>
     <string name="emptyString"></string>
     <string name="enableEditmode">Toggle Editmode</string>
     <string name="set_osm">Set OSM-Account</string>
