@@ -32,14 +32,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.LinearLayout;
+import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
@@ -47,7 +46,6 @@ import android.widget.Toast;
 
 public class NodeEditActivity extends Activity implements OnClickListener, OnTimeChangedListener, OnCheckedChangeListener, NodeReceiverInterface<OsmNode>, OsmNodeRetrieverListener, OsmNodeUploadListener {
     private OsmNode osmNode = null;
-    private boolean rangeComplete = false;
     private boolean insideOnTimeChangedCallback = false;
     private static final int DIALOG_HOUR_RANGE = 0;
     private static final int DIALOG_DOWNLOAD_PROGRESS = 1;
@@ -205,43 +203,21 @@ public class NodeEditActivity extends Activity implements OnClickListener, OnTim
         if (osmNode.openingHours.unparsable()) openingHoursString = "Failed to parse: " + openingHoursString;
         openingHoursTextView.setText(openingHoursString);
         
-        for (int weekDay = OpeningHours.MONDAY; weekDay <= OpeningHours.SUNDAY; weekDay++) {
-            TreeSet<HourRange> hourRanges = osmNode.openingHours.getWeekDay(weekDay);
-            int weekDayTextViewId = 0;
-            switch (weekDay) {
-            case OpeningHours.MONDAY:
-                weekDayTextViewId = R.id.nodeEditTextViewHoursMonday;
-                break;
-            case OpeningHours.TUESDAY:
-                weekDayTextViewId = R.id.nodeEditTextViewHoursTuesday;
-                break;
-            case OpeningHours.WEDNESDAY:
-                weekDayTextViewId = R.id.nodeEditTextViewHoursWednesday;
-                break;
-            case OpeningHours.THURSDAY:
-                weekDayTextViewId = R.id.nodeEditTextViewHoursThursday;
-                break;
-            case OpeningHours.FRIDAY:
-                weekDayTextViewId = R.id.nodeEditTextViewHoursFriday;
-                break;
-            case OpeningHours.SATURDAY:
-                weekDayTextViewId = R.id.nodeEditTextViewHoursSaturday;
-                break;
-            case OpeningHours.SUNDAY:
-                weekDayTextViewId = R.id.nodeEditTextViewHoursSunday;
-                break;
-            default:
-                break;
-            }
-            
-            TextView weekDayTextView = (TextView) findViewById(weekDayTextViewId);
-            String weekDayString = "";
-            for (HourRange hourRange : hourRanges) {
-                weekDayString += hourRange + " ";
-            }
-            weekDayTextView.setText(weekDayString);
-            
-        }
+        GridView gridViewMonday = (GridView) findViewById(R.id.nodeEditGridViewMonday);
+        gridViewMonday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.MONDAY)));
+        GridView gridViewTuesday = (GridView) findViewById(R.id.nodeEditGridViewTuesday);
+        gridViewTuesday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.TUESDAY)));
+        GridView gridViewWednesday = (GridView) findViewById(R.id.nodeEditGridViewWednesday);
+        gridViewWednesday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.WEDNESDAY)));
+        GridView gridViewThursday = (GridView) findViewById(R.id.nodeEditGridViewThursday);
+        gridViewThursday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.THURSDAY)));
+        GridView gridViewFriday = (GridView) findViewById(R.id.nodeEditGridViewFriday);
+        gridViewFriday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.FRIDAY)));
+        GridView gridViewSaturday = (GridView) findViewById(R.id.nodeEditGridViewSaturday);
+        gridViewSaturday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.SATURDAY)));
+        GridView gridViewSunday = (GridView) findViewById(R.id.nodeEditGridViewSunday);
+        gridViewSunday.setAdapter(new TextAdapter(this, osmNode.openingHours.getWeekDay(OpeningHours.SUNDAY)));
+        
     }
 
     @Override

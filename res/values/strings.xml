@@ -20,7 +20,7 @@
     <string name="saturday_short">Sa</string>
     <string name="sunday_short">Su</string>
     <string name="thursday_short">Th</string>
-    <string name="add_definition">Add hours to selected days</string>
+    <string name="add_definition">Add hours</string>
     <string name="start_time">Start time</string>
     <string name="end_time">End time</string>
     <string name="open_end">Open end</string>

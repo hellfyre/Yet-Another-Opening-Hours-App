@@ -4,9 +4,11 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+   
+
     <TextView
         android:id="@+id/nodeEditTextViewOpeningHoursString"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="3dip" />
 
@@ -27,21 +29,17 @@
                 android:text="@string/monday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:id="@+id/nodeEditTextViewHoursMonday"
-                android:layout_width="wrap_content"
+            <GridView
+                android:id="@+id/nodeEditGridViewMonday"
+                android:columnWidth="70dip"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="3dip" />
+                android:horizontalSpacing="1dp"
+                android:verticalSpacing="10dp"
+                android:numColumns="auto_fit" >
+            </GridView>
 
-            <ImageView
-                android:id="@+id/nodeEditButtonDeleteMonday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_gravity="right"
-                android:contentDescription="Delete"
-                android:gravity="right"
-                android:src="@android:drawable/ic_delete" />
+            
         </TableRow>
 
         <TableRow
@@ -56,21 +54,16 @@
                 android:text="@string/tuesday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:id="@+id/nodeEditTextViewHoursTuesday"
-                android:layout_width="wrap_content"
+            <GridView
+                android:id="@+id/nodeEditGridViewTuesday"
+                android:columnWidth="70dip"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="3dip" />
+                android:horizontalSpacing="1dp"
+                android:verticalSpacing="10dp"
+                android:numColumns="auto_fit" >
+            </GridView>
             
-            <ImageView
-                android:id="@+id/nodeEditButtonDeleteTuesday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_gravity="right"
-                android:contentDescription="Delete"
-                android:gravity="right"
-                android:src="@android:drawable/ic_delete" />
         </TableRow>
 
         <TableRow
@@ -85,21 +78,16 @@
                 android:text="@string/wednesday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:id="@+id/nodeEditTextViewHoursWednesday"
-                android:layout_width="wrap_content"
+            <GridView
+                android:id="@+id/nodeEditGridViewWednesday"
+                android:columnWidth="70dip"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="3dip" />
+                android:horizontalSpacing="1dp"
+                android:verticalSpacing="10dp"
+                android:numColumns="auto_fit" >
+            </GridView>
             
-            <ImageView
-                android:id="@+id/nodeEditButtonDeleteWednesday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_gravity="right"
-                android:contentDescription="Delete"
-                android:gravity="right"
-                android:src="@android:drawable/ic_delete" />
         </TableRow>
 
         <TableRow
@@ -114,21 +102,16 @@
                 android:text="@string/thursday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:id="@+id/nodeEditTextViewHoursThursday"
-                android:layout_width="wrap_content"
+            <GridView
+                android:id="@+id/nodeEditGridViewThursday"
+                android:columnWidth="70dip"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="3dip" />
+                android:horizontalSpacing="1dp"
+                android:verticalSpacing="10dp"
+                android:numColumns="auto_fit" >
+            </GridView>
             
-            <ImageView
-                android:id="@+id/nodeEditButtonDeleteThursday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_gravity="right"
-                android:contentDescription="Delete"
-                android:gravity="right"
-                android:src="@android:drawable/ic_delete" />
         </TableRow>
 
         <TableRow
@@ -143,21 +126,16 @@
                 android:text="@string/friday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:id="@+id/nodeEditTextViewHoursFriday"
-                android:layout_width="wrap_content"
+            <GridView
+                android:id="@+id/nodeEditGridViewFriday"
+                android:columnWidth="70dip"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="3dip" />
+                android:horizontalSpacing="1dp"
+                android:verticalSpacing="10dp"
+                android:numColumns="auto_fit" >
+            </GridView>
             
-            <ImageView
-                android:id="@+id/nodeEditButtonDeleteFriday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_gravity="right"
-                android:contentDescription="Delete"
-                android:gravity="right"
-                android:src="@android:drawable/ic_delete" />
         </TableRow>
 
         <TableRow
@@ -172,21 +150,16 @@
                 android:text="@string/saturday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:id="@+id/nodeEditTextViewHoursSaturday"
-                android:layout_width="wrap_content"
+            <GridView
+                android:id="@+id/nodeEditGridViewSaturday"
+                android:columnWidth="70dip"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="3dip" />
+                android:horizontalSpacing="1dp"
+                android:verticalSpacing="10dp"
+                android:numColumns="auto_fit" >
+            </GridView>
             
-            <ImageView
-                android:id="@+id/nodeEditButtonDeleteSaturday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_gravity="right"
-                android:contentDescription="Delete"
-                android:gravity="right"
-                android:src="@android:drawable/ic_delete" />
         </TableRow>
 
         <TableRow
@@ -201,26 +174,21 @@
                 android:text="@string/sunday_short"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:id="@+id/nodeEditTextViewHoursSunday"
-                android:layout_width="wrap_content"
+            <GridView
+                android:id="@+id/nodeEditGridViewSunday"
+                android:columnWidth="70dip"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="3dip" />
+                android:horizontalSpacing="1dp"
+                android:verticalSpacing="10dp"
+                android:numColumns="auto_fit" >
+            </GridView>
             
-            <ImageView
-                android:id="@+id/nodeEditButtonDeleteSunday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_gravity="right"
-                android:contentDescription="Delete"
-                android:gravity="right"
-                android:src="@android:drawable/ic_delete" />
         </TableRow>
     </TableLayout>
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
