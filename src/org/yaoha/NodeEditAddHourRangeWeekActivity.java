@@ -21,6 +21,7 @@ public class NodeEditAddHourRangeWeekActivity extends Activity implements OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.node_edit_add_hour_range_weekdays);
+        setTitle(R.string.node_edit_choose_days);
         
         checkBoxes = new ArrayList<CheckBox>();
         checkBoxes.add(OpeningHours.MONDAY, ((CheckBox) findViewById(R.id.nodeEditCheckBoxMonday)));

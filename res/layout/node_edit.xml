@@ -13,12 +13,12 @@
         android:padding="3dip" />
 
     <TableLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:stretchColumns="1" >
 
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
             <TextView
@@ -31,7 +31,7 @@
 
             <GridView
                 android:id="@+id/nodeEditGridViewMonday"
-                android:columnWidth="70dip"
+                android:columnWidth="85dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:horizontalSpacing="1dp"
@@ -43,7 +43,7 @@
         </TableRow>
 
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
             <TextView
@@ -56,7 +56,7 @@
 
             <GridView
                 android:id="@+id/nodeEditGridViewTuesday"
-                android:columnWidth="70dip"
+                android:columnWidth="85dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:horizontalSpacing="1dp"
@@ -67,7 +67,7 @@
         </TableRow>
 
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
             <TextView
@@ -80,7 +80,7 @@
 
             <GridView
                 android:id="@+id/nodeEditGridViewWednesday"
-                android:columnWidth="70dip"
+                android:columnWidth="85dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:horizontalSpacing="1dp"
@@ -91,7 +91,7 @@
         </TableRow>
 
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
             <TextView
@@ -104,7 +104,7 @@
 
             <GridView
                 android:id="@+id/nodeEditGridViewThursday"
-                android:columnWidth="70dip"
+                android:columnWidth="85dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:horizontalSpacing="1dp"
@@ -115,7 +115,7 @@
         </TableRow>
 
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
             <TextView
@@ -128,7 +128,7 @@
 
             <GridView
                 android:id="@+id/nodeEditGridViewFriday"
-                android:columnWidth="70dip"
+                android:columnWidth="85dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:horizontalSpacing="1dp"
@@ -139,7 +139,7 @@
         </TableRow>
 
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
             <TextView
@@ -152,7 +152,7 @@
 
             <GridView
                 android:id="@+id/nodeEditGridViewSaturday"
-                android:columnWidth="70dip"
+                android:columnWidth="85dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:horizontalSpacing="1dp"
@@ -163,7 +163,7 @@
         </TableRow>
 
         <TableRow
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
             <TextView
@@ -176,7 +176,7 @@
 
             <GridView
                 android:id="@+id/nodeEditGridViewSunday"
-                android:columnWidth="70dip"
+                android:columnWidth="85dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:horizontalSpacing="1dp"

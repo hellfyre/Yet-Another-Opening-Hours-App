@@ -19,6 +19,7 @@ public class NodeEditAddHourRangeEndtimeActivity extends Activity implements OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.node_edit_add_hour_range_endtime);
+        setTitle(R.string.node_edit_end_time);
         
         timePicker = (TimePicker) findViewById(R.id.nodeEditTimePickerEndTime);
         timePicker.setIs24HourView(true);
@@ -110,6 +111,36 @@ public class NodeEditAddHourRangeEndtimeActivity extends Activity implements OnC
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) timePicker.setEnabled(false);
         else timePicker.setEnabled(true);
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int[] time = { -1, -1 };
+        if (!openEnd.isChecked()) {
+            time[0] = timePicker.getCurrentHour();
+            time[1] = timePicker.getCurrentMinute();
+        }
+        outState.putIntArray("endtime", time);
+    }
+    
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState.containsKey("endtime")) {
+            int[] time = savedInstanceState.getIntArray("endtime");
+            
+            if (time[0] == -1) {
+                timePicker.setCurrentHour(0);
+                timePicker.setCurrentMinute(0);
+                timePicker.setEnabled(false);
+                openEnd.setChecked(true);
+            }
+            else {
+                timePicker.setCurrentHour(time[0]);
+                timePicker.setCurrentMinute(time[1]);
+            }
+        }
     }
 
 }

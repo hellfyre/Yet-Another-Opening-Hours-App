@@ -15,6 +15,7 @@ public class NodeEditAddHourRangeStarttimeActivity extends Activity implements O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.node_edit_add_hour_range_starttime);
+        setTitle(R.string.node_edit_start_time);
         
         timePicker = (TimePicker) findViewById(R.id.nodeEditTimePickerStartTime);
         timePicker.setIs24HourView(true);
@@ -87,6 +88,23 @@ public class NodeEditAddHourRangeStarttimeActivity extends Activity implements O
         if (getIntent().hasExtra("endTimeHour")) {
             intent.putExtra("endTimeHour", getIntent().getIntExtra("endTimeHour", -2));
             intent.putExtra("endTimeMinute", getIntent().getIntExtra("endTimeMinute", -2));
+        }
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int[] time = { timePicker.getCurrentHour(), timePicker.getCurrentMinute() };
+        outState.putIntArray("starttime", time);
+    }
+    
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState.containsKey("starttime")) {
+            int[] time = savedInstanceState.getIntArray("starttime");
+            timePicker.setCurrentHour(time[0]);
+            timePicker.setCurrentMinute(time[1]);
         }
     }
 

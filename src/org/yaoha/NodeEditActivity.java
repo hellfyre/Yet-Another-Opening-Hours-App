@@ -30,7 +30,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -63,22 +62,21 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.node_edit);
-        initializeUi();
+        osmNode = (OsmNode) getLastNonConfigurationInstance();
         
-        getNode(getIntent());
-    }
-    
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setContentView(R.layout.node_edit);
         initializeUi();
         if (osmNode == null) {
             getNode(getIntent());
         }
         else {
             populateUiElementes();
+            populateGridViews();
         }
+    }
+    
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return osmNode;
     }
     
     private void initializeUi() {
@@ -157,7 +155,7 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
             }
             populateUiElementes();
         }
-        else if (requestCode != REQUEST_NODE_ADD) {
+        else if (requestCode == REQUEST_NODE_ADD) {
             switch (data.getIntExtra("direction", -1)) {
             case DIRECTION_TO_WEEK:
                 Intent intentWeek = new Intent();
@@ -315,7 +313,5 @@ public class NodeEditActivity extends Activity implements OnClickListener, NodeR
         removeIntent.putExtra("hourrange", selectedHourRange.toString());
         removeIntent.putExtra("day", day);
         startActivityForResult(removeIntent, REQUEST_NODE_REMOVE);
-        
-        
     }
 }

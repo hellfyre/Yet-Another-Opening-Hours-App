@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="250dip"
+    android:layout_width="400dp"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
@@ -9,12 +9,20 @@
         android:layout_height="wrap_content" >
 
         <TimePicker
-            android:id="@+id/nodeEditTimePickerStartTime"
+            android:id="@+id/nodeEditTimePickerEndTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:padding="3dip" />
+
+        <CheckBox
+            android:id="@+id/nodeEditCheckBoxOpenEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/nodeEditTimePickerEndTime"
+            android:layout_centerVertical="true"
+            android:text="@string/node_edit_open_end" />
     </RelativeLayout>
 
     <ImageView
@@ -29,25 +37,25 @@
         android:layout_height="wrap_content" >
 
         <Button
-            android:id="@+id/nodeEditButtonBackStarttime"
+            android:id="@+id/nodeEditButtonBackEndtime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/node_edit_back" />
 
         <Button
-            android:id="@+id/nodeEditButtonCancelStarttime"
+            android:id="@+id/nodeEditButtonCancelEndtime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/node_edit_cancel" />
 
         <Button
-            android:id="@+id/nodeEditButtonNextStarttime"
+            android:id="@+id/nodeEditButtonFinishEndtime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/node_edit_next" />
+            android:text="@string/node_edit_finish" />
     </LinearLayout>
 
 </LinearLayout>
