@@ -56,7 +56,7 @@ import android.util.Log;
 public class ApiConnector {
     DefaultHttpClient client;
     private static Header userAgentHeader;
-    private static final String apiUrl = "home.uschok.de";
+    private static final String apiUrl = "api.openstreetmap.org";
     private static final String xapiUrl = "www.overpass-api.de";
     private static String oauthToken;
     private static String oauthTokenSecret;
