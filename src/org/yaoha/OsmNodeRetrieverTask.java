@@ -39,12 +39,8 @@ public class OsmNodeRetrieverTask extends AsyncTask<Void, Void, Void> {
         this.nodeReceiver = nodeReceiver;
     }
     
-    public OsmNodeRetrieverTask() {
-        this(OsmNodeDbHelper.getInstance());
-    }
-    
-    public OsmNodeRetrieverTask(URI uri) {
-        this();
+    public OsmNodeRetrieverTask(NodeReceiverInterface<OsmNode> nodeReceiver, URI uri) {
+        this.nodeReceiver = nodeReceiver;
         queue.add(uri);
     }
     

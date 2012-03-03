@@ -156,7 +156,7 @@ public class YaohaMapListener implements MapListener, OsmNodeRetrieverListener {
                 retrieverTask.addTask(uri);
         }
         else {
-            retrieverTask = new OsmNodeRetrieverTask();
+            retrieverTask = new OsmNodeRetrieverTask(OsmNodeDbHelper.getInstance());
             for (URI uri : requestUris)
                 retrieverTask.addTask(uri);
             retrieverTask.addListener(this);
