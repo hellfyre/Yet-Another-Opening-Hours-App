@@ -36,7 +36,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 public class OsmNodeUploadTask extends AsyncTask<OsmNode, Void, String> {
     OsmNode currentNode;
