@@ -57,7 +57,7 @@ public class OsmNodeRetrieverTask extends AsyncTask<Void, Void, Void> {
             synchronized (queue) {
                 uri = queue.remove();
             }
-            Log.d(OsmNodeRetrieverTask.class.getSimpleName(), "Queue holds " + queue.size() + " tasks");
+            Log.d(OsmNodeRetrieverTask.class.getSimpleName(), "Queue holds " + queue.size() + " requests");
             ApiConnector connector = new ApiConnector();
             InputStream in;
             try {

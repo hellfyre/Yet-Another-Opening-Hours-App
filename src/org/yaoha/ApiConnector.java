@@ -21,13 +21,21 @@
 package org.yaoha;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
@@ -46,6 +54,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
+import org.osmdroid.util.BoundingBoxE6;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -61,6 +72,7 @@ public class ApiConnector {
     private static String oauthToken;
     private static String oauthTokenSecret;
     private static OAuthConsumer consumer;
+    private static String appVersion;
     
     public ApiConnector() {
         String applicationVersion = "";
@@ -70,13 +82,31 @@ public class ApiConnector {
         } catch (NameNotFoundException e) {
             applicationVersion = "version_unset";
         }
-        userAgentHeader = new BasicHeader("User-Agent", "YAOHA/" + applicationVersion + " (Android)");
+        appVersion = applicationVersion;
+        
+        userAgentHeader = new BasicHeader("User-Agent", "YAOHA/" + appVersion + " (Android)");
         setConsumer();
 
         client = new DefaultHttpClient();
     }
     
     public HttpResponse getNodes(URI uri) throws ClientProtocolException, IOException {
+        HttpGet request = new HttpGet(uri);
+        request.setHeader(userAgentHeader);
+        return client.execute(request);
+    }
+    
+    public HttpResponse getNodes(BoundingBoxE6 boundingBox) throws ClientProtocolException, IOException {
+        return null;
+    }
+    
+    public HttpResponse getSingleNode(String id) throws ClientProtocolException, IOException {
+        URI uri = null;
+        try {
+            uri = new URI("http", apiUrl, "/api/0.6/node/" + id, null);
+        } catch (URISyntaxException e) {
+            Log.d(ApiConnector.class.getSimpleName(), e.getMessage());
+        }
         HttpGet request = new HttpGet(uri);
         request.setHeader(userAgentHeader);
         return client.execute(request);
@@ -92,13 +122,7 @@ public class ApiConnector {
         }
         HttpPut request = new HttpPut(uri);
         request.setHeader(userAgentHeader);
-        String requestString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                + "<osm>"
-                + "<changeset>"
-                + "<tag k=\"created_by\" v=\"YAOHA\"/>"
-                + "<tag k=\"comment\" v=\"Updating opening hours\"/>"
-                + "</changeset>"
-                + "</osm>";
+        String requestString = generateChangesetXml();
         HttpEntity entity = new StringEntity(requestString, HTTP.UTF_8);
         request.setEntity(entity);
         consumer.sign(request);
@@ -207,6 +231,180 @@ public class ApiConnector {
             consumer = new CommonsHttpOAuthConsumer(C.CONSUMER_KEY, C.CONSUMER_SECRET);
             consumer.setTokenWithSecret(oauthToken, oauthTokenSecret);
         }
+    }
+    
+    private String generateChangesetXml() {
+        Document doc = null;
+        try {
+            doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        
+        Element root = doc.createElement("osm");
+        Element changeset = doc.createElement("changeset");
+        doc.appendChild(root);
+        root.appendChild(changeset);
+        
+        Element tagCreatedBy = doc.createElement("tag");
+        tagCreatedBy.setAttribute("created_by", "YAHOA v" + appVersion);
+        changeset.appendChild(tagCreatedBy);
+        Element tagComment = doc.createElement("tag");
+        tagComment.setAttribute("comment", "Updated opening_hours");
+        changeset.appendChild(tagComment);
+        
+        Transformer transformer = null;
+        try {
+            transformer = TransformerFactory.newInstance().newTransformer();
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerFactoryConfigurationError e) {
+            e.printStackTrace();
+        }
+        
+        StringWriter stringWriter = new StringWriter();
+        
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(stringWriter);
+        
+        try {
+            transformer.transform(source, result);
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+        
+        return stringWriter.toString();
+    }
+    
+    private String generateRequestXml(String north, String south, String west, String east) {
+        
+        /*
+        <osm-script>
+        <query into="_" type="node">
+        <has-kv k="amenity" modv="" regv="cafe|townhall"/>
+        <bbox-query into="_" n="52.2645724" s="52.2640077" w="10.5261254" e="10.5281210"/>
+        </query>
+        <query into="_" type="node">
+        <has-kv k="cuisine" modv="" v="coffee_shop"/>
+        <bbox-query into="_" n="52.2645724" s="52.2640077" w="10.5261254" e="10.5281210"/>
+        </query>
+        <print/>
+        </osm-script>
+        */
+        
+        String amenities = "bar" +
+        		"|biergarten" +
+        		"|cafe" +
+        		"|fast_food" +
+        		"|food_court" +
+        		"|ice_cream" +
+        		"|pub" +
+        		"|restaurant" +
+        		"|college" +
+        		"|kindergarten" +
+        		"|library" +
+        		"|school" +
+        		"|university" +
+        		"|car_rental" +
+        		"|car_sharing" +
+        		"|car_wash" +
+        		"|fuel" +
+        		"|atm" + // needed?
+        		"|bank" +
+        		"|bureau_de_change" +
+        		"|clinic" +
+        		"|dentist" +
+        		"|doctors" +
+        		"|hospital" +
+        		"|pharmacy" +
+        		"|social_facility" +
+        		"|veterinary" +
+        		"|arts_centre" +
+        		"|cinema" +
+        		"|community_centre" +
+        		"|nightclub" +
+        		"|social_centre" +
+        		"|stripclub" +
+        		"|studio" +
+        		"|theatre" +
+        		"|brothel" +
+        		"|courthouse" +
+        		"|crematorium" +
+        		"|embassy" +
+        		"|fire_station" +
+        		"|marketplace" +
+        		"|police" +
+        		"|post_office" +
+        		"|prison" +
+        		"|public_building" +
+        		"|sauna" +
+        		"|toilets" +
+        		"|townhall";
+        
+        Document doc = null;
+        try {
+            doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        
+        Element root = doc.createElement("osm-script");
+        Element queryAmenity = doc.createElement("query");
+        queryAmenity.setAttribute("into", "_");
+        queryAmenity.setAttribute("type", "node");
+        Element queryShop = doc.createElement("query");
+        queryAmenity.setAttribute("into", "_");
+        queryAmenity.setAttribute("type", "node");
+        Element print = doc.createElement("print");
+        doc.appendChild(root);
+        root.appendChild(queryAmenity);
+        root.appendChild(queryShop);
+        root.appendChild(print);
+        
+        Element haskvAmenity = doc.createElement("haskv");
+        haskvAmenity.setAttribute("k", "amenity");
+        haskvAmenity.setAttribute("modv", "");
+        haskvAmenity.setAttribute("regv", amenities);
+        
+        Element haskvShop = doc.createElement("haskv");
+        haskvShop.setAttribute("k", "shop");
+        haskvShop.setAttribute("modv", "");
+        haskvShop.setAttribute("v", "");
+        
+        Element bbox = doc.createElement("bbox-query");
+        bbox.setAttribute("into", "_");
+        bbox.setAttribute("n", north);
+        bbox.setAttribute("s", south);
+        bbox.setAttribute("w", west);
+        bbox.setAttribute("e", east);
+        
+        queryAmenity.appendChild(haskvAmenity);
+        queryAmenity.appendChild(bbox);
+        
+        queryShop.appendChild(haskvShop);
+        queryShop.appendChild(bbox);
+        
+        Transformer transformer = null;
+        try {
+            transformer = TransformerFactory.newInstance().newTransformer();
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerFactoryConfigurationError e) {
+            e.printStackTrace();
+        }
+        
+        StringWriter stringWriter = new StringWriter();
+        
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(stringWriter);
+        
+        try {
+            transformer.transform(source, result);
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+        
+        return stringWriter.toString();
     }
 
 }
