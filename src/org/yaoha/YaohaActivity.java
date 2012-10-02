@@ -41,6 +41,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -138,6 +139,8 @@ public class YaohaActivity extends Activity implements OnClickListener {
         
         
         OsmNodeDbHelper.create(getApplicationContext());
+
+        getFavSettings();
     }
     
    
@@ -167,6 +170,39 @@ public class YaohaActivity extends Activity implements OnClickListener {
         }
     }
     
+    private void getFavSettings(){
+        //Toast.makeText(this, prefs.getString("saved_fav_1_text", "-1"), Toast.LENGTH_LONG).show();
+        if (prefs.getString("saved_fav_1_text", "-1")!= "-1") {
+            text_fav_1.setText(prefs.getString("saved_fav_1_text", "-1"));
+            //button_favorite_1.setImageResource(prefs.getInt("saved_fav_1_pic", -1)); //TODO
+            button_favorite_1.setImageResource(R.drawable.placeholder_logo);
+        }
+        if (prefs.getString("saved_fav_2_text", "-1")!= "-1") {
+            text_fav_2.setText(prefs.getString("saved_fav_2_text", "-1"));
+            //button_favorite_1.setImageResource(prefs.getInt("saved_fav_1_pic", -1)); //TODO
+            button_favorite_2.setImageResource(R.drawable.placeholder_logo);
+        }
+        if (prefs.getString("saved_fav_3_text", "-1")!= "-1") {
+            text_fav_3.setText(prefs.getString("saved_fav_3_text", "-1"));
+            //button_favorite_1.setImageResource(prefs.getInt("saved_fav_1_pic", -1)); //TODO
+            button_favorite_3.setImageResource(R.drawable.placeholder_logo);
+        }
+        if (prefs.getString("saved_fav_4_text", "-1")!= "-1") {
+            text_fav_4.setText(prefs.getString("saved_fav_4_text", "-1"));
+            //button_favorite_1.setImageResource(prefs.getInt("saved_fav_1_pic", -1)); //TODO
+            button_favorite_4.setImageResource(R.drawable.placeholder_logo);
+        }
+        if (prefs.getString("saved_fav_5_text", "-1")!= "-1") {
+            text_fav_5.setText(prefs.getString("saved_fav_5_text", "-1"));
+            //button_favorite_1.setImageResource(prefs.getInt("saved_fav_1_pic", -1)); //TODO
+            button_favorite_5.setImageResource(R.drawable.placeholder_logo);
+        }
+        if (prefs.getString("saved_fav_6_text", "-1")!= "-1") {
+            text_fav_6.setText(prefs.getString("saved_fav_6_text", "-1"));
+            //button_favorite_1.setImageResource(prefs.getInt("saved_fav_1_pic", -1)); //TODO
+            button_favorite_6.setImageResource(R.drawable.placeholder_logo);
+        }
+    }
     
     private void connectToOSM(){
         String url = "http://openstreetmap.org";
@@ -195,7 +231,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
             //Toast.makeText(this, "Response: " + response.getStatusLine(), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             String err = e.getMessage();
-            Toast.makeText(this, err, Toast.LENGTH_LONG);
+            Toast.makeText(this, err, Toast.LENGTH_LONG).show();
         }
     }
     
@@ -228,6 +264,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
             if (text_fav_1.getText().equals(getText(R.string.add_favorite))) {
                 openFavMenu(button_favorite_1, text_fav_1);
             } else {
+                Toast.makeText(this, "Looking for: "+ text_fav_1.getText(), Toast.LENGTH_LONG).show();
                 searchMapWithKey(text_fav_1.getText());
             }
         }
@@ -235,6 +272,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
             if (text_fav_2.getText().equals(getText(R.string.add_favorite))) {
                 openFavMenu(button_favorite_2, text_fav_2);
             } else {
+                Toast.makeText(this, "Looking for: "+ text_fav_2.getText(), Toast.LENGTH_LONG).show();
                 searchMapWithKey(text_fav_2.getText());
             }
         }
@@ -242,6 +280,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
             if (text_fav_3.getText().equals(getText(R.string.add_favorite))) {
                 openFavMenu(button_favorite_3, text_fav_3);
             } else {
+                Toast.makeText(this, "Looking for: "+ text_fav_3.getText(), Toast.LENGTH_LONG).show();
                 searchMapWithKey(text_fav_3.getText());
             }
         }
@@ -249,6 +288,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
             if (text_fav_4.getText().equals(getText(R.string.add_favorite))) {
                 openFavMenu(button_favorite_4, text_fav_4);
             } else {
+                Toast.makeText(this, "Looking for: "+ text_fav_4.getText(), Toast.LENGTH_LONG).show();
                 searchMapWithKey(text_fav_4.getText());
             }
         }
@@ -256,6 +296,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
             if (text_fav_5.getText().equals(getText(R.string.add_favorite))) {
                 openFavMenu(button_favorite_5, text_fav_5);
             } else {
+                Toast.makeText(this, "Looking for: "+ text_fav_5.getText(), Toast.LENGTH_LONG).show();
                 searchMapWithKey(text_fav_5.getText());
             }
         }
@@ -263,6 +304,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
             if (text_fav_6.getText().equals(getText(R.string.add_favorite))) {
                 openFavMenu(button_favorite_6, text_fav_6);
             } else {
+                Toast.makeText(this, "Looking for: "+ text_fav_6.getText(), Toast.LENGTH_LONG).show();
                 searchMapWithKey(text_fav_6.getText());
             }
         }
@@ -330,8 +372,25 @@ public class YaohaActivity extends Activity implements OnClickListener {
 
         alert.setPositiveButton("Set", new DialogInterface.OnClickListener() { 
             public void onClick(DialogInterface dialog, int whichButton) {
+                final Editor edit = prefs.edit();
+                String tmp="";
                 tv.setText(input.getText());
                 btn.setImageResource(R.drawable.placeholder_logo);
+                if (btn.getId() == button_favorite_1.getId()){
+                    tmp = "saved_fav_1_text";
+                } else if (btn.getId() == button_favorite_2.getId()){
+                    tmp = "saved_fav_2_text";
+                } else if (btn.getId() == button_favorite_3.getId()){
+                    tmp = "saved_fav_3_text";
+                } else if (btn.getId() == button_favorite_4.getId()){
+                    tmp = "saved_fav_4_text";
+                } else if (btn.getId() == button_favorite_5.getId()){
+                    tmp = "saved_fav_5_text";
+                } else if (btn.getId() == button_favorite_6.getId()){
+                    tmp = "saved_fav_6_text";
+                }
+                edit.putString(tmp, input.getText().toString());
+                edit.commit();
                 //TODO add method to catch store-icons
             } 
             }); 
@@ -373,6 +432,10 @@ public class YaohaActivity extends Activity implements OnClickListener {
                     actualButton.setImageBitmap(Bitmap.createScaledBitmap(fav_bitmap, actualButton.getWidth()-20, actualButton.getHeight()-20, false));
                 }
             }
+    }
+    
+    public void onBackPressed(){
+        finish();
     }
     
     public static final Context getStaticApplicationContext() {

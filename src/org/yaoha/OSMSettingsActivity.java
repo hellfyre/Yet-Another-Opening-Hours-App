@@ -49,7 +49,7 @@ public class OSMSettingsActivity extends Activity implements android.view.View.O
         
         token = (TextView) findViewById(R.id.textView_osm_token_text);
         sToken = (TextView) findViewById(R.id.textView_osm_secret_token_text);
-        aToken = (TextView) findViewById(R.id.textView_osm_access_token_text);
+        //aToken = (TextView) findViewById(R.id.textView_osm_access_token_text);
         
         
         Button launchOauth = (Button) findViewById(R.id.button_set_osm);
@@ -69,7 +69,7 @@ public class OSMSettingsActivity extends Activity implements android.view.View.O
             console.setText("OAuth successful!");
         }
         else {
-            console.setText("OAuth failed, no tokens, Click on the Set OSM Button.");
+            console.setText("OAuth failed, no tokens, Click on the \"Set OSM\" Button.");
         }
     }
     
@@ -111,7 +111,7 @@ public class OSMSettingsActivity extends Activity implements android.view.View.O
         }
         if(v.getId() == R.id.button_remove_account){
             clearCredentials();
-            console.setText("Tokens deleted, getContacts call should fail now.");
+            console.setText("No tokens found, no account set.");
         }
         
     }

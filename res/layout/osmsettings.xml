@@ -34,8 +34,8 @@
         android:id="@+id/textView_osm_token_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/textView_osm_secret_token"
@@ -48,22 +48,15 @@
         android:id="@+id/textView_osm_secret_token_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/textView_osm_access_token"
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/osm_access_token"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:id="@+id/textView_osm_access_token_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/text_console"

@@ -57,7 +57,7 @@ public class RequestTokenActivity extends Activity {
                     C.AUTHORIZE_URL);
         } catch (Exception e) {
             Log.e(C.TAG, "Error creating consumer / provider",e);
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG);
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         getRequestToken();
@@ -80,12 +80,12 @@ public class RequestTokenActivity extends Activity {
         try {
             Log.d(C.TAG, "getRequestToken() called");
             String url = provider.retrieveRequestToken(consumer, C.OAUTH_CALLBACK_URL);
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url)).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_FROM_BACKGROUND);
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url)).setFlags(Intent.FLAG_FROM_BACKGROUND | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             this.startActivity(intent);
             
         } catch (Exception e) {
             Log.e(C.TAG, "Error retrieving request token", e);
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG);
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
     
@@ -109,7 +109,7 @@ public class RequestTokenActivity extends Activity {
             
         } catch (Exception e) {
             Log.e(C.TAG, "Access Token Retrieval Error", e);
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG);
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
     
