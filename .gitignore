@@ -1,4 +1,6 @@
 bin/
+gen/
+Website/
 Thumbs.db
 R.java
 R.java.d
