@@ -21,10 +21,14 @@
 package org.yaoha;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -43,8 +47,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -80,6 +90,8 @@ public class YaohaActivity extends Activity implements OnClickListener {
         "groceries", "computer", "sport", "clothes", "gas station"
     };
     
+    boolean mExternalStorageAvailable = false;
+    boolean mExternalStorageWriteable = false;
     
     /** Called when the activity is first created. */
     @Override
@@ -136,10 +148,8 @@ public class YaohaActivity extends Activity implements OnClickListener {
         if (prefs.getBoolean("start_with_map",false) == true) {
             startButton.performClick();
         }
-        
-        
         OsmNodeDbHelper.create(getApplicationContext());
-
+        
         getFavSettings();
     }
     
@@ -170,37 +180,48 @@ public class YaohaActivity extends Activity implements OnClickListener {
         }
     }
     
+    private void checkExMediaState(){
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            // We can read and write the media
+            mExternalStorageAvailable = mExternalStorageWriteable = true;
+        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            // We can only read the media
+            mExternalStorageAvailable = true;
+            mExternalStorageWriteable = false;
+        } else {
+            // Something else is wrong. It may be one of many other states, but all we need
+            //  to know is we can neither read nor write
+            mExternalStorageAvailable = mExternalStorageWriteable = false;
+        }
+    }
+    
+    
     private void getFavSettings(){
         //Toast.makeText(this, prefs.getString("saved_fav_1_text", "-1"), Toast.LENGTH_LONG).show();
         if (prefs.getString("saved_fav_1_text", "-1")!= "-1") {
             text_fav_1.setText(prefs.getString("saved_fav_1_text", "-1"));
-            //button_favorite_1.setImageResource(prefs.getInt("saved_fav_1_pic", -1)); //TODO
-            button_favorite_1.setImageResource(R.drawable.placeholder_logo);
+            button_favorite_1.setImageDrawable(readDrawableFromSD("pic_fav_1.jpg"));
         }
         if (prefs.getString("saved_fav_2_text", "-1")!= "-1") {
             text_fav_2.setText(prefs.getString("saved_fav_2_text", "-1"));
-            //button_favorite_1.setImageResource(prefs.getInt("saved_fav_1_pic", -1)); //TODO
-            button_favorite_2.setImageResource(R.drawable.placeholder_logo);
+            button_favorite_2.setImageDrawable(readDrawableFromSD("pic_fav_2.jpg"));
         }
         if (prefs.getString("saved_fav_3_text", "-1")!= "-1") {
             text_fav_3.setText(prefs.getString("saved_fav_3_text", "-1"));
-            //button_favorite_1.setImageResource(prefs.getInt("saved_fav_1_pic", -1)); //TODO
-            button_favorite_3.setImageResource(R.drawable.placeholder_logo);
+            button_favorite_3.setImageDrawable(readDrawableFromSD("pic_fav_3.jpg"));
         }
         if (prefs.getString("saved_fav_4_text", "-1")!= "-1") {
             text_fav_4.setText(prefs.getString("saved_fav_4_text", "-1"));
-            //button_favorite_1.setImageResource(prefs.getInt("saved_fav_1_pic", -1)); //TODO
-            button_favorite_4.setImageResource(R.drawable.placeholder_logo);
+            button_favorite_4.setImageDrawable(readDrawableFromSD("pic_fav_4.jpg"));
         }
         if (prefs.getString("saved_fav_5_text", "-1")!= "-1") {
             text_fav_5.setText(prefs.getString("saved_fav_5_text", "-1"));
-            //button_favorite_1.setImageResource(prefs.getInt("saved_fav_1_pic", -1)); //TODO
-            button_favorite_5.setImageResource(R.drawable.placeholder_logo);
+            button_favorite_5.setImageDrawable(readDrawableFromSD("pic_fav_5.jpg"));
         }
         if (prefs.getString("saved_fav_6_text", "-1")!= "-1") {
             text_fav_6.setText(prefs.getString("saved_fav_6_text", "-1"));
-            //button_favorite_1.setImageResource(prefs.getInt("saved_fav_1_pic", -1)); //TODO
-            button_favorite_6.setImageResource(R.drawable.placeholder_logo);
+            button_favorite_6.setImageDrawable(readDrawableFromSD("pic_fav_6.jpg"));
         }
     }
     
@@ -234,6 +255,93 @@ public class YaohaActivity extends Activity implements OnClickListener {
             Toast.makeText(this, err, Toast.LENGTH_LONG).show();
         }
     }
+ 
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable)drawable).getBitmap();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap); 
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+    
+    public void writeDrawableToSD(Drawable pic, String fileName){
+        File file = new File(getExternalFilesDir(null), fileName);
+        //Drawable pic = button_favorite_1.getDrawable();
+        Bitmap bitmap = drawableToBitmap(pic);
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public Drawable readDrawableFromSD(String fileName){
+        File file = new File(getExternalFilesDir(null), fileName);
+        Drawable d;
+        if (file.exists()){
+            Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            d = new BitmapDrawable(getResources(),myBitmap);
+        } else {
+            Toast.makeText(this, "Could not find File, loading default picture.",Toast.LENGTH_LONG).show();
+            d = getResources().getDrawable(R.drawable.placeholder_logo);
+        }
+        return d;
+    }
+    
+    
+    
+/*  //----------------------------------------------------------------------- BEGIN of Dev-Site  
+    void createExternalStoragePrivateFile() {
+        // Create a path where we will place our private file on external
+        // storage.
+        File file = new File(getExternalFilesDir(null), "DemoFile.jpg");
+
+        try {
+            // Very simple code to copy a picture from the application's
+            // resource into the external file.  Note that this code does
+            // no error checking, and assumes the picture is small (does not
+            // try to copy it in chunks).  Note that if external storage is
+            // not currently mounted this will silently fail.
+            InputStream is = getResources().openRawResource(R.drawable.balloons);
+            OutputStream os = new FileOutputStream(file);
+            byte[] data = new byte[is.available()];
+            is.read(data);
+            os.write(data);
+            is.close();
+            os.close();
+        } catch (IOException e) {
+            // Unable to create file, likely because external storage is
+            // not currently mounted.
+            Log.w("ExternalStorage", "Error writing " + file, e);
+        }
+    }
+
+    void deleteExternalStoragePrivateFile() {
+        // Get path for the file on external storage.  If external
+        // storage is not currently mounted this will fail.
+        File file = new File(getExternalFilesDir(null), "DemoFile.jpg");
+        if (file != null) {
+            file.delete();
+        }
+    }
+
+    boolean hasExternalStoragePrivateFile() {
+        // Get path for the file on external storage.  If external
+        // storage is not currently mounted this will fail.
+        File file = new File(getExternalFilesDir(null), "DemoFile.jpg");
+        if (file != null) {
+            return file.exists();
+        }
+        return false;
+    }
+    
+//----------------------------------------------------------------------- END of Dev-Site    */
     
     
 	private String makeSecuredReq(String url,OAuthConsumer consumer) throws Exception {
@@ -356,6 +464,22 @@ public class YaohaActivity extends Activity implements OnClickListener {
         } else if (item.getTitle()==REMOVE_FAV){
            tv.setText(getText(R.string.add_favorite));
            btn.setImageResource(R.drawable.plus_sign_small);
+           String tmp="";
+           final Editor edit = prefs.edit();
+           if (btn.getId() == button_favorite_1.getId()){
+               tmp = "saved_fav_1_text";
+           } else if (btn.getId() == button_favorite_2.getId()){
+               tmp = "saved_fav_2_text";
+           } else if (btn.getId() == button_favorite_3.getId()){
+               tmp = "saved_fav_3_text";
+           } else if (btn.getId() == button_favorite_4.getId()){
+               tmp = "saved_fav_4_text";
+           } else if (btn.getId() == button_favorite_5.getId()){
+               tmp = "saved_fav_5_text";
+           } else if (btn.getId() == button_favorite_6.getId()){
+               tmp = "saved_fav_6_text";
+           }
+           edit.remove(tmp);
         } else {
             Toast.makeText(this, "Placeholder - You schould never see this.", Toast.LENGTH_SHORT).show();
             return false;
@@ -430,6 +554,9 @@ public class YaohaActivity extends Activity implements OnClickListener {
                     }
                     
                     actualButton.setImageBitmap(Bitmap.createScaledBitmap(fav_bitmap, actualButton.getWidth()-20, actualButton.getHeight()-20, false));
+                    if (actualButton.getId() == button_favorite_1.getId()){
+                        writeDrawableToSD(actualButton.getDrawable(), "pic_fav_1.jpg");
+                    }
                 }
             }
     }
