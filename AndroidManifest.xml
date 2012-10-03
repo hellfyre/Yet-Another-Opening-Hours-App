@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="org.yaoha"
-    android:versionCode="3"
-    android:versionName="0.2-alpha" xmlns:android="http://schemas.android.com/apk/res/android">
+    android:versionCode="4"
+    android:versionName="0.3-alpha" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk android:minSdkVersion="8" android:maxSdkVersion="16" android:targetSdkVersion="11"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
