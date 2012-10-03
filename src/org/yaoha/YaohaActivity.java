@@ -22,13 +22,11 @@ package org.yaoha;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -54,7 +52,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -101,7 +98,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
         if (staticApplicationContext == null) staticApplicationContext = getApplicationContext();
         
         this.prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        //TODO Evil Set of workarounds, change this to make favorites persistent
         text_fav_1 = new TextView(this);
         text_fav_1.setText(R.string.add_favorite);
         text_fav_2 = new TextView(this);
@@ -180,21 +176,21 @@ public class YaohaActivity extends Activity implements OnClickListener {
         }
     }
     
-    private void checkExMediaState(){
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            // We can read and write the media
-            mExternalStorageAvailable = mExternalStorageWriteable = true;
-        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            // We can only read the media
-            mExternalStorageAvailable = true;
-            mExternalStorageWriteable = false;
-        } else {
-            // Something else is wrong. It may be one of many other states, but all we need
-            //  to know is we can neither read nor write
-            mExternalStorageAvailable = mExternalStorageWriteable = false;
-        }
-    }
+//    private void checkExMediaState(){
+//        String state = Environment.getExternalStorageState();
+//        if (Environment.MEDIA_MOUNTED.equals(state)) {
+//            // We can read and write the media
+//            mExternalStorageAvailable = mExternalStorageWriteable = true;
+//        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+//            // We can only read the media
+//            mExternalStorageAvailable = true;
+//            mExternalStorageWriteable = false;
+//        } else {
+//            // Something else is wrong. It may be one of many other states, but all we need
+//            //  to know is we can neither read nor write
+//            mExternalStorageAvailable = mExternalStorageWriteable = false;
+//        }
+//    }
     
     
     private void getFavSettings(){
@@ -235,19 +231,6 @@ public class YaohaActivity extends Activity implements OnClickListener {
         OAuthConsumer OSMconsumer = new CommonsHttpOAuthConsumer(token, secret);
         OSMconsumer.setTokenWithSecret(token, secret);
         try {
-            
-//            DefaultHttpClient httpclient = new DefaultHttpClient();
-//            HttpGet request = new HttpGet(url);
-//            OSMconsumer.sign(request);
-//            HttpResponse response = httpclient.execute(request);
-            
-//            request = (HttpURLConnection) url.openConnection();
-    
-//            OSMconsumer.sign(request);
-//    
-//            //System.out.println("Sending request...");
-//            request.connect();
-    
             Toast.makeText(this, makeSecuredReq(url, OSMconsumer), Toast.LENGTH_LONG).show();
             //Toast.makeText(this, "Response: " + response.getStatusLine(), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
@@ -294,54 +277,13 @@ public class YaohaActivity extends Activity implements OnClickListener {
         return d;
     }
     
-    
-    
-/*  //----------------------------------------------------------------------- BEGIN of Dev-Site  
-    void createExternalStoragePrivateFile() {
-        // Create a path where we will place our private file on external
-        // storage.
-        File file = new File(getExternalFilesDir(null), "DemoFile.jpg");
-
-        try {
-            // Very simple code to copy a picture from the application's
-            // resource into the external file.  Note that this code does
-            // no error checking, and assumes the picture is small (does not
-            // try to copy it in chunks).  Note that if external storage is
-            // not currently mounted this will silently fail.
-            InputStream is = getResources().openRawResource(R.drawable.balloons);
-            OutputStream os = new FileOutputStream(file);
-            byte[] data = new byte[is.available()];
-            is.read(data);
-            os.write(data);
-            is.close();
-            os.close();
-        } catch (IOException e) {
-            // Unable to create file, likely because external storage is
-            // not currently mounted.
-            Log.w("ExternalStorage", "Error writing " + file, e);
+    private String determineStoreIcon(String storeName) { //TODO
+        if (storeName == "") {
+            return "something else";
+        } else {
+            return "standard";
         }
     }
-
-    void deleteExternalStoragePrivateFile() {
-        // Get path for the file on external storage.  If external
-        // storage is not currently mounted this will fail.
-        File file = new File(getExternalFilesDir(null), "DemoFile.jpg");
-        if (file != null) {
-            file.delete();
-        }
-    }
-
-    boolean hasExternalStoragePrivateFile() {
-        // Get path for the file on external storage.  If external
-        // storage is not currently mounted this will fail.
-        File file = new File(getExternalFilesDir(null), "DemoFile.jpg");
-        if (file != null) {
-            return file.exists();
-        }
-        return false;
-    }
-    
-//----------------------------------------------------------------------- END of Dev-Site    */
     
     
 	private String makeSecuredReq(String url,OAuthConsumer consumer) throws Exception {
@@ -516,7 +458,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
                 }
                 edit.putString(tmp, input.getText().toString());
                 edit.commit();
-                //TODO add method to catch store-icons
+                //TODO add method to catch pre-defined store-icons
             } 
             }); 
 
