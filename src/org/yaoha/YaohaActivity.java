@@ -480,6 +480,7 @@ public class YaohaActivity extends Activity implements OnClickListener {
                tmp = "saved_fav_6_text";
            }
            edit.remove(tmp);
+           edit.commit();
         } else {
             Toast.makeText(this, "Placeholder - You schould never see this.", Toast.LENGTH_SHORT).show();
             return false;
