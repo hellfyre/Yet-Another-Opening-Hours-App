@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.api.IMapView;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -98,7 +99,7 @@ public class NodesOverlay extends ItemizedOverlay<OverlayItem> implements NodeRe
     }
     
     @Override
-    public boolean onSnapToItem(int x, int y, Point snapPoint, MapView mapView) {
+    public boolean onSnapToItem(int x, int y, Point snapPoint, IMapView mapView) {
         return false;
     }
 
