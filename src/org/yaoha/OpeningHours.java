@@ -259,7 +259,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
             parseHourDayRange(part);
         }
         else {
-            throw new java.text.ParseException("Part " + part + " not parsable: Doesn't start with a weekday nor with a time.", parseError);
+            throw new java.text.ParseException("Part \"" + part + "\" not parsable: Doesn't start with a weekday nor with a time.", parseError);
         }
     }
 
@@ -279,7 +279,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
     private void parseWeekDayRange(String part) throws java.text.ParseException {
         String[] weekDayComponents = part.split(" ");
         if (weekDayComponents.length != 2) {
-            throw new java.text.ParseException("Component " + part + " not parsable: Should contain 2 parts (week day range, e.g. Mo-Fr and hour ranges, e.g. 08:00-18:00) divided by a space.", parseError);
+            throw new java.text.ParseException("Component \"" + part + "\" not parsable: Should contain 2 parts (week day range, e.g. Mo-Fr and hour ranges, e.g. 08:00-18:00) divided by a space.", parseError);
         }
         ArrayList<HourRange> hours = parseHours(weekDayComponents[1]);
         if (hours == null) return;
@@ -300,7 +300,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
         String[] hourRanges = rawHourRange.split(",");
         for (String hourRange : hourRanges) {
             Matcher regularOpeningHoursMatcher = openingHoursPattern.matcher(hourRange);
-            if (!regularOpeningHoursMatcher.matches()) throw new java.text.ParseException("Hour range " + hourRange + " not parsable: Doesn't match regular expression.", parseError);
+            if (!regularOpeningHoursMatcher.matches()) throw new java.text.ParseException("Hour range \"" + hourRange + "\" not parsable: Doesn't match regular expression.", parseError);
             hours.add(new HourRange(hourRange));
         }
         return hours;
@@ -312,11 +312,11 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
         for (String commaDay : commaSeparatedDays) {
             if (commaDay.contains("-")) {
                 String[] dashSeparatedDays = commaDay.split("-");
-                if (dashSeparatedDays.length != 2) throw new java.text.ParseException("Day range " + commaDay + " not parsable: Should contain exactly two weekdays separated by a dash (e.g. Mo-Fr).", parseError);
+                if (dashSeparatedDays.length != 2) throw new java.text.ParseException("Day range \"" + commaDay + "\" not parsable: Should contain exactly two weekdays separated by a dash (e.g. Mo-Fr).", parseError);
                 Integer firstIntWeekDay = stringToWeekDay(dashSeparatedDays[0]);
-                if (firstIntWeekDay == -1) throw new java.text.ParseException("Week day " + dashSeparatedDays[0] + " not parsable: Doesn't exist.", parseError);
+                if (firstIntWeekDay == -1) throw new java.text.ParseException("Week day \"" + dashSeparatedDays[0] + "\" not parsable: Doesn't exist.", parseError);
                 Integer secondIntWeekDay = stringToWeekDay(dashSeparatedDays[1]);
-                if (secondIntWeekDay == -1) throw new java.text.ParseException("Week day " + dashSeparatedDays[1] + " not parsable: Doesn't exist.", parseError);
+                if (secondIntWeekDay == -1) throw new java.text.ParseException("Week day \"" + dashSeparatedDays[1] + "\" not parsable: Doesn't exist.", parseError);
                 int i = firstIntWeekDay;
                 while (i != secondIntWeekDay) {
                     weekDays.add(i);
@@ -327,7 +327,7 @@ public class OpeningHours implements Iterable<TreeSet<HourRange>> {
             }
             else {
                 Integer weekDay = stringToWeekDay(commaDay);
-                if (weekDay == -1) throw new java.text.ParseException("Week day " + commaDay + " not parsable: Doesn't exist.", parseError);
+                if (weekDay == -1) throw new java.text.ParseException("Week day \"" + commaDay + "\" not parsable: Doesn't exist.", parseError);
                 weekDays.add(weekDay);
             }
         }

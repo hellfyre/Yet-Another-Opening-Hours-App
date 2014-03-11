@@ -21,8 +21,6 @@
 package org.yaoha;
 
 import oauth.signpost.OAuth;
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -95,13 +93,13 @@ public class OSMSettingsActivity extends Activity implements android.view.View.O
     }
 
     
-    private OAuthConsumer getConsumer(SharedPreferences prefs) {
+/*    private OAuthConsumer getConsumer(SharedPreferences prefs) {
         String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
         String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
         OAuthConsumer consumer = new CommonsHttpOAuthConsumer(C.CONSUMER_KEY, C.CONSUMER_SECRET);
         consumer.setTokenWithSecret(token, secret);
         return consumer;
-    }
+    }*/
 
     @Override
     public void onClick(View v) {

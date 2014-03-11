@@ -25,8 +25,7 @@ import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MyLocationOverlay;
-
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import android.app.Activity;
 import android.content.Context;
@@ -48,7 +47,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
     MapView mapview;
     MapController mapController;
     LocationManager locationManager;
-    MyLocationOverlay mOverlay;
+    MyLocationNewOverlay mOverlay;
     static final GeoPoint braunschweig = new GeoPoint(52265000, 10525000);
     
     String search_term = "";
@@ -67,7 +66,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         mapview = (MapView) findViewById(R.id.mapview);
         mapview.setBuiltInZoomControls(true);
         mapview.setMultiTouchControls(true);
-        mapController = this.mapview.getController();
+        mapController = (MapController) this.mapview.getController();
         
         // just save the search term
         // we may later add a method to actually look in maps after it
@@ -121,7 +120,8 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300000, 200, this);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300000, 200, this);
         
-        mOverlay = new MyLocationOverlay(this, mapview);
+
+        mOverlay = new MyLocationNewOverlay(this, mapview); //TODO
         mapview.getOverlays().add(mOverlay);
         mapview.postInvalidate();
         
@@ -209,13 +209,13 @@ public class YaohaMapActivity extends Activity implements LocationListener {
     @Override
     protected void onResume() {
         super.onResume();
-        mOverlay.enableMyLocation();
+        mOverlay.setEnabled(true);//  enableMyLocation();
     }
     
     @Override
     protected void onPause() {
         super.onPause();
-        mOverlay.disableMyLocation();
+        mOverlay.setEnabled(false);
 
         IGeoPoint center = mapview.getMapCenter();
         Editor editor = mprefs.edit();
