@@ -124,7 +124,8 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         mOverlay = new MyLocationNewOverlay(this, mapview); //TODO
         mapview.getOverlays().add(mOverlay);
         mapview.postInvalidate();
-        
+        mOverlay.enableMyLocation();
+		
         BoundingBoxE6 bb = mapview.getBoundingBox();
         int west = mprefs.getInt("west", bb.getLonWestE6()-1000);
         int east = mprefs.getInt("east", bb.getLonEastE6()+1000);
