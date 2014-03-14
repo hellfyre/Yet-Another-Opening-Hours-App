@@ -53,7 +53,13 @@ public class HourRange implements Comparable<HourRange> {
             
             String[] hourMinute = startEnd[1].split(":");
             endingHour = Integer.parseInt(hourMinute[0]);
-            endingMinute = Integer.parseInt(hourMinute[1]);
+            endingMinute = 0;
+            try {
+            	endingMinute = Integer.parseInt(hourMinute[1]);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+            
         }
         else {
             start = range.replace("+", "");
