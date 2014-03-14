@@ -21,6 +21,8 @@
 package org.yaoha;
 
 import java.io.StringWriter;
+import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,9 +53,16 @@ public class OsmNode {
     protected OpeningHours openingHours;
     
     public OsmNode(String ID, String latitude, String longitude, String version) {
-        this.ID = Integer.parseInt(ID);
-        this.latitudeE6 = new Double(Double.parseDouble(latitude)*1e6).intValue();
-        this.longitudeE6 = new Double(Double.parseDouble(longitude)*1e6).intValue();
+    	try {
+			this.ID = Integer.parseInt(ID);
+		} catch (NumberFormatException ne) {
+			this.ID = -1;
+			ne.printStackTrace();
+		}	
+        this.latitudeE6 = Double.valueOf(Double.parseDouble(latitude)*1e6).intValue();
+        this.longitudeE6 = Double.valueOf(Double.parseDouble(longitude)*1e6).intValue();
+
+
         if (version.equals("")) {
             this.version = 0;
         }
@@ -65,7 +74,12 @@ public class OsmNode {
     }
     
     public OsmNode(int ID, int latitudeE6, int longitudeE6, int version) {
-        this.ID = ID;
+    	try {
+			this.ID = ID;
+		} catch (NumberFormatException ne) {
+			this.ID = -1;
+			ne.printStackTrace();
+		}
         this.latitudeE6 = latitudeE6;
         this.longitudeE6 = longitudeE6;
         this.version = version;
