@@ -173,6 +173,14 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         return true;
     }
     
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		menu.findItem(R.id.edit_mode).setChecked(editMode);
+		return true;
+	}
+	
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
