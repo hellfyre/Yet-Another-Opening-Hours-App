@@ -21,8 +21,6 @@
 package org.yaoha;
 
 import java.io.StringWriter;
-import java.math.BigInteger;
-import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -249,18 +247,23 @@ public class OsmNode {
         for (HourRange curRange : today) {
             int nowHour = now.get(Calendar.HOUR_OF_DAY);
             int nowMinute = now.get(Calendar.MINUTE);
+            
+            //workaround for opening_hours like 13:00 - 2:00 (will only show shops open until 24:00)
+            //TODO look for better solution
+            int tmpEndingHour = curRange.getEndingHour();
+            if (curRange.getEndingHour() < curRange.getStartingHour()){
+                tmpEndingHour = 24;                
+            }
+            
             if (nowHour >= curRange.getStartingHour() && nowMinute >= curRange.getStartingMinute()) {
                 if (nowHour <= curRange.getEndingHour() && nowMinute <= curRange.getEndingMinute()) {
                     result = shopStatus.OPEN;
                 }
-                else if (curRange.getEndingHour() < curRange.getStartingHour()){
-                    if (nowHour >= curRange.getStartingHour() && nowMinute >= curRange.getStartingMinute()) {
-                        if (nowHour <= 24 && nowMinute <= curRange.getEndingMinute()) {
-                            //workaround for opening_hours like 13:00 - 2:00 (will only show shops open until 24:00)
-                            //TODO look for better solution
-                            result = shopStatus.OPEN;
-                        }    
-                    }
+                if (nowHour > curRange.getStartingHour() || (nowHour == curRange.getStartingHour() && nowMinute >= curRange.getStartingMinute())) {
+                    if (nowHour < tmpEndingHour || (nowHour == tmpEndingHour && nowMinute <= curRange.getEndingMinute())) {
+
+                        result = shopStatus.OPEN;
+                    }    
                 }
                 else if (curRange.getEndingHour() == -1) {
                     result = shopStatus.MAYBE;
