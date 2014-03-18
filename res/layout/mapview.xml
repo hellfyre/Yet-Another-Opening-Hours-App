@@ -7,8 +7,14 @@
     <org.osmdroid.views.MapView
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:clickable="true"
-    />
+        android:layout_height="0dip"
+        android:layout_weight="1.00"
+        android:clickable="true" />
+
+    <TextView
+        android:id="@+id/numberOfNodesText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>

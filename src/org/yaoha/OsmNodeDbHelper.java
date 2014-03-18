@@ -45,6 +45,8 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
     private static final String nodesAttributesTableValue = "value";
     List<NodeReceiverInterface<OsmNode>> receiver;
     
+    public static int number_of_nodes = -1;
+    
     private static class SingletonHolder {
         public static OsmNodeDbHelper instance;
     }
@@ -211,8 +213,8 @@ public class OsmNodeDbHelper extends SQLiteOpenHelper implements NodeReceiverInt
         if (!isUpdate || hasBeenEdited)
             for (NodeReceiverInterface<OsmNode> irec : receiver)
                 irec.put(node);
-        
-        Log.d(getClass().getSimpleName(), "There are " + queryNodes().getCount() + " nodes in the database");
+        number_of_nodes = queryNodes().getCount();
+        Log.d(getClass().getSimpleName(), "There are " + number_of_nodes + " nodes in the database");
     }
     
     private OsmNode createNodeFromRow(Cursor c) {

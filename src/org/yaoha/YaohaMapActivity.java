@@ -27,6 +27,7 @@ import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -41,6 +42,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class YaohaMapActivity extends Activity implements LocationListener {
@@ -48,6 +50,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
     MapController mapController;
     LocationManager locationManager;
     MyLocationNewOverlay mOverlay;
+    NodesOverlay no;
     static final GeoPoint braunschweig = new GeoPoint(52265000, 10525000);
     
     String search_term = "";
@@ -75,7 +78,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         search_term = text.toString();
         Log.i(YaohaMapActivity.class.getSimpleName(), "Search field input was: " + text);
         
-        NodesOverlay no = new NodesOverlay(getResources().getDrawable(R.drawable.dontknow), new org.osmdroid.DefaultResourceProxyImpl(mapview.getContext()), this, mapview, OsmNodeDbHelper.getInstance(), search_term);
+        no = new NodesOverlay(getResources().getDrawable(R.drawable.dontknow), new org.osmdroid.DefaultResourceProxyImpl(mapview.getContext()), this, mapview, OsmNodeDbHelper.getInstance(), search_term);
         
         mapview.getOverlays().add(no);
         mapview.setMapListener(mapListener = new YaohaMapListener(this, no));
@@ -114,7 +117,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
 
         mapController.setZoom(zoom);
         mapController.setCenter(myPosition);
-
+        setNodes();
      // Register the listener with the Location Manager to receive location updates
 //        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 300, 200, this);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300000, 200, this);
@@ -125,7 +128,7 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         mapview.getOverlays().add(mOverlay);
         mapview.postInvalidate();
         mOverlay.enableMyLocation();
-		
+        
         BoundingBoxE6 bb = mapview.getBoundingBox();
         int west = mprefs.getInt("west", bb.getLonWestE6()-1000);
         int east = mprefs.getInt("east", bb.getLonEastE6()+1000);
@@ -137,13 +140,13 @@ public class YaohaMapActivity extends Activity implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         // TODO Auto-generated method stub
-        GeoPoint myPosition = new GeoPoint(location);
-        mapController.setCenter(myPosition);
+        //GeoPoint myPosition = new GeoPoint(location);
+        //mapController.setCenter(myPosition); //TODO  causes random jumps to mylocation
         // Remove the listener you previously added
 //        locationManager.removeUpdates(this);
+        setNodes();
         Log.i(this.getClass().getSimpleName(), "got location update from " + location.getProvider());
         Log.i(this.getClass().getSimpleName(), "new location is " + location.getLatitude() + "," + location.getLongitude());
-        
     }
     
 
@@ -173,14 +176,14 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         return true;
     }
     
-	
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
-		menu.findItem(R.id.edit_mode).setChecked(editMode);
-		return true;
-	}
-	
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.edit_mode).setChecked(editMode);
+        return true;
+    }
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -189,8 +192,10 @@ public class YaohaMapActivity extends Activity implements LocationListener {
             if (loc == null) {
                 Toast.makeText(this, "No location known *crash*", Toast.LENGTH_LONG).show();
             } else {
-                GeoPoint myPosition = new GeoPoint(loc);
-                mapController.setCenter(myPosition);
+                IGeoPoint myPosition = new GeoPoint(loc);
+                //mapController.setCenter(myPosition);
+                mapController.setZoom(17);
+                mapController.animateTo(myPosition);
                 Toast.makeText(this, "Tracking me!", Toast.LENGTH_LONG).show();
             }
             return true;
@@ -212,6 +217,8 @@ public class YaohaMapActivity extends Activity implements LocationListener {
             else
                 OsmNodeDbHelper.getInstance().removeNodesWithoutOpeningHoursSet();
             return true;
+        case R.id.nodes_Update:
+            setNodes();
         }
         return false;
     }
@@ -221,10 +228,22 @@ public class YaohaMapActivity extends Activity implements LocationListener {
         mOverlay.setEnabled(true);//  enableMyLocation();
     }
     
+    private void setNodes(){
+        TextView t=new TextView(this); 
+        t=(TextView)findViewById(R.id.numberOfNodesText); 
+        String nodes = ""+OsmNodeDbHelper.number_of_nodes;
+        try {
+            t.setText("Nodes in your Database: " + nodes);
+        } catch (Exception e) {
+            t.setText(e.getMessage());
+        }
+    }
+    
     @Override
     protected void onPause() {
         super.onPause();
         mOverlay.setEnabled(false);
+        
 
         IGeoPoint center = mapview.getMapCenter();
         Editor editor = mprefs.edit();
