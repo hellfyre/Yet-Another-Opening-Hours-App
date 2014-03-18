@@ -51,14 +51,14 @@ public class OsmNode {
     private Date lastUpdated;
     private HashMap<String, String> attributes;
     protected OpeningHours openingHours;
-    
+
     public OsmNode(String ID, String latitude, String longitude, String version) {
-    	try {
-			this.ID = Integer.parseInt(ID);
-		} catch (NumberFormatException ne) {
-			this.ID = -1;
-			ne.printStackTrace();
-		}	
+        try {
+            this.ID = Integer.parseInt(ID);
+        } catch (NumberFormatException ne) {
+            this.ID = -1;
+            ne.printStackTrace();
+        }    
         this.latitudeE6 = Double.valueOf(Double.parseDouble(latitude)*1e6).intValue();
         this.longitudeE6 = Double.valueOf(Double.parseDouble(longitude)*1e6).intValue();
 
@@ -72,21 +72,21 @@ public class OsmNode {
         this.attributes = new HashMap<String, String>();
         openingHours = new OpeningHours();
     }
-    
+
     public OsmNode(int ID, int latitudeE6, int longitudeE6, int version) {
-    	try {
-			this.ID = ID;
-		} catch (NumberFormatException ne) {
-			this.ID = -1;
-			ne.printStackTrace();
-		}
+        try {
+            this.ID = ID;
+        } catch (NumberFormatException ne) {
+            this.ID = -1;
+            ne.printStackTrace();
+        }
         this.latitudeE6 = latitudeE6;
         this.longitudeE6 = longitudeE6;
         this.version = version;
         this.attributes = new HashMap<String, String>();
         openingHours = new OpeningHours();
     }
-    
+
     /**
      * Assumes that changes in opening_hours are already saved to attributes
      * @throws ParserConfigurationException, TransformerException 
@@ -94,24 +94,24 @@ public class OsmNode {
     public String serialize(String changesetId) throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-        
+
         // root elements
         Document doc = docBuilder.newDocument();
         Element rootElement = doc.createElement("osm");
         Element nodeElement = doc.createElement("node");
         rootElement.appendChild(nodeElement);
         doc.appendChild(rootElement);
-        
+
         nodeElement.setAttribute("changeset", changesetId);
         nodeElement.setAttribute("id", "" + this.ID);
-        
+
         String latitudeString = String.format(Locale.US, "%f", this.latitudeE6/1e6);
         String longitudeString = String.format(Locale.US, "%f", this.longitudeE6/1e6);
-        
+
         nodeElement.setAttribute("lat", latitudeString);
         nodeElement.setAttribute("lon", longitudeString);
         nodeElement.setAttribute("version", String.valueOf(this.version));
-        
+
         Set<String> ts = new TreeSet<String>(attributes.keySet());
         for (String key : ts) {
             String value = this.attributes.get(key);
@@ -120,45 +120,45 @@ public class OsmNode {
             tag_element.setAttribute("v", value);
             nodeElement.appendChild(tag_element);
         }
-        
+
         // write the content into xml file
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(doc);
-        
+
         StringWriter writer = new StringWriter();
         StreamResult result = new StreamResult(writer);
- 
+
         transformer.transform(source, result);
-        
+
         return writer.toString();
     }
-    
+
     public void putAttribute(String key, String value) {
         attributes.put(key, value);
         if (key.equals("opening_hours")) parseOpeningHours();
     }
-    
+
     public String getAttribute(String key) {
         return attributes.get(key);
     }
-    
+
     public Set<String> getKeys() {
         return attributes.keySet();
     }
-    
+
     public int getID() {
         return ID;
     }
-    
+
     public int getLatitudeE6() {
         return latitudeE6;
     }
-    
+
     public int getLongitudeE6() {
         return longitudeE6;
     }
-    
+
     public int getVersion() {
         return this.version;
     }
@@ -194,12 +194,12 @@ public class OsmNode {
     public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
-    
+
     public void commitOpeningHours() {
         if (openingHours == null) return;
         setOpeningHoursString(openingHours.compileOpeningHoursString());
     }
-    
+
     public void parseOpeningHours() {
         openingHours.parse(getOpeningHoursString());
     }
@@ -209,7 +209,7 @@ public class OsmNode {
             return shopStatus.UNSET;
         if (openingHours.unparsable())
             return shopStatus.PARSERERROR;
-        
+
         shopStatus result = shopStatus.CLOSED;
         Calendar now = Calendar.getInstance();
 
@@ -240,7 +240,7 @@ public class OsmNode {
             todayIndex = -1;
             break;
         }
-        
+
         TreeSet<HourRange> today = openingHours.getWeekDay(todayIndex);
 
         if (today.isEmpty())
@@ -249,9 +249,18 @@ public class OsmNode {
         for (HourRange curRange : today) {
             int nowHour = now.get(Calendar.HOUR_OF_DAY);
             int nowMinute = now.get(Calendar.MINUTE);
-            if (nowHour > curRange.getStartingHour() || (nowHour == curRange.getStartingHour() && nowMinute >= curRange.getStartingMinute())) {
-                if (nowHour < curRange.getEndingHour() || (nowHour == curRange.getEndingHour() && nowMinute <= curRange.getEndingMinute())) {
+            if (nowHour >= curRange.getStartingHour() && nowMinute >= curRange.getStartingMinute()) {
+                if (nowHour <= curRange.getEndingHour() && nowMinute <= curRange.getEndingMinute()) {
                     result = shopStatus.OPEN;
+                }
+                else if (curRange.getEndingHour() < curRange.getStartingHour()){
+                    if (nowHour >= curRange.getStartingHour() && nowMinute >= curRange.getStartingMinute()) {
+                        if (nowHour <= 24 && nowMinute <= curRange.getEndingMinute()) {
+                            //workaround for opening_hours like 13:00 - 2:00 (will only show shops open until 24:00)
+                            //TODO look for better solution
+                            result = shopStatus.OPEN;
+                        }    
+                    }
                 }
                 else if (curRange.getEndingHour() == -1) {
                     result = shopStatus.MAYBE;
