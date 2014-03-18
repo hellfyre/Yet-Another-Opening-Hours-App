@@ -34,7 +34,7 @@
         android:id="@+id/textView_osm_token_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Medium Text"
+        android:text="(none)"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -48,7 +48,7 @@
         android:id="@+id/textView_osm_secret_token_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Medium Text"
+        android:text="(none)"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -62,7 +62,6 @@
         android:id="@+id/text_console"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </LinearLayout>
