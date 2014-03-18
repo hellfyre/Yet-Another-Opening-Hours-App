@@ -55,10 +55,10 @@ public class HourRange implements Comparable<HourRange> {
             endingHour = Integer.parseInt(hourMinute[0]);
             endingMinute = 0;
             try {
-            	endingMinute = Integer.parseInt(hourMinute[1]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
+                endingMinute = Integer.parseInt(hourMinute[1]);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
             
         }
         else {
